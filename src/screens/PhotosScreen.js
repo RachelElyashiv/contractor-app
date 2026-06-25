@@ -1,25 +1,27 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useRef, useState } from 'react';
+import * as ImagePicker from 'expo-image-picker';
+import { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    RefreshControl,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Image,
+  Linking,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 const BASE_URL = 'https://contractor-backend-production.up.railway.app/api/v1';
+const FILE_BASE = 'https://contractor-backend-production.up.railway.app/api/v1';
 
 export default function PhotosScreen() {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef(null);
 
   useEffect(() => { loadPhotos(); }, []);
 
@@ -39,21 +41,44 @@ export default function PhotosScreen() {
     }
   }
 
-  async function handleFileChange(e) {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  async function pickAndUpload() {
+    // בקשת הרשאה לגלריה
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert('הרשאה נדרשת', 'יש לאשר גישה לתמונות כדי להעלות');
+      return;
+    }
+
+    // פתיחת הגלריה
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: true,
+      quality: 0.7,
+    });
+
+    if (result.canceled) return;
+
     setUploading(true);
     try {
       const token = await AsyncStorage.getItem('token');
       const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
+
+      for (const asset of result.assets) {
+        const uriParts = asset.uri.split('.');
+        const fileType = uriParts[uriParts.length - 1];
+        formData.append('files', {
+          uri: asset.uri,
+          name: `photo.${fileType}`,
+          type: `image/${fileType}`,
+        });
       }
+
       const res = await fetch(`${BASE_URL}/photos/upload`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
+
       if (res.ok) {
         loadPhotos();
       } else {
@@ -63,27 +88,37 @@ export default function PhotosScreen() {
       Alert.alert('שגיאה', 'שגיאה בהעלאה');
     } finally {
       setUploading(false);
-      e.target.value = '';
     }
   }
 
-  async function deletePhoto(id, filename) {
-    const confirmed = window.confirm(`האם למחוק את "${filename}"?`);
-    if (!confirmed) return;
-    try {
-      const token = await AsyncStorage.getItem('token');
-      const res = await fetch(`${BASE_URL}/photos/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        loadPhotos();
-      } else {
-        Alert.alert('שגיאה', 'לא הצלחנו למחוק');
-      }
-    } catch (e) {
-      Alert.alert('שגיאה', 'שגיאה במחיקה');
-    }
+  function deletePhoto(id, filename) {
+    Alert.alert(
+      'מחיקת קובץ',
+      `האם למחוק את "${filename}"?`,
+      [
+        { text: 'ביטול', style: 'cancel' },
+        {
+          text: 'מחק',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const token = await AsyncStorage.getItem('token');
+              const res = await fetch(`${BASE_URL}/photos/${id}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+              });
+              if (res.ok) {
+                loadPhotos();
+              } else {
+                Alert.alert('שגיאה', 'לא הצלחנו למחוק');
+              }
+            } catch (e) {
+              Alert.alert('שגיאה', 'שגיאה במחיקה');
+            }
+          },
+        },
+      ]
+    );
   }
 
   function isPdf(photo) {
@@ -100,19 +135,10 @@ export default function PhotosScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>קבצים ותמונות</Text>
-        <TouchableOpacity style={styles.addBtn} onPress={() => fileInputRef.current?.click()} disabled={uploading}>
+        <TouchableOpacity style={styles.addBtn} onPress={pickAndUpload} disabled={uploading}>
           <Text style={styles.addBtnText}>{uploading ? 'מעלה...' : '+ העלה'}</Text>
         </TouchableOpacity>
       </View>
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*,.pdf"
-        multiple
-        style={{ display: 'none' }}
-        onChange={handleFileChange}
-      />
 
       <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadPhotos(); }} />}
@@ -124,7 +150,7 @@ export default function PhotosScreen() {
               {images.map(photo => (
                 <View key={photo.id} style={styles.photoCard}>
                   <Image
-                    source={{ uri: `https://contractor-backend-production.up.railway.app/api/v1${photo.url}` }}
+                    source={{ uri: `${FILE_BASE}${photo.url}` }}
                     style={styles.photo}
                     resizeMode="cover"
                   />
@@ -151,7 +177,7 @@ export default function PhotosScreen() {
                 </View>
                 <View style={styles.pdfInfo}>
                   <Text style={styles.pdfName}>{pdf.caption || pdf.filename}</Text>
-                  <TouchableOpacity onPress={() => window.open(`https://contractor-backend-production.up.railway.app/api/v1${pdf.url}`, '_blank')}>
+                  <TouchableOpacity onPress={() => Linking.openURL(`${FILE_BASE}${pdf.url}`)}>
                     <Text style={styles.pdfOpen}>פתח קובץ</Text>
                   </TouchableOpacity>
                 </View>
@@ -170,7 +196,7 @@ export default function PhotosScreen() {
           <View style={styles.empty}>
             <Text style={styles.emptyIcon}>📁</Text>
             <Text style={styles.emptyText}>אין קבצים עדיין</Text>
-            <Text style={styles.emptySub}>לחץ "+ העלה" להוסיף תמונות או PDF</Text>
+            <Text style={styles.emptySub}>לחץ "+ העלה" להוסיף תמונות</Text>
           </View>
         )}
       </ScrollView>
