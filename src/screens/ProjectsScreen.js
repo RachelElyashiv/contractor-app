@@ -922,7 +922,7 @@ export default function ProjectsScreen() {
           </View>
         </View>
       </Modal>
-      <ConfirmModal />
+      {confirmModalJsx}
     </View>
   );
 }
