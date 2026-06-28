@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Modal,
-    RefreshControl,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Alert,
+  Modal,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { invoices } from '../services/api';
 
@@ -19,28 +19,29 @@ export default function InvoicesScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState('invoices');
+  const [createType, setCreateType] = useState('invoice');
   const [form, setForm] = useState({ clientName: '', clientPhone: '', notes: '', taxPercent: '17', items: [{ description: '', quantity: '1', unitPrice: '' }] });
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const pendingDeleteFn = useRef(null);
 
   useEffect(() => { loadData(); }, []);
 
   async function loadData() {
     try {
       const [inv, sum] = await Promise.all([invoices.getAll(), invoices.getSummary()]);
-      setList(inv.data);
+      setList(Array.isArray(inv.data) ? inv.data : []);
       setSummary(sum.data);
-    } catch (e) {
-      console.log('Invoices error:', e);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
+    } catch (e) { console.log('Invoices error:', e); }
+    finally { setLoading(false); setRefreshing(false); }
   }
 
-  async function createInvoice() {
+  async function createDocument() {
     if (!form.clientName) return Alert.alert('שגיאה', 'מלא שם לקוח');
     try {
       await invoices.create({
         ...form,
+        type: createType,
         taxPercent: Number(form.taxPercent) || 17,
         items: form.items.map(i => ({
           description: i.description,
@@ -52,22 +53,31 @@ export default function InvoicesScreen() {
       setModalVisible(false);
       setForm({ clientName: '', clientPhone: '', notes: '', taxPercent: '17', items: [{ description: '', quantity: '1', unitPrice: '' }] });
       loadData();
-    } catch (e) {
-      Alert.alert('שגיאה', 'לא הצלחנו ליצור חשבונית');
-    }
+    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו ליצור מסמך'); }
   }
 
   async function markPaid(id) {
     try {
       await invoices.markPaid(id);
       loadData();
-    } catch (e) {
-      Alert.alert('שגיאה', 'לא הצלחנו לעדכן');
-    }
+    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו לעדכן'); }
   }
 
-  const statusColor = { paid: '#1a6b4a', sent: '#185fa5', overdue: '#a32d2d', draft: '#ba7517' };
-  const statusLabel = { paid: 'שולם ✓', sent: 'נשלח', overdue: 'איחור', draft: 'טיוטה' };
+  function deleteInvoice(id) {
+    pendingDeleteFn.current = async () => {
+      try { await invoices.delete(id); loadData(); }
+      catch (e) { Alert.alert('שגיאה', 'שגיאה במחיקה'); }
+    };
+    setConfirmDelete({ message: 'האם למחוק מסמך זה?' });
+  }
+
+  const statusColor = { paid: '#1a6b4a', sent: '#185fa5', overdue: '#a32d2d', draft: '#ba7517', cancelled: '#888' };
+  const statusLabel = { paid: 'שולם ✓', sent: 'נשלח', overdue: 'איחור', draft: 'טיוטה', cancelled: 'בוטל' };
+
+  const invoiceList = list.filter(i => i.type === 'invoice' || i.type === 'receipt' || !i.type);
+  const quoteList = list.filter(i => i.type === 'quote');
+
+  const displayList = activeTab === 'quotes' ? quoteList : invoiceList;
 
   if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#1a6b4a" />;
 
@@ -75,77 +85,148 @@ export default function InvoicesScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>חשבוניות</Text>
-        <TouchableOpacity style={styles.addBtn} onPress={() => setModalVisible(true)}>
-          <Text style={styles.addBtnText}>+ חדש</Text>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <TouchableOpacity style={styles.addBtn} onPress={() => { setCreateType('quote'); setModalVisible(true); }}>
+            <Text style={styles.addBtnText}>📋 הצעה</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.addBtn} onPress={() => { setCreateType('invoice'); setModalVisible(true); }}>
+            <Text style={styles.addBtnText}>+ חדש</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Tabs */}
+      <View style={styles.tabRow}>
+        <TouchableOpacity style={[styles.tab, activeTab === 'invoices' && styles.tabActive]} onPress={() => setActiveTab('invoices')}>
+          <Text style={[styles.tabText, activeTab === 'invoices' && styles.tabTextActive]}>
+            🧾 חשבוניות ({invoiceList.length})
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.tab, activeTab === 'quotes' && styles.tabActive]} onPress={() => setActiveTab('quotes')}>
+          <Text style={[styles.tabText, activeTab === 'quotes' && styles.tabTextActive]}>
+            📋 הצעות מחיר ({quoteList.length})
+          </Text>
         </TouchableOpacity>
       </View>
 
-      <ScrollView
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }} />}
-      >
-        {summary && (
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }} />}>
+        {activeTab === 'invoices' && summary && (
           <View style={styles.summaryRow}>
             <View style={styles.summaryCard}>
-              <Text style={styles.summaryVal}>₪{Math.round(summary.totalRevenue / 1000)}K</Text>
+              <Text style={styles.summaryVal}>₪{Math.round((summary.totalRevenue || 0) / 1000)}K</Text>
               <Text style={styles.summaryLabel}>הכנסות</Text>
             </View>
             <View style={styles.summaryCard}>
-              <Text style={[styles.summaryVal, { color: '#185fa5' }]}>₪{Math.round(summary.pendingAmount / 1000)}K</Text>
+              <Text style={[styles.summaryVal, { color: '#185fa5' }]}>₪{Math.round((summary.pendingAmount || 0) / 1000)}K</Text>
               <Text style={styles.summaryLabel}>ממתין</Text>
             </View>
             <View style={styles.summaryCard}>
-              <Text style={[styles.summaryVal, { color: '#a32d2d' }]}>₪{Math.round(summary.overdueAmount / 1000)}K</Text>
+              <Text style={[styles.summaryVal, { color: '#a32d2d' }]}>₪{Math.round((summary.overdueAmount || 0) / 1000)}K</Text>
               <Text style={styles.summaryLabel}>איחור</Text>
             </View>
           </View>
         )}
 
-        {list.map(inv => (
+        {displayList.map(inv => (
           <View key={inv.id} style={styles.card}>
             <View style={styles.cardTop}>
               <Text style={styles.invNum}>{inv.invoiceNumber}</Text>
-              <View style={[styles.badge, { backgroundColor: statusColor[inv.status] + '20' }]}>
-                <Text style={[styles.badgeText, { color: statusColor[inv.status] }]}>{statusLabel[inv.status]}</Text>
+              <View style={[styles.badge, { backgroundColor: (statusColor[inv.status] || '#888') + '20' }]}>
+                <Text style={[styles.badgeText, { color: statusColor[inv.status] || '#888' }]}>{statusLabel[inv.status] || inv.status}</Text>
               </View>
             </View>
             <Text style={styles.clientName}>{inv.clientName}</Text>
-            <Text style={styles.amount}>₪{Number(inv.total).toLocaleString()}</Text>
-            {inv.status !== 'paid' && (
-              <TouchableOpacity style={styles.paidBtn} onPress={() => markPaid(inv.id)}>
-                <Text style={styles.paidBtnText}>סמן כשולם</Text>
+            <Text style={styles.amount}>₪{Number(inv.total || 0).toLocaleString()}</Text>
+            {inv.notes ? <Text style={styles.notes}>{inv.notes}</Text> : null}
+            <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
+              {inv.status !== 'paid' && inv.type !== 'quote' && (
+                <TouchableOpacity style={styles.paidBtn} onPress={() => markPaid(inv.id)}>
+                  <Text style={styles.paidBtnText}>סמן כשולם ✓</Text>
+                </TouchableOpacity>
+              )}
+              {inv.type === 'quote' && inv.status !== 'paid' && (
+                <TouchableOpacity style={[styles.paidBtn, { backgroundColor: '#e6f1fb' }]} onPress={() => markPaid(inv.id)}>
+                  <Text style={[styles.paidBtnText, { color: '#185fa5' }]}>אושרה ✓</Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity style={[styles.paidBtn, { backgroundColor: '#fcebeb' }]} onPress={() => deleteInvoice(inv.id)}>
+                <Text style={[styles.paidBtnText, { color: '#a32d2d' }]}>🗑 מחק</Text>
               </TouchableOpacity>
-            )}
+            </View>
           </View>
         ))}
-        {list.length === 0 && <Text style={styles.empty}>אין חשבוניות עדיין.</Text>}
+
+        {displayList.length === 0 && (
+          <View style={{ alignItems: 'center', marginTop: 50 }}>
+            <Text style={{ fontSize: 40, marginBottom: 10 }}>{activeTab === 'quotes' ? '📋' : '🧾'}</Text>
+            <Text style={{ fontSize: 16, color: '#555', fontWeight: '600' }}>
+              {activeTab === 'quotes' ? 'אין הצעות מחיר עדיין' : 'אין חשבוניות עדיין'}
+            </Text>
+            <Text style={{ fontSize: 13, color: '#888', marginTop: 4 }}>
+              {activeTab === 'quotes' ? 'לחצי "📋 הצעה" להוסיף' : 'לחצי "+ חדש" להוסיף'}
+            </Text>
+          </View>
+        )}
       </ScrollView>
 
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.overlay}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>חשבונית חדשה</Text>
+            <Text style={styles.modalTitle}>
+              {createType === 'quote' ? '📋 הצעת מחיר חדשה' : '🧾 חשבונית חדשה'}
+            </Text>
             <ScrollView>
-              <TextInput style={styles.input} placeholder="שם לקוח *" value={form.clientName} onChangeText={v => setForm({ ...form, clientName: v })} textAlign="right" />
-              <TextInput style={styles.input} placeholder="טלפון לקוח" value={form.clientPhone} onChangeText={v => setForm({ ...form, clientPhone: v })} keyboardType="phone-pad" textAlign="right" />
+              <TextInput style={styles.input} placeholder="שם לקוח *" value={form.clientName}
+                onChangeText={v => setForm({ ...form, clientName: v })} textAlign="right" />
+              <TextInput style={styles.input} placeholder="טלפון לקוח" value={form.clientPhone}
+                onChangeText={v => setForm({ ...form, clientPhone: v })} keyboardType="phone-pad" textAlign="right" />
               <Text style={styles.itemsTitle}>פריטים</Text>
               {form.items.map((item, idx) => (
                 <View key={idx} style={styles.itemRow}>
-                  <TextInput style={[styles.input, { flex: 2 }]} placeholder="תיאור" value={item.description} onChangeText={v => { const items = [...form.items]; items[idx].description = v; setForm({ ...form, items }); }} textAlign="right" />
-                  <TextInput style={[styles.input, { flex: 1, marginRight: 6 }]} placeholder="כמות" value={item.quantity} onChangeText={v => { const items = [...form.items]; items[idx].quantity = v; setForm({ ...form, items }); }} keyboardType="numeric" textAlign="right" />
-                  <TextInput style={[styles.input, { flex: 1, marginRight: 6 }]} placeholder="מחיר" value={item.unitPrice} onChangeText={v => { const items = [...form.items]; items[idx].unitPrice = v; setForm({ ...form, items }); }} keyboardType="numeric" textAlign="right" />
+                  <TextInput style={[styles.input, { flex: 2 }]} placeholder="תיאור" value={item.description}
+                    onChangeText={v => { const items = [...form.items]; items[idx].description = v; setForm({ ...form, items }); }} textAlign="right" />
+                  <TextInput style={[styles.input, { flex: 1, marginRight: 6 }]} placeholder="כמות" value={item.quantity}
+                    onChangeText={v => { const items = [...form.items]; items[idx].quantity = v; setForm({ ...form, items }); }} keyboardType="numeric" textAlign="right" />
+                  <TextInput style={[styles.input, { flex: 1, marginRight: 6 }]} placeholder="מחיר" value={item.unitPrice}
+                    onChangeText={v => { const items = [...form.items]; items[idx].unitPrice = v; setForm({ ...form, items }); }} keyboardType="numeric" textAlign="right" />
                 </View>
               ))}
               <TouchableOpacity onPress={() => setForm({ ...form, items: [...form.items, { description: '', quantity: '1', unitPrice: '' }] })}>
                 <Text style={styles.addItem}>+ הוסף שורה</Text>
               </TouchableOpacity>
-              <TextInput style={styles.input} placeholder="הערות" value={form.notes} onChangeText={v => setForm({ ...form, notes: v })} textAlign="right" />
+              <TextInput style={styles.input} placeholder="הערות" value={form.notes}
+                onChangeText={v => setForm({ ...form, notes: v })} textAlign="right" />
+              {createType === 'invoice' && (
+                <TextInput style={styles.input} placeholder="מע״מ %" value={form.taxPercent}
+                  onChangeText={v => setForm({ ...form, taxPercent: v })} keyboardType="numeric" textAlign="right" />
+              )}
             </ScrollView>
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.btnPrimary} onPress={createInvoice}>
-                <Text style={styles.btnPrimaryText}>צור חשבונית</Text>
+              <TouchableOpacity style={styles.btnPrimary} onPress={createDocument}>
+                <Text style={styles.btnPrimaryText}>
+                  {createType === 'quote' ? 'צור הצעה' : 'צור חשבונית'}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btnSecondary} onPress={() => setModalVisible(false)}>
                 <Text style={styles.btnSecondaryText}>ביטול</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal visible={!!confirmDelete} transparent animationType="fade">
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 30 }}>
+          <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 24 }}>
+            <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 24, color: '#1a1a1a' }}>{confirmDelete?.message}</Text>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <TouchableOpacity style={{ flex: 1, backgroundColor: '#fcebeb', padding: 14, borderRadius: 10, alignItems: 'center' }}
+                onPress={() => { const fn = pendingDeleteFn.current; pendingDeleteFn.current = null; setConfirmDelete(null); fn?.(); }}>
+                <Text style={{ color: '#a32d2d', fontWeight: '600', fontSize: 15 }}>מחק</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ flex: 1, backgroundColor: '#f0f0f0', padding: 14, borderRadius: 10, alignItems: 'center' }}
+                onPress={() => { pendingDeleteFn.current = null; setConfirmDelete(null); }}>
+                <Text style={{ color: '#555', fontSize: 15 }}>ביטול</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -160,7 +241,12 @@ const styles = StyleSheet.create({
   header: { backgroundColor: '#1a6b4a', padding: 20, paddingTop: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#fff' },
   addBtn: { backgroundColor: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 8 },
-  addBtnText: { color: '#fff', fontSize: 14 },
+  addBtnText: { color: '#fff', fontSize: 13 },
+  tabRow: { flexDirection: 'row', backgroundColor: '#fff', borderBottomWidth: 0.5, borderBottomColor: '#e0e0e0' },
+  tab: { flex: 1, padding: 13, alignItems: 'center' },
+  tabActive: { borderBottomWidth: 2, borderBottomColor: '#1a6b4a' },
+  tabText: { fontSize: 13, color: '#888' },
+  tabTextActive: { color: '#1a6b4a', fontWeight: '600' },
   summaryRow: { flexDirection: 'row', padding: 12, gap: 8 },
   summaryCard: { flex: 1, backgroundColor: '#fff', borderRadius: 12, padding: 12, alignItems: 'center' },
   summaryVal: { fontSize: 18, fontWeight: 'bold', color: '#1a6b4a' },
@@ -172,9 +258,9 @@ const styles = StyleSheet.create({
   badgeText: { fontSize: 12, fontWeight: '500' },
   clientName: { fontSize: 16, fontWeight: '600', color: '#1a1a1a', textAlign: 'right' },
   amount: { fontSize: 20, fontWeight: 'bold', color: '#1a1a1a', textAlign: 'right', marginTop: 4 },
-  paidBtn: { marginTop: 10, backgroundColor: '#e8f5ef', padding: 8, borderRadius: 8, alignItems: 'center' },
+  notes: { fontSize: 12, color: '#888', textAlign: 'right', marginTop: 4 },
+  paidBtn: { flex: 1, backgroundColor: '#e8f5ef', padding: 8, borderRadius: 8, alignItems: 'center' },
   paidBtnText: { color: '#1a6b4a', fontSize: 13, fontWeight: '500' },
-  empty: { textAlign: 'center', color: '#888', marginTop: 40, fontSize: 15 },
   overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modal: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 24, maxHeight: '90%' },
   modalTitle: { fontSize: 18, fontWeight: '600', textAlign: 'center', marginBottom: 16, color: '#1a1a1a' },

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     ActivityIndicator,
     Alert,
@@ -19,6 +19,8 @@ export default function MaterialsScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [form, setForm] = useState({ name: '', unit: 'יחידות', quantity: '', minQuantity: '', unitPrice: '', supplier: '' });
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const pendingDeleteFn = useRef(null);
 
   useEffect(() => { loadData(); }, []);
 
@@ -60,6 +62,14 @@ export default function MaterialsScreen() {
     }
   }
 
+  function deleteMaterial(id) {
+    pendingDeleteFn.current = async () => {
+      try { await materials.delete(id); loadData(); }
+      catch (e) { Alert.alert('שגיאה', 'שגיאה במחיקת חומר'); }
+    };
+    setConfirmDelete({ message: 'האם למחוק חומר זה?' });
+  }
+
   if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#1a6b4a" />;
 
   return (
@@ -80,7 +90,12 @@ export default function MaterialsScreen() {
             <View key={m.id} style={[styles.card, isLow && styles.cardLow]}>
               <View style={styles.cardTop}>
                 <Text style={styles.matName}>{m.name}</Text>
-                {isLow && <Text style={styles.lowBadge}>⚠️ מלאי נמוך</Text>}
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  {isLow && <Text style={styles.lowBadge}>⚠️ מלאי נמוך</Text>}
+                  <TouchableOpacity onPress={() => deleteMaterial(m.id)}>
+                    <Text style={{ fontSize: 18, color: '#ccc' }}>🗑</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
               {m.supplier && <Text style={styles.meta}>ספק: {m.supplier}</Text>}
               {m.unitPrice > 0 && <Text style={styles.meta}>מחיר: ₪{m.unitPrice} ל{m.unit}</Text>}
@@ -131,6 +146,24 @@ export default function MaterialsScreen() {
               </TouchableOpacity>
               <TouchableOpacity style={styles.btnSecondary} onPress={() => setModalVisible(false)}>
                 <Text style={styles.btnSecondaryText}>ביטול</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal visible={!!confirmDelete} transparent animationType="fade">
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 30 }}>
+          <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 24 }}>
+            <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 24, color: '#1a1a1a' }}>{confirmDelete?.message}</Text>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <TouchableOpacity style={{ flex: 1, backgroundColor: '#fcebeb', padding: 14, borderRadius: 10, alignItems: 'center' }}
+                onPress={() => { const fn = pendingDeleteFn.current; pendingDeleteFn.current = null; setConfirmDelete(null); fn?.(); }}>
+                <Text style={{ color: '#a32d2d', fontWeight: '600', fontSize: 15 }}>מחק</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ flex: 1, backgroundColor: '#f0f0f0', padding: 14, borderRadius: 10, alignItems: 'center' }}
+                onPress={() => { pendingDeleteFn.current = null; setConfirmDelete(null); }}>
+                <Text style={{ color: '#555', fontSize: 15 }}>ביטול</Text>
               </TouchableOpacity>
             </View>
           </View>
