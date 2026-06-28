@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
   Image,
   Linking,
+  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -15,13 +16,14 @@ import {
 } from 'react-native';
 
 const BASE_URL = 'https://contractor-backend-production.up.railway.app/api/v1';
-const FILE_BASE = 'https://contractor-backend-production.up.railway.app/api/v1';
+const isWeb = Platform.OS === 'web';
 
 export default function PhotosScreen() {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => { loadPhotos(); }, []);
 
@@ -41,28 +43,50 @@ export default function PhotosScreen() {
     }
   }
 
-  async function pickAndUpload() {
-    // בקשת הרשאה לגלריה
+  // --- העלאה במחשב (web) ---
+  async function handleFileChange(e) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i]);
+      }
+      const res = await fetch(`${BASE_URL}/photos/upload`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      if (res.ok) loadPhotos();
+      else Alert.alert('שגיאה', 'לא הצלחנו להעלות');
+    } catch (e) {
+      Alert.alert('שגיאה', 'שגיאה בהעלאה');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  }
+
+  // --- העלאה בטלפון (mobile) ---
+  async function pickAndUploadMobile() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
       Alert.alert('הרשאה נדרשת', 'יש לאשר גישה לתמונות כדי להעלות');
       return;
     }
-
-    // פתיחת הגלריה
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true,
       quality: 0.7,
     });
-
     if (result.canceled) return;
 
     setUploading(true);
     try {
       const token = await AsyncStorage.getItem('token');
       const formData = new FormData();
-
       for (const asset of result.assets) {
         const uriParts = asset.uri.split('.');
         const fileType = uriParts[uriParts.length - 1];
@@ -72,18 +96,13 @@ export default function PhotosScreen() {
           type: `image/${fileType}`,
         });
       }
-
       const res = await fetch(`${BASE_URL}/photos/upload`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
-
-      if (res.ok) {
-        loadPhotos();
-      } else {
-        Alert.alert('שגיאה', 'לא הצלחנו להעלות');
-      }
+      if (res.ok) loadPhotos();
+      else Alert.alert('שגיאה', 'לא הצלחנו להעלות');
     } catch (e) {
       Alert.alert('שגיאה', 'שגיאה בהעלאה');
     } finally {
@@ -91,34 +110,88 @@ export default function PhotosScreen() {
     }
   }
 
-  function deletePhoto(id, filename) {
-    Alert.alert(
-      'מחיקת קובץ',
-      `האם למחוק את "${filename}"?`,
-      [
+  // --- צילום במצלמה (mobile) ---
+  async function takePhotoMobile() {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert('הרשאה נדרשת', 'יש לאשר גישה למצלמה כדי לצלם');
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync({
+      quality: 0.7,
+    });
+    if (result.canceled) return;
+
+    setUploading(true);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const formData = new FormData();
+      const asset = result.assets[0];
+      const uriParts = asset.uri.split('.');
+      const fileType = uriParts[uriParts.length - 1];
+      formData.append('files', {
+        uri: asset.uri,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
+      });
+      const res = await fetch(`${BASE_URL}/photos/upload`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      if (res.ok) loadPhotos();
+      else Alert.alert('שגיאה', 'לא הצלחנו להעלות');
+    } catch (e) {
+      Alert.alert('שגיאה', 'שגיאה בהעלאה');
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  // --- בחירה לפי פלטפורמה ---
+  function handleUploadPress() {
+    if (isWeb) {
+      fileInputRef.current?.click();
+    } else {
+      // בטלפון: לתת בחירה בין גלריה למצלמה
+      Alert.alert('הוספת תמונה', 'בחר מקור', [
+        { text: 'גלריה', onPress: pickAndUploadMobile },
+        { text: 'מצלמה', onPress: takePhotoMobile },
         { text: 'ביטול', style: 'cancel' },
-        {
-          text: 'מחק',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              const token = await AsyncStorage.getItem('token');
-              const res = await fetch(`${BASE_URL}/photos/${id}`, {
-                method: 'DELETE',
-                headers: { Authorization: `Bearer ${token}` },
-              });
-              if (res.ok) {
-                loadPhotos();
-              } else {
-                Alert.alert('שגיאה', 'לא הצלחנו למחוק');
-              }
-            } catch (e) {
-              Alert.alert('שגיאה', 'שגיאה במחיקה');
-            }
-          },
-        },
-      ]
-    );
+      ]);
+    }
+  }
+
+  function deletePhoto(id, filename) {
+    if (isWeb) {
+      const confirmed = window.confirm(`האם למחוק את "${filename}"?`);
+      if (!confirmed) return;
+      doDelete(id);
+    } else {
+      Alert.alert('מחיקת קובץ', `האם למחוק את "${filename}"?`, [
+        { text: 'ביטול', style: 'cancel' },
+        { text: 'מחק', style: 'destructive', onPress: () => doDelete(id) },
+      ]);
+    }
+  }
+
+  async function doDelete(id) {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const res = await fetch(`${BASE_URL}/photos/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) loadPhotos();
+      else Alert.alert('שגיאה', 'לא הצלחנו למחוק');
+    } catch (e) {
+      Alert.alert('שגיאה', 'שגיאה במחיקה');
+    }
+  }
+
+  function openFile(url) {
+    if (isWeb) window.open(url, '_blank');
+    else Linking.openURL(url);
   }
 
   function isPdf(photo) {
@@ -135,10 +208,21 @@ export default function PhotosScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>קבצים ותמונות</Text>
-        <TouchableOpacity style={styles.addBtn} onPress={pickAndUpload} disabled={uploading}>
+        <TouchableOpacity style={styles.addBtn} onPress={handleUploadPress} disabled={uploading}>
           <Text style={styles.addBtnText}>{uploading ? 'מעלה...' : '+ העלה'}</Text>
         </TouchableOpacity>
       </View>
+
+      {isWeb && (
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+        />
+      )}
 
       <ScrollView
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadPhotos(); }} />}
@@ -150,7 +234,7 @@ export default function PhotosScreen() {
               {images.map(photo => (
                 <View key={photo.id} style={styles.photoCard}>
                   <Image
-                    source={{ uri: `${FILE_BASE}${photo.url}` }}
+                    source={{ uri: photo.url }}
                     style={styles.photo}
                     resizeMode="cover"
                   />
@@ -177,7 +261,7 @@ export default function PhotosScreen() {
                 </View>
                 <View style={styles.pdfInfo}>
                   <Text style={styles.pdfName}>{pdf.caption || pdf.filename}</Text>
-                  <TouchableOpacity onPress={() => Linking.openURL(`${FILE_BASE}${pdf.url}`)}>
+                  <TouchableOpacity onPress={() => openFile(pdf.url)}>
                     <Text style={styles.pdfOpen}>פתח קובץ</Text>
                   </TouchableOpacity>
                 </View>
