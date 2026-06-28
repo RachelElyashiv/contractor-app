@@ -21,6 +21,8 @@ export default function MaterialsScreen() {
   const [form, setForm] = useState({ name: '', unit: 'יחידות', quantity: '', minQuantity: '', unitPrice: '', supplier: '' });
   const [confirmDelete, setConfirmDelete] = useState(null);
   const pendingDeleteFn = useRef(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
 
   useEffect(() => { loadData(); }, []);
 
@@ -37,7 +39,9 @@ export default function MaterialsScreen() {
   }
 
   async function createMaterial() {
-    if (!form.name) return Alert.alert('שגיאה', 'מלא שם חומר');
+    if (!form.name) { setFormError('חובה למלא שם חומר'); return; }
+    setFormError('');
+    setSubmitting(true);
     try {
       await materials.create({
         ...form,
@@ -49,7 +53,9 @@ export default function MaterialsScreen() {
       setForm({ name: '', unit: 'יחידות', quantity: '', minQuantity: '', unitPrice: '', supplier: '' });
       loadData();
     } catch (e) {
-      Alert.alert('שגיאה', 'לא הצלחנו להוסיף חומר');
+      setFormError('שגיאה בשרת — נסי שוב');
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -140,11 +146,12 @@ export default function MaterialsScreen() {
                 />
               ))}
             </ScrollView>
+            {formError ? <Text style={{ color: '#a32d2d', textAlign: 'center', marginBottom: 8 }}>{formError}</Text> : null}
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.btnPrimary} onPress={createMaterial}>
-                <Text style={styles.btnPrimaryText}>הוסף חומר</Text>
+              <TouchableOpacity style={[styles.btnPrimary, submitting && { opacity: 0.6 }]} onPress={createMaterial} disabled={submitting}>
+                <Text style={styles.btnPrimaryText}>{submitting ? 'שולח...' : 'הוסף חומר'}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnSecondary} onPress={() => setModalVisible(false)}>
+              <TouchableOpacity style={styles.btnSecondary} onPress={() => { setModalVisible(false); setFormError(''); }}>
                 <Text style={styles.btnSecondaryText}>ביטול</Text>
               </TouchableOpacity>
             </View>
