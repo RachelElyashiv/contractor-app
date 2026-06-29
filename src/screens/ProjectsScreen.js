@@ -129,9 +129,8 @@ export default function ProjectsScreen() {
       const res = await apiFetch(`/photos?projectId=${projectId}`);
       const data = await res.json();
       setProjectFiles(Array.isArray(data) ? data : []);
-    } finally {
-      setFilesLoading(false);
-    }
+    } catch (e) { console.log('loadProjectFiles error:', e); }
+    finally { setFilesLoading(false); }
   }
 
   async function loadProjectMaterials(projectId) {
@@ -158,9 +157,8 @@ export default function ProjectsScreen() {
       const res = await apiFetch(`/photos?apartmentId=${apartmentId}`);
       const data = await res.json();
       setAptFiles(Array.isArray(data) ? data : []);
-    } finally {
-      setAptFilesLoading(false);
-    }
+    } catch (e) { console.log('loadApartmentFiles error:', e); }
+    finally { setAptFilesLoading(false); }
   }
 
   async function loadApartmentMaterials(apartmentId) {
