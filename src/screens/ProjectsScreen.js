@@ -444,7 +444,7 @@ export default function ProjectsScreen() {
           </View>
           <Text style={styles.materialName}>{m.name}</Text>
         </View>
-        {m.supplier && <Text style={styles.materialMeta}>ספק: {m.supplier}</Text>}
+        {!!m.supplier && <Text style={styles.materialMeta}>ספק: {m.supplier}</Text>}
         <Text style={styles.materialMeta}>כמות: {m.quantity} {m.unit}</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
           <TouchableOpacity style={[styles.statusBtn, { backgroundColor: '#e8f5ef' }]} onPress={() => updateDeliveryStatus(m.id, 'arrived_ok', isApt)}>
@@ -877,7 +877,7 @@ export default function ProjectsScreen() {
               <Text style={styles.projName}>{p.name}</Text>
             </View>
             <Text style={styles.client}>לקוח: {p.clientName}</Text>
-            {p.city && <Text style={styles.meta}>📍 {p.city}{p.address ? ` · ${p.address}` : ''}</Text>}
+            {!!p.city && <Text style={styles.meta}>📍 {p.city}{p.address ? ` · ${p.address}` : ''}</Text>}
             {p.budget > 0 && <Text style={styles.meta}>💰 ₪{Number(p.budget).toLocaleString()}</Text>}
             <View style={styles.progressBar}>
               <View style={[styles.progressFill, { width: `${p.progressPercent}%`, backgroundColor: statusColor[p.status] || '#1a6b4a' }]} />

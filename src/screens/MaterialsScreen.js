@@ -103,7 +103,7 @@ export default function MaterialsScreen() {
                   </TouchableOpacity>
                 </View>
               </View>
-              {m.supplier && <Text style={styles.meta}>ספק: {m.supplier}</Text>}
+              {!!m.supplier && <Text style={styles.meta}>ספק: {m.supplier}</Text>}
               {m.unitPrice > 0 && <Text style={styles.meta}>מחיר: ₪{m.unitPrice} ל{m.unit}</Text>}
               <View style={styles.stockRow}>
                 <TouchableOpacity style={styles.stockBtn} onPress={() => adjustStock(m.id, -1)}>
