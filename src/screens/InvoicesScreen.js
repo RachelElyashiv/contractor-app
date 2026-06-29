@@ -82,6 +82,100 @@ export default function InvoicesScreen() {
   const statusColor = { paid: '#1a6b4a', sent: '#185fa5', overdue: '#a32d2d', draft: '#ba7517', cancelled: '#888' };
   const statusLabel = { paid: 'שולם ✓', sent: 'נשלח', overdue: 'איחור', draft: 'טיוטה', cancelled: 'בוטל' };
 
+  function printInvoice(inv) {
+    const typeLabel = inv.type === 'quote' ? 'הצעת מחיר' : 'חשבונית מס';
+    const itemRows = (inv.items || []).map(it => `
+      <tr>
+        <td style="padding:8px;text-align:left">₪${Number(it.total || (it.quantity * it.unitPrice)).toLocaleString()}</td>
+        <td style="padding:8px;text-align:center">${Number(it.unitPrice).toLocaleString()}</td>
+        <td style="padding:8px;text-align:center">${it.quantity}</td>
+        <td style="padding:8px;text-align:right">${it.description}</td>
+      </tr>`).join('');
+    const html = `<!DOCTYPE html><html dir="rtl" lang="he"><head><meta charset="UTF-8">
+<title>${typeLabel} ${inv.invoiceNumber}</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; font-family:Arial,sans-serif; }
+  body { background:#fff; color:#1a1a1a; padding:40px; direction:rtl; }
+  .header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:32px; border-bottom:3px solid #1a6b4a; padding-bottom:20px; }
+  .title { font-size:28px; font-weight:bold; color:#1a6b4a; }
+  .num { font-size:14px; color:#888; margin-top:4px; }
+  .client-box { background:#f9f9f9; border-radius:10px; padding:16px; margin-bottom:24px; }
+  .client-box h3 { font-size:13px; color:#888; margin-bottom:6px; }
+  .client-box p { font-size:15px; font-weight:600; }
+  table { width:100%; border-collapse:collapse; margin-bottom:24px; }
+  thead { background:#1a6b4a; color:#fff; }
+  thead th { padding:10px 8px; font-size:13px; }
+  tbody tr:nth-child(even) { background:#f9f9f9; }
+  tbody td { font-size:14px; border-bottom:1px solid #eee; }
+  .totals { margin-right:auto; width:260px; }
+  .totals tr td { padding:6px 8px; font-size:14px; }
+  .totals tr:last-child td { font-size:16px; font-weight:bold; color:#1a6b4a; border-top:2px solid #1a6b4a; padding-top:10px; }
+  .notes { margin-top:24px; padding:12px; background:#f9f9f9; border-radius:8px; font-size:13px; color:#555; }
+  .footer { margin-top:40px; text-align:center; color:#aaa; font-size:11px; }
+  @media print { body { padding:20px; } }
+</style></head><body>
+<div class="header">
+  <div>
+    <div class="title">${typeLabel}</div>
+    <div class="num">${inv.invoiceNumber} · ${new Date(inv.issueDate || inv.createdAt).toLocaleDateString('he-IL')}</div>
+  </div>
+  <div style="text-align:left">
+    ${inv.status === 'paid' ? '<span style="background:#e8f5ef;color:#1a6b4a;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600">שולם ✓</span>' : ''}
+  </div>
+</div>
+<div class="client-box">
+  <h3>לקוח</h3>
+  <p>${inv.clientName}</p>
+  ${inv.clientPhone ? `<p style="font-size:13px;color:#888;margin-top:4px">${inv.clientPhone}</p>` : ''}
+</div>
+<table>
+  <thead><tr>
+    <th style="text-align:left">סה"כ</th>
+    <th style="text-align:center">מחיר יחידה</th>
+    <th style="text-align:center">כמות</th>
+    <th style="text-align:right">תיאור</th>
+  </tr></thead>
+  <tbody>${itemRows}</tbody>
+</table>
+<table class="totals">
+  <tr><td>סכום לפני מע"מ</td><td style="text-align:left">₪${Number(inv.subtotal||0).toLocaleString()}</td></tr>
+  <tr><td>מע"מ (${inv.taxPercent||17}%)</td><td style="text-align:left">₪${Number(inv.taxAmount||0).toLocaleString()}</td></tr>
+  <tr><td>סה"כ לתשלום</td><td style="text-align:left">₪${Number(inv.total||0).toLocaleString()}</td></tr>
+</table>
+${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
+<div class="footer">נוצר אוטומטית · ${new Date().toLocaleDateString('he-IL')}</div>
+<script>window.onload=()=>window.print();</script>
+</body></html>`;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+  }
+
+  function shareOnWhatsApp(inv) {
+    const typeLabel = inv.type === 'quote' ? 'הצעת מחיר' : 'חשבונית';
+    const itemLines = (inv.items || []).map(it =>
+      `• ${it.description} × ${it.quantity} = ₪${Number(it.total || it.unitPrice * it.quantity).toLocaleString()}`
+    ).join('\n');
+    const msg = [
+      `שלום ${inv.clientName},`,
+      ``,
+      `מצורפת ${typeLabel} מספר ${inv.invoiceNumber}:`,
+      itemLines,
+      ``,
+      `סה"כ לפני מע"מ: ₪${Number(inv.subtotal || 0).toLocaleString()}`,
+      `מע"מ (${inv.taxPercent || 17}%): ₪${Number(inv.taxAmount || 0).toLocaleString()}`,
+      `סה"כ לתשלום: ₪${Number(inv.total || 0).toLocaleString()}`,
+      inv.notes ? `\nהערות: ${inv.notes}` : '',
+    ].filter(l => l !== undefined).join('\n');
+
+    const rawPhone = (inv.clientPhone || '').replace(/\D/g, '');
+    const phone = rawPhone.startsWith('972') ? rawPhone : rawPhone.startsWith('0') ? '972' + rawPhone.slice(1) : '972' + rawPhone;
+    const url = phone.length > 5
+      ? `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`
+      : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  }
+
   const invoiceList = list.filter(i => i.type === 'invoice' || i.type === 'receipt' || !i.type);
   const quoteList = list.filter(i => i.type === 'quote');
 
@@ -146,7 +240,7 @@ export default function InvoicesScreen() {
             <Text style={styles.clientName}>{inv.clientName}</Text>
             <Text style={styles.amount}>₪{Number(inv.total || 0).toLocaleString()}</Text>
             {inv.notes ? <Text style={styles.notes}>{inv.notes}</Text> : null}
-            <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
+            <View style={{ flexDirection: 'row', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
               {inv.status !== 'paid' && inv.type !== 'quote' && (
                 <TouchableOpacity style={styles.paidBtn} onPress={() => markPaid(inv.id)}>
                   <Text style={styles.paidBtnText}>סמן כשולם ✓</Text>
@@ -157,6 +251,12 @@ export default function InvoicesScreen() {
                   <Text style={[styles.paidBtnText, { color: '#185fa5' }]}>אושרה ✓</Text>
                 </TouchableOpacity>
               )}
+              <TouchableOpacity style={[styles.paidBtn, { backgroundColor: '#fff3e0' }]} onPress={() => printInvoice(inv)}>
+                <Text style={[styles.paidBtnText, { color: '#c84b00' }]}>🖨 PDF</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.paidBtn, { backgroundColor: '#e7f7ee' }]} onPress={() => shareOnWhatsApp(inv)}>
+                <Text style={[styles.paidBtnText, { color: '#1a7a3c' }]}>📲 WhatsApp</Text>
+              </TouchableOpacity>
               <TouchableOpacity style={[styles.paidBtn, { backgroundColor: '#fcebeb' }]} onPress={() => deleteInvoice(inv.id)}>
                 <Text style={[styles.paidBtnText, { color: '#a32d2d' }]}>🗑 מחק</Text>
               </TouchableOpacity>

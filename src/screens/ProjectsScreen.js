@@ -75,7 +75,7 @@ export default function ProjectsScreen() {
   const [progressModal, setProgressModal] = useState(false);
   const [progressValue, setProgressValue] = useState('');
 
-  const [form, setForm] = useState({ name: '', clientName: '', clientPhone: '', address: '', city: '', budget: '', apartmentCount: '' });
+  const [form, setForm] = useState({ name: '', clientName: '', clientPhone: '', address: '', city: '', budget: '', apartmentCount: '', endDate: '' });
   const [aptMatError, setAptMatError] = useState('');
   const [aptMatSubmitting, setAptMatSubmitting] = useState(false);
 
@@ -179,10 +179,15 @@ export default function ProjectsScreen() {
   async function createProject() {
     if (!form.name || !form.clientName) return Alert.alert('שגיאה', 'מלא שם פרויקט ולקוח');
     try {
-      const { apartmentCount, ...projectData } = form;
+      const { apartmentCount, endDate, ...projectData } = form;
+      let parsedEndDate = null;
+      if (endDate) {
+        const parts = endDate.split('/');
+        if (parts.length === 3) parsedEndDate = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+      }
       const res = await apiFetch('/projects', {
         method: 'POST',
-        body: JSON.stringify({ ...projectData, budget: Number(projectData.budget) || 0 }),
+        body: JSON.stringify({ ...projectData, budget: Number(projectData.budget) || 0, ...(parsedEndDate ? { endDate: parsedEndDate } : {}) }),
       });
       if (res.ok) {
         const project = await res.json();
@@ -195,7 +200,7 @@ export default function ProjectsScreen() {
           );
         }
         setModalVisible(false);
-        setForm({ name: '', clientName: '', clientPhone: '', address: '', city: '', budget: '', apartmentCount: '' });
+        setForm({ name: '', clientName: '', clientPhone: '', address: '', city: '', budget: '', apartmentCount: '', endDate: '' });
         loadProjects();
       }
     } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו ליצור פרויקט'); }
@@ -943,6 +948,17 @@ export default function ProjectsScreen() {
             <Text style={styles.client}>לקוח: {p.clientName}</Text>
             {!!p.city && <Text style={styles.meta}>📍 {p.city}{p.address ? ` · ${p.address}` : ''}</Text>}
             {p.budget > 0 && <Text style={styles.meta}>💰 ₪{Number(p.budget).toLocaleString()}</Text>}
+            {!!p.endDate && (() => {
+              const due = new Date(p.endDate);
+              const today = new Date(); today.setHours(0,0,0,0);
+              const overdue = due < today && p.status !== 'completed';
+              const daysLeft = Math.ceil((due - today) / 86400000);
+              return (
+                <Text style={[styles.meta, overdue && { color: '#a32d2d', fontWeight: '600' }]}>
+                  {overdue ? `⚠ איחור! היה ל-${due.toLocaleDateString('he-IL')}` : `📅 יעד: ${due.toLocaleDateString('he-IL')}${daysLeft <= 7 ? ` (${daysLeft} ימים)` : ''}`}
+                </Text>
+              );
+            })()}
             <View style={styles.progressBar}>
               <View style={[styles.progressFill, { width: `${p.progressPercent}%`, backgroundColor: statusColor[p.status] || '#1a6b4a' }]} />
             </View>
@@ -979,6 +995,7 @@ export default function ProjectsScreen() {
                 { key: 'address', placeholder: 'כתובת' },
                 { key: 'budget', placeholder: 'תקציב ₪', keyboardType: 'numeric' },
                 { key: 'apartmentCount', placeholder: 'מספר דירות בפרויקט', keyboardType: 'numeric' },
+                { key: 'endDate', placeholder: 'תאריך יעד (DD/MM/YYYY)' },
               ].map(f => (
                 <TextInput key={f.key} style={styles.input} placeholder={f.placeholder} value={form[f.key]}
                   onChangeText={v => setForm({ ...form, [f.key]: v })} keyboardType={f.keyboardType || 'default'} textAlign="right" />

@@ -39,6 +39,7 @@ export const workers = {
     const q = params.toString();
     return api.get(`/workers/attendance/today${q ? '?' + q : ''}`);
   },
+  getMonthly: (year, month) => api.get(`/workers/attendance/monthly?year=${year}&month=${month}`),
   markAttendance: (id, data) => api.post(`/workers/${id}/attendance`, data),
 };
 

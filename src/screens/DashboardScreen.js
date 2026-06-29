@@ -8,7 +8,7 @@ import {
   View
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
-import { invoices, materials, projects, workers } from '../services/api';
+import { expenses, invoices, materials, projects, workers } from '../services/api';
 
 export default function DashboardScreen() {
   const { user, logout } = useAuth();
@@ -16,23 +16,30 @@ export default function DashboardScreen() {
   const [attendance, setAttendance] = useState([]);
   const [lowStock, setLowStock] = useState([]);
   const [invoiceSummary, setInvoiceSummary] = useState(null);
+  const [expenseSummary, setExpenseSummary] = useState(null);
+  const [salaryReport, setSalaryReport] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => { loadData(); }, []);
 
   async function loadData() {
+    const now = new Date();
     try {
-      const [dash, att, stock, inv] = await Promise.all([
+      const [dash, att, stock, inv, exp, sal] = await Promise.all([
         projects.getDashboard(),
         workers.getToday(),
         materials.getLowStock(),
         invoices.getSummary(),
+        expenses.getSummary(),
+        workers.getMonthly(now.getFullYear(), now.getMonth() + 1),
       ]);
       setStats(dash.data);
       setAttendance(att.data);
       setLowStock(stock.data);
       setInvoiceSummary(inv.data);
+      setExpenseSummary(exp.data);
+      setSalaryReport(Array.isArray(sal.data) ? sal.data : []);
     } catch (e) {
       console.log('Dashboard error:', e);
     } finally {
@@ -99,6 +106,38 @@ export default function DashboardScreen() {
         ))}
       </View>
 
+      {/* Monthly report */}
+      {(() => {
+        const monthName = new Date().toLocaleDateString('he-IL', { month: 'long', year: 'numeric' });
+        const totalExpenses = expenseSummary?.total || 0;
+        const totalSalary = salaryReport.reduce((s, r) => s + Number(r.totalPay), 0);
+        const totalCosts = totalExpenses + totalSalary;
+        const pendingIncome = invoiceSummary?.pendingAmount || 0;
+        return (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>📊 דוח חודשי — {monthName}</Text>
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 12 }}>
+              <View style={[styles.monthCard, { backgroundColor: '#fcebeb' }]}>
+                <Text style={styles.monthVal}>₪{Math.round(totalCosts).toLocaleString()}</Text>
+                <Text style={styles.monthLabel}>סה"כ הוצאות</Text>
+              </View>
+              <View style={[styles.monthCard, { backgroundColor: '#e6f1fb' }]}>
+                <Text style={styles.monthVal}>₪{Math.round(pendingIncome).toLocaleString()}</Text>
+                <Text style={styles.monthLabel}>לגבייה</Text>
+              </View>
+            </View>
+            <View style={styles.monthRow}>
+              <Text style={styles.monthRowVal}>₪{Math.round(totalExpenses).toLocaleString()}</Text>
+              <Text style={styles.monthRowLabel}>חומרים והוצאות</Text>
+            </View>
+            <View style={styles.monthRow}>
+              <Text style={styles.monthRowVal}>₪{Math.round(totalSalary).toLocaleString()}</Text>
+              <Text style={styles.monthRowLabel}>שכר עובדים ({salaryReport.reduce((s,r)=>s+r.daysPresent,0)} ימי עבודה)</Text>
+            </View>
+          </View>
+        );
+      })()}
+
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>פרויקטים אחרונים</Text>
         {stats?.projects?.slice(0, 3).map(p => (
@@ -144,4 +183,10 @@ const styles = StyleSheet.create({
   progressBar: { height: 4, backgroundColor: '#eee', borderRadius: 4, marginTop: 6, overflow: 'hidden' },
   progressFill: { height: '100%', backgroundColor: '#1a6b4a', borderRadius: 4 },
   projPct: { fontSize: 13, color: '#1a6b4a', fontWeight: '600', marginRight: 10 },
+  monthCard: { flex: 1, borderRadius: 10, padding: 14, alignItems: 'center' },
+  monthVal: { fontSize: 18, fontWeight: 'bold', color: '#1a1a1a' },
+  monthLabel: { fontSize: 11, color: '#555', marginTop: 3, textAlign: 'center' },
+  monthRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderTopWidth: 0.5, borderTopColor: '#f0f0f0' },
+  monthRowLabel: { fontSize: 13, color: '#555', textAlign: 'right' },
+  monthRowVal: { fontSize: 13, fontWeight: '600', color: '#1a1a1a' },
 });

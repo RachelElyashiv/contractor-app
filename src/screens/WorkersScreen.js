@@ -22,6 +22,10 @@ export default function WorkersScreen() {
   const [form, setForm] = useState({ firstName: '', lastName: '', phone: '', role: '', dailyRate: '' });
   const [confirmDelete, setConfirmDelete] = useState(null);
   const pendingDeleteFn = useRef(null);
+  const [activeTab, setActiveTab] = useState('attendance');
+  const [salaryReport, setSalaryReport] = useState([]);
+  const [salaryMonth, setSalaryMonth] = useState(new Date().getMonth() + 1);
+  const [salaryYear, setSalaryYear] = useState(new Date().getFullYear());
 
   // Filter state
   const [projectsList, setProjectsList] = useState([]);
@@ -32,6 +36,7 @@ export default function WorkersScreen() {
   const [showApartmentFilter, setShowApartmentFilter] = useState(false);
 
   useEffect(() => { loadData(); loadProjects(); }, []);
+  useEffect(() => { loadSalaryReport(); }, [salaryMonth, salaryYear]);
 
   useEffect(() => {
     if (selectedProjectId) {
@@ -46,6 +51,13 @@ export default function WorkersScreen() {
   useEffect(() => {
     loadAttendance();
   }, [selectedProjectId, selectedApartmentId]);
+
+  async function loadSalaryReport() {
+    try {
+      const res = await workers.getMonthly(salaryYear, salaryMonth);
+      setSalaryReport(Array.isArray(res.data) ? res.data : []);
+    } catch (e) { console.log('Salary error:', e); }
+  }
 
   async function loadProjects() {
     try {
@@ -139,6 +151,16 @@ export default function WorkersScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* Tabs */}
+      <View style={{ flexDirection: 'row', backgroundColor: '#fff', borderBottomWidth: 0.5, borderBottomColor: '#e0e0e0' }}>
+        <TouchableOpacity style={[styles.tab, activeTab === 'attendance' && styles.tabActive]} onPress={() => setActiveTab('attendance')}>
+          <Text style={[styles.tabText, activeTab === 'attendance' && styles.tabTextActive]}>✅ נוכחות</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.tab, activeTab === 'salary' && styles.tabActive]} onPress={() => setActiveTab('salary')}>
+          <Text style={[styles.tabText, activeTab === 'salary' && styles.tabTextActive]}>💰 שכר חודשי</Text>
+        </TouchableOpacity>
+      </View>
+
       {/* Filter row */}
       <View style={styles.filterRow}>
         <TouchableOpacity style={[styles.filterBtn, selectedProjectId && styles.filterBtnActive]} onPress={() => setShowProjectFilter(true)}>
@@ -168,6 +190,51 @@ export default function WorkersScreen() {
         </View>
       )}
 
+      {activeTab === 'salary' && (
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={loadSalaryReport} />}>
+          {/* Month picker */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 12, gap: 12 }}>
+            <TouchableOpacity onPress={() => { const d = new Date(salaryYear, salaryMonth - 2); setSalaryMonth(d.getMonth() + 1); setSalaryYear(d.getFullYear()); }}
+              style={{ padding: 8, backgroundColor: '#f0f0f0', borderRadius: 8 }}>
+              <Text style={{ fontSize: 18 }}>‹</Text>
+            </TouchableOpacity>
+            <Text style={{ fontSize: 16, fontWeight: '600', color: '#1a1a1a' }}>
+              {new Date(salaryYear, salaryMonth - 1).toLocaleDateString('he-IL', { month: 'long', year: 'numeric' })}
+            </Text>
+            <TouchableOpacity onPress={() => { const d = new Date(salaryYear, salaryMonth); setSalaryMonth(d.getMonth() + 1); setSalaryYear(d.getFullYear()); }}
+              style={{ padding: 8, backgroundColor: '#f0f0f0', borderRadius: 8 }}>
+              <Text style={{ fontSize: 18 }}>›</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Total */}
+          {salaryReport.length > 0 && (
+            <View style={{ marginHorizontal: 12, marginBottom: 8, backgroundColor: '#1a6b4a', borderRadius: 12, padding: 16 }}>
+              <Text style={{ color: '#fff', fontSize: 13, textAlign: 'right' }}>סה"כ שכר לחודש</Text>
+              <Text style={{ color: '#fff', fontSize: 26, fontWeight: 'bold', textAlign: 'right' }}>
+                ₪{salaryReport.reduce((s, r) => s + Number(r.totalPay), 0).toLocaleString()}
+              </Text>
+            </View>
+          )}
+
+          {salaryReport.map(r => (
+            <View key={r.worker.id} style={[styles.card, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
+              <View style={{ alignItems: 'flex-start' }}>
+                <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#1a6b4a' }}>₪{Number(r.totalPay).toLocaleString()}</Text>
+                <Text style={{ fontSize: 12, color: '#888' }}>{r.daysPresent} ימים × ₪{Number(r.worker.dailyRate).toLocaleString()}</Text>
+              </View>
+              <View style={{ alignItems: 'flex-end' }}>
+                <Text style={styles.workerName}>{r.worker.firstName} {r.worker.lastName}</Text>
+                <Text style={styles.workerRole}>{r.worker.role || 'פועל'}</Text>
+                <Text style={{ fontSize: 11, color: '#aaa' }}>{r.totalHours} שעות</Text>
+              </View>
+            </View>
+          ))}
+          {salaryReport.length === 0 && <Text style={styles.empty}>אין נתוני נוכחות לחודש זה</Text>}
+        </ScrollView>
+      )}
+
+      {activeTab === 'attendance' && (
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }} />}>
         <Text style={styles.sectionTitle}>נוכחות היום</Text>
         {attendance.map(w => {
@@ -214,6 +281,7 @@ export default function WorkersScreen() {
         })}
         {attendance.length === 0 && <Text style={styles.empty}>אין עובדים עדיין. לחץ + הוסף.</Text>}
       </ScrollView>
+      )}
 
       {/* Project filter modal */}
       <Modal visible={showProjectFilter} animationType="slide" transparent>
@@ -358,4 +426,8 @@ const styles = StyleSheet.create({
   filterOption: { padding: 14, borderBottomWidth: 0.5, borderBottomColor: '#eee' },
   filterOptionActive: { backgroundColor: '#e8f5ef' },
   filterOptionText: { fontSize: 15, color: '#333', textAlign: 'right' },
+  tab: { flex: 1, paddingVertical: 12, alignItems: 'center' },
+  tabActive: { borderBottomWidth: 2, borderBottomColor: '#1a6b4a' },
+  tabText: { fontSize: 13, color: '#888' },
+  tabTextActive: { color: '#1a6b4a', fontWeight: '600' },
 });
