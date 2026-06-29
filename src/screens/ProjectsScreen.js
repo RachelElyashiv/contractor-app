@@ -75,6 +75,8 @@ export default function ProjectsScreen() {
   const [progressValue, setProgressValue] = useState('');
 
   const [form, setForm] = useState({ name: '', clientName: '', clientPhone: '', address: '', city: '', budget: '', apartmentCount: '' });
+  const [aptMatError, setAptMatError] = useState('');
+  const [aptMatSubmitting, setAptMatSubmitting] = useState(false);
 
   // Add worker from apartment
   const [addWorkerModal, setAddWorkerModal] = useState(false);
@@ -216,7 +218,9 @@ export default function ProjectsScreen() {
   }
 
   async function addAptMaterial() {
-    if (!aptMatForm.name) return Alert.alert('שגיאה', 'מלא שם חומר');
+    if (!aptMatForm.name) { setAptMatError('חובה למלא שם חומר'); return; }
+    setAptMatError('');
+    setAptMatSubmitting(true);
     try {
       const res = await apiFetch('/materials', {
         method: 'POST',
@@ -232,8 +236,12 @@ export default function ProjectsScreen() {
         setAddAptMaterialModal(false);
         setAptMatForm({ name: '', unit: 'יחידות', quantity: '', supplier: '' });
         loadApartmentMaterials(selectedApartment.id);
+      } else {
+        const body = await res.json().catch(() => ({}));
+        setAptMatError(body?.message || `שגיאה ${res.status}`);
       }
-    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו להוסיף חומר'); }
+    } catch (e) { setAptMatError('אין חיבור לשרת'); }
+    finally { setAptMatSubmitting(false); }
   }
 
   async function createApartment() {
@@ -593,11 +601,12 @@ export default function ProjectsScreen() {
                     <TextInput key={f.key} style={styles.input} placeholder={f.placeholder} value={aptMatForm[f.key]}
                       onChangeText={v => setAptMatForm({ ...aptMatForm, [f.key]: v })} keyboardType={f.keyboardType || 'default'} textAlign="right" />
                   ))}
+                  {aptMatError ? <Text style={{ color: '#a32d2d', textAlign: 'center', marginBottom: 8 }}>{aptMatError}</Text> : null}
                   <View style={styles.modalActions}>
-                    <TouchableOpacity style={styles.btnPrimary} onPress={addAptMaterial}>
-                      <Text style={styles.btnPrimaryText}>הוסף</Text>
+                    <TouchableOpacity style={[styles.btnPrimary, aptMatSubmitting && { opacity: 0.6 }]} onPress={addAptMaterial} disabled={aptMatSubmitting}>
+                      <Text style={styles.btnPrimaryText}>{aptMatSubmitting ? 'שולח...' : 'הוסף'}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.btnSecondary} onPress={() => setAddAptMaterialModal(false)}>
+                    <TouchableOpacity style={styles.btnSecondary} onPress={() => { setAddAptMaterialModal(false); setAptMatError(''); }}>
                       <Text style={styles.btnSecondaryText}>ביטול</Text>
                     </TouchableOpacity>
                   </View>
