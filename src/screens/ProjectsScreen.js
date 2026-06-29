@@ -399,7 +399,7 @@ export default function ProjectsScreen() {
   function uploadMaterialFile(materialId, type, isApt = false) {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = type === 'pdf' ? '.pdf' : 'image/*';
+    input.accept = 'image/*,.pdf';
     document.body.appendChild(input);
     input.onchange = async (e) => {
       const files = e.target.files;
@@ -428,9 +428,11 @@ export default function ProjectsScreen() {
           });
           if (isApt) loadApartmentMaterials(selectedApartment.id);
           else loadProjectMaterials(selectedProject.id);
+        } else {
+          setUploadError('שגיאה: לא התקבל קישור מהשרת');
         }
       } catch (err) {
-        setUploadError('שגיאה בהעלאה');
+        setUploadError('שגיאה בהעלאה — בדקי חיבור');
       } finally {
         setUploading(false);
       }
