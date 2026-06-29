@@ -399,7 +399,7 @@ export default function ProjectsScreen() {
   function uploadMaterialFile(materialId, type, isApt = false) {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = type === 'image' ? 'image/*' : 'image/*,.pdf';
+    if (type === 'image') input.accept = 'image/*';
     document.body.appendChild(input);
     input.onchange = async (e) => {
       const files = e.target.files;
