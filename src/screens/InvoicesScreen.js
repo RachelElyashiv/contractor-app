@@ -57,7 +57,10 @@ export default function InvoicesScreen() {
       setModalVisible(false);
       setForm({ clientName: '', clientPhone: '', notes: '', taxPercent: '17', items: [{ description: '', quantity: '1', unitPrice: '' }] });
       loadData();
-    } catch (e) { setFormError('שגיאה בשרת — נסי שוב'); }
+    } catch (e) {
+      const msg = e?.response?.data?.message || e?.message || 'שגיאה בשרת';
+      setFormError(Array.isArray(msg) ? msg.join(', ') : String(msg));
+    }
     finally { setSubmitting(false); }
   }
 
