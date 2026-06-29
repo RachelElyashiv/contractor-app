@@ -47,8 +47,6 @@ export default function ProjectsScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
-  const fileInputRef = useRef(null);
-  const uploadContextRef = useRef(null);
 
   // Project detail state
   const [selectedProject, setSelectedProject] = useState(null);
@@ -343,52 +341,61 @@ export default function ProjectsScreen() {
     } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו לעדכן'); }
   }
 
-  async function handleFileChange(e) {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    const ctx = uploadContextRef.current;
-    if (!ctx) return;
-    if (fileInputRef.current) fileInputRef.current.value = '';
+  async function doUpload(files, projectId, apartmentId, caption) {
     setUploading(true);
     setUploadError('');
     try {
       const token = await getToken();
       const formData = new FormData();
       for (let i = 0; i < files.length; i++) formData.append('files', files[i]);
-      if (ctx.projectId) formData.append('projectId', ctx.projectId);
-      if (ctx.apartmentId) formData.append('apartmentId', ctx.apartmentId);
-      formData.append('caption', ctx.caption || '');
+      if (projectId) formData.append('projectId', projectId);
+      if (apartmentId) formData.append('apartmentId', apartmentId);
+      formData.append('caption', caption || '');
       const res = await fetch(`${BASE_URL}/photos/upload`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
-      if (res.ok) {
-        if (ctx.apartmentId) loadApartmentFiles(ctx.apartmentId);
-        else loadProjectFiles(ctx.projectId);
-      } else {
-        setUploadError(`שגיאה בהעלאה (${res.status})`);
-      }
-    } catch (err) { setUploadError('שגיאה בהעלאה — בדקי חיבור'); }
-    finally { setUploading(false); }
+      if (!res.ok) setUploadError(`שגיאה בהעלאה (${res.status})`);
+      return res.ok;
+    } catch (err) {
+      setUploadError('שגיאה בהעלאה — בדקי חיבור');
+      return false;
+    } finally {
+      setUploading(false);
+    }
   }
 
   function uploadToProject(projectId, type) {
-    uploadContextRef.current = { projectId, caption: type === 'pdf' ? 'PDF' : '' };
-    if (fileInputRef.current) {
-      fileInputRef.current.accept = type === 'pdf' ? '.pdf' : 'image/*';
-      fileInputRef.current.multiple = type !== 'pdf';
-      fileInputRef.current.click();
-    }
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = type === 'pdf' ? '.pdf' : 'image/*';
+    input.multiple = type !== 'pdf';
+    document.body.appendChild(input);
+    input.onchange = async (e) => {
+      const files = e.target.files;
+      document.body.removeChild(input);
+      if (!files || files.length === 0) return;
+      const ok = await doUpload(files, projectId, null, type === 'pdf' ? 'PDF' : '');
+      if (ok) loadProjectFiles(projectId);
+    };
+    input.click();
   }
 
   function uploadToApartment(apartmentId, type) {
-    uploadContextRef.current = { projectId: selectedProject.id, apartmentId, caption: type === 'pdf' ? 'תוכנית PDF' : 'תוכנית דירה' };
-    if (fileInputRef.current) {
-      fileInputRef.current.accept = type === 'pdf' ? '.pdf' : 'image/*';
-      fileInputRef.current.multiple = type !== 'pdf';
-      fileInputRef.current.click();
-    }
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = type === 'pdf' ? '.pdf' : 'image/*';
+    input.multiple = type !== 'pdf';
+    document.body.appendChild(input);
+    input.onchange = async (e) => {
+      const files = e.target.files;
+      document.body.removeChild(input);
+      if (!files || files.length === 0) return;
+      const ok = await doUpload(files, selectedProject.id, apartmentId, type === 'pdf' ? 'תוכנית PDF' : 'תוכנית דירה');
+      if (ok) loadApartmentFiles(apartmentId);
+    };
+    input.click();
   }
 
   function deleteFile(id, isApt = false) {
@@ -694,7 +701,6 @@ export default function ProjectsScreen() {
             </View>
           </View>
         </Modal>
-        <input ref={fileInputRef} type="file" onChange={handleFileChange} style={{ display: 'none' }} />
         {confirmModalJsx}
       </View>
     );
@@ -841,7 +847,6 @@ export default function ProjectsScreen() {
             </Modal>
           </View>
         )}
-        <input ref={fileInputRef} type="file" onChange={handleFileChange} style={{ display: 'none' }} />
         {confirmModalJsx}
       </View>
     );
