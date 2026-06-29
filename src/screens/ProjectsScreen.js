@@ -399,7 +399,7 @@ export default function ProjectsScreen() {
   function uploadMaterialFile(materialId, type, isApt = false) {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = 'image/*,.pdf';
+    input.accept = type === 'image' ? 'image/*' : 'image/*,.pdf';
     document.body.appendChild(input);
     input.onchange = async (e) => {
       const files = e.target.files;
@@ -412,7 +412,7 @@ export default function ProjectsScreen() {
         const formData = new FormData();
         formData.append('files', files[0]);
         if (selectedProject?.id) formData.append('projectId', selectedProject.id);
-        formData.append('caption', type === 'pdf' ? 'תעודת משלוח' : 'תמונת משלוח');
+        formData.append('caption', type === 'image' ? 'תמונת משלוח' : 'תעודת משלוח');
         const uploadRes = await fetch(`${BASE_URL}/photos/upload`, {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
@@ -422,9 +422,10 @@ export default function ProjectsScreen() {
         const uploaded = await uploadRes.json();
         const url = uploaded[0]?.url;
         if (url) {
+          const field = type === 'image' ? 'deliveryImageUrl' : 'imageUrl';
           await apiFetch(`/materials/${materialId}`, {
             method: 'PATCH',
-            body: JSON.stringify({ deliveryImageUrl: url }),
+            body: JSON.stringify({ [field]: url }),
           });
           if (isApt) loadApartmentMaterials(selectedApartment.id);
           else loadProjectMaterials(selectedProject.id);
@@ -501,12 +502,21 @@ export default function ProjectsScreen() {
           </TouchableOpacity>
         </View>
         {!!m.deliveryImageUrl && (
-          m.deliveryImageUrl.toLowerCase().includes('.pdf') || m.deliveryImageUrl.includes('/raw/') ? (
-            <TouchableOpacity onPress={() => window.open(m.deliveryImageUrl, '_blank')} style={{ marginTop: 8 }}>
-              <Text style={{ color: '#185fa5', fontSize: 13, textAlign: 'right' }}>📄 פתח תעודת משלוח ←</Text>
+          <View style={{ marginTop: 8 }}>
+            <Text style={{ fontSize: 11, color: '#888', textAlign: 'right', marginBottom: 4 }}>📸 תמונת משלוח</Text>
+            <Image source={{ uri: m.deliveryImageUrl }} style={{ width: '100%', height: 160, borderRadius: 8 }} resizeMode="cover" />
+          </View>
+        )}
+        {!!m.imageUrl && (
+          m.imageUrl.toLowerCase().includes('.pdf') || m.imageUrl.includes('/raw/') ? (
+            <TouchableOpacity onPress={() => window.open(m.imageUrl, '_blank')} style={{ marginTop: 8, padding: 10, backgroundColor: '#f5f0ff', borderRadius: 8 }}>
+              <Text style={{ color: '#6b35a0', fontSize: 13, textAlign: 'right' }}>📄 פתח תעודת משלוח ←</Text>
             </TouchableOpacity>
           ) : (
-            <Image source={{ uri: m.deliveryImageUrl }} style={{ width: '100%', height: 160, borderRadius: 8, marginTop: 8 }} resizeMode="cover" />
+            <View style={{ marginTop: 8 }}>
+              <Text style={{ fontSize: 11, color: '#888', textAlign: 'right', marginBottom: 4 }}>📄 תעודת משלוח</Text>
+              <Image source={{ uri: m.imageUrl }} style={{ width: '100%', height: 160, borderRadius: 8 }} resizeMode="cover" />
+            </View>
           )
         )}
       </View>
