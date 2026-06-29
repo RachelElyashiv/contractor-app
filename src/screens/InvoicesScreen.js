@@ -24,6 +24,8 @@ export default function InvoicesScreen() {
   const [form, setForm] = useState({ clientName: '', clientPhone: '', notes: '', taxPercent: '17', items: [{ description: '', quantity: '1', unitPrice: '' }] });
   const [confirmDelete, setConfirmDelete] = useState(null);
   const pendingDeleteFn = useRef(null);
+  const [formError, setFormError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => { loadData(); }, []);
 
@@ -37,7 +39,9 @@ export default function InvoicesScreen() {
   }
 
   async function createDocument() {
-    if (!form.clientName) return Alert.alert('שגיאה', 'מלא שם לקוח');
+    if (!form.clientName) { setFormError('חובה למלא שם לקוח'); return; }
+    setFormError('');
+    setSubmitting(true);
     try {
       await invoices.create({
         ...form,
@@ -53,7 +57,8 @@ export default function InvoicesScreen() {
       setModalVisible(false);
       setForm({ clientName: '', clientPhone: '', notes: '', taxPercent: '17', items: [{ description: '', quantity: '1', unitPrice: '' }] });
       loadData();
-    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו ליצור מסמך'); }
+    } catch (e) { setFormError('שגיאה בשרת — נסי שוב'); }
+    finally { setSubmitting(false); }
   }
 
   async function markPaid(id) {
@@ -201,13 +206,14 @@ export default function InvoicesScreen() {
                   onChangeText={v => setForm({ ...form, taxPercent: v })} keyboardType="numeric" textAlign="right" />
               )}
             </ScrollView>
+            {!!formError && <Text style={{ color: '#a32d2d', textAlign: 'center', marginBottom: 8 }}>{formError}</Text>}
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.btnPrimary} onPress={createDocument}>
+              <TouchableOpacity style={[styles.btnPrimary, submitting && { opacity: 0.6 }]} onPress={createDocument} disabled={submitting}>
                 <Text style={styles.btnPrimaryText}>
-                  {createType === 'quote' ? 'צור הצעה' : 'צור חשבונית'}
+                  {submitting ? 'שולח...' : createType === 'quote' ? 'צור הצעה' : 'צור חשבונית'}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnSecondary} onPress={() => setModalVisible(false)}>
+              <TouchableOpacity style={styles.btnSecondary} onPress={() => { setModalVisible(false); setFormError(''); }}>
                 <Text style={styles.btnSecondaryText}>ביטול</Text>
               </TouchableOpacity>
             </View>

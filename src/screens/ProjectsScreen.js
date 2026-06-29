@@ -46,6 +46,9 @@ export default function ProjectsScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const fileInputRef = useRef(null);
+  const uploadContextRef = useRef(null);
 
   // Project detail state
   const [selectedProject, setSelectedProject] = useState(null);
@@ -340,69 +343,52 @@ export default function ProjectsScreen() {
     } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו לעדכן'); }
   }
 
+  async function handleFileChange(e) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    const ctx = uploadContextRef.current;
+    if (!ctx) return;
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    setUploading(true);
+    setUploadError('');
+    try {
+      const token = await getToken();
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) formData.append('files', files[i]);
+      if (ctx.projectId) formData.append('projectId', ctx.projectId);
+      if (ctx.apartmentId) formData.append('apartmentId', ctx.apartmentId);
+      formData.append('caption', ctx.caption || '');
+      const res = await fetch(`${BASE_URL}/photos/upload`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      if (res.ok) {
+        if (ctx.apartmentId) loadApartmentFiles(ctx.apartmentId);
+        else loadProjectFiles(ctx.projectId);
+      } else {
+        setUploadError(`שגיאה בהעלאה (${res.status})`);
+      }
+    } catch (err) { setUploadError('שגיאה בהעלאה — בדקי חיבור'); }
+    finally { setUploading(false); }
+  }
+
   function uploadToProject(projectId, type) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = type === 'pdf' ? '.pdf' : 'image/*';
-    input.multiple = type !== 'pdf';
-    document.body.appendChild(input);
-    input.onchange = async (e) => {
-      const files = e.target.files;
-      if (!files || files.length === 0) return;
-      document.body.removeChild(input);
-      setUploading(true);
-      try {
-        const token = await getToken();
-        const formData = new FormData();
-        for (let i = 0; i < files.length; i++) formData.append('files', files[i]);
-        formData.append('projectId', projectId);
-        formData.append('caption', type === 'pdf' ? `PDF - ${files[0].name}` : '');
-        const res = await fetch(`${BASE_URL}/photos/upload`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-        });
-        if (res.ok) {
-          Alert.alert('הצלחה', 'הקבצים הועלו!');
-          loadProjectFiles(projectId);
-        }
-      } catch (err) { Alert.alert('שגיאה', 'שגיאה בהעלאה'); }
-      finally { setUploading(false); }
-    };
-    input.click();
+    uploadContextRef.current = { projectId, caption: type === 'pdf' ? 'PDF' : '' };
+    if (fileInputRef.current) {
+      fileInputRef.current.accept = type === 'pdf' ? '.pdf' : 'image/*';
+      fileInputRef.current.multiple = type !== 'pdf';
+      fileInputRef.current.click();
+    }
   }
 
   function uploadToApartment(apartmentId, type) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = type === 'pdf' ? '.pdf' : 'image/*';
-    input.multiple = type !== 'pdf';
-    document.body.appendChild(input);
-    input.onchange = async (e) => {
-      const files = e.target.files;
-      if (!files || files.length === 0) return;
-      document.body.removeChild(input);
-      setUploading(true);
-      try {
-        const token = await getToken();
-        const formData = new FormData();
-        for (let i = 0; i < files.length; i++) formData.append('files', files[i]);
-        formData.append('apartmentId', apartmentId);
-        formData.append('projectId', selectedProject.id);
-        formData.append('caption', type === 'pdf' ? `תוכנית PDF - ${files[0].name}` : 'תוכנית דירה');
-        const res = await fetch(`${BASE_URL}/photos/upload`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
-        });
-        if (res.ok) {
-          Alert.alert('הצלחה', 'הקבצים הועלו!');
-          loadApartmentFiles(apartmentId);
-        }
-      } catch (err) { Alert.alert('שגיאה', 'שגיאה בהעלאה'); }
-      finally { setUploading(false); }
-    };
-    input.click();
+    uploadContextRef.current = { projectId: selectedProject.id, apartmentId, caption: type === 'pdf' ? 'תוכנית PDF' : 'תוכנית דירה' };
+    if (fileInputRef.current) {
+      fileInputRef.current.accept = type === 'pdf' ? '.pdf' : 'image/*';
+      fileInputRef.current.multiple = type !== 'pdf';
+      fileInputRef.current.click();
+    }
   }
 
   function deleteFile(id, isApt = false) {
@@ -562,12 +548,13 @@ export default function ProjectsScreen() {
           <View style={{ flex: 1 }}>
             <View style={styles.uploadRow}>
               <TouchableOpacity style={styles.uploadBtn} onPress={() => uploadToApartment(selectedApartment.id, 'image')} disabled={uploading}>
-                <Text style={styles.uploadBtnText}>📸 תמונות</Text>
+                <Text style={styles.uploadBtnText}>{uploading ? 'מעלה...' : '📸 תמונות'}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.uploadBtn, { backgroundColor: '#fcebeb' }]} onPress={() => uploadToApartment(selectedApartment.id, 'pdf')} disabled={uploading}>
                 <Text style={[styles.uploadBtnText, { color: '#a32d2d' }]}>📄 תוכנית PDF</Text>
               </TouchableOpacity>
             </View>
+            {!!uploadError && <Text style={{ color: '#a32d2d', textAlign: 'center', padding: 8 }}>{uploadError}</Text>}
             {aptFilesLoading ? <ActivityIndicator style={{ marginTop: 40 }} color="#1a6b4a" /> : renderFileGallery(aptFiles, true)}
           </View>
         )}
@@ -707,6 +694,7 @@ export default function ProjectsScreen() {
             </View>
           </View>
         </Modal>
+        <input ref={fileInputRef} type="file" onChange={handleFileChange} style={{ display: 'none' }} />
         {confirmModalJsx}
       </View>
     );
@@ -735,7 +723,7 @@ export default function ProjectsScreen() {
           <View style={{ flex: 1 }}>
             <View style={styles.uploadRow}>
               <TouchableOpacity style={styles.uploadBtn} onPress={() => uploadToProject(selectedProject.id, 'image')} disabled={uploading}>
-                <Text style={styles.uploadBtnText}>📸 תמונות</Text>
+                <Text style={styles.uploadBtnText}>{uploading ? 'מעלה...' : '📸 תמונות'}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.uploadBtn, { backgroundColor: '#fcebeb' }]} onPress={() => uploadToProject(selectedProject.id, 'pdf')} disabled={uploading}>
                 <Text style={[styles.uploadBtnText, { color: '#a32d2d' }]}>📄 PDF</Text>
@@ -744,6 +732,7 @@ export default function ProjectsScreen() {
                 <Text style={[styles.uploadBtnText, { color: '#185fa5' }]}>📲 דוח</Text>
               </TouchableOpacity>
             </View>
+            {!!uploadError && <Text style={{ color: '#a32d2d', textAlign: 'center', padding: 8 }}>{uploadError}</Text>}
             {filesLoading ? <ActivityIndicator style={{ marginTop: 40 }} color="#1a6b4a" /> : renderFileGallery(projectFiles, false)}
           </View>
         )}
@@ -852,6 +841,7 @@ export default function ProjectsScreen() {
             </Modal>
           </View>
         )}
+        <input ref={fileInputRef} type="file" onChange={handleFileChange} style={{ display: 'none' }} />
         {confirmModalJsx}
       </View>
     );
@@ -931,6 +921,7 @@ export default function ProjectsScreen() {
           </View>
         </View>
       </Modal>
+      <input ref={fileInputRef} type="file" onChange={handleFileChange} style={{ display: 'none' }} />
       {confirmModalJsx}
     </View>
   );

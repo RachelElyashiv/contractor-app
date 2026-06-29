@@ -31,7 +31,14 @@ export const workers = {
   getAll: () => api.get('/workers'),
   create: (data) => api.post('/workers', data),
   update: (id, data) => api.patch(`/workers/${id}`, data),
-  getToday: () => api.get('/workers/attendance/today'),
+  delete: (id) => api.delete(`/workers/${id}`),
+  getToday: (projectId, apartmentId) => {
+    const params = new URLSearchParams();
+    if (projectId) params.append('projectId', projectId);
+    if (apartmentId) params.append('apartmentId', apartmentId);
+    const q = params.toString();
+    return api.get(`/workers/attendance/today${q ? '?' + q : ''}`);
+  },
   markAttendance: (id, data) => api.post(`/workers/${id}/attendance`, data),
 };
 
@@ -40,6 +47,7 @@ export const materials = {
   getLowStock: () => api.get('/materials/low-stock'),
   create: (data) => api.post('/materials', data),
   update: (id, data) => api.patch(`/materials/${id}`, data),
+  delete: (id) => api.delete(`/materials/${id}`),
   adjust: (id, delta) => api.post(`/materials/${id}/adjust`, { delta }),
 };
 
@@ -48,12 +56,20 @@ export const invoices = {
   getSummary: () => api.get('/invoices/summary'),
   create: (data) => api.post('/invoices', data),
   markPaid: (id) => api.post(`/invoices/${id}/mark-paid`),
+  delete: (id) => api.delete(`/invoices/${id}`),
 };
 
 export const expenses = {
   getAll: () => api.get('/expenses'),
   getSummary: () => api.get('/expenses/summary'),
   create: (data) => api.post('/expenses', data),
+};
+
+export const apartments = {
+  getByProject: (projectId) => api.get(`/apartments?projectId=${projectId}`),
+  create: (data) => api.post('/apartments', data),
+  update: (id, data) => api.patch(`/apartments/${id}`, data),
+  delete: (id) => api.delete(`/apartments/${id}`),
 };
 
 export default api;
