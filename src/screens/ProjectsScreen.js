@@ -396,6 +396,48 @@ export default function ProjectsScreen() {
     input.click();
   }
 
+  function uploadMaterialFile(materialId, type, isApt = false) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = type === 'pdf' ? '.pdf' : 'image/*';
+    document.body.appendChild(input);
+    input.onchange = async (e) => {
+      const files = e.target.files;
+      document.body.removeChild(input);
+      if (!files || files.length === 0) return;
+      setUploading(true);
+      setUploadError('');
+      try {
+        const token = await getToken();
+        const formData = new FormData();
+        formData.append('files', files[0]);
+        if (selectedProject?.id) formData.append('projectId', selectedProject.id);
+        formData.append('caption', type === 'pdf' ? 'תעודת משלוח' : 'תמונת משלוח');
+        const uploadRes = await fetch(`${BASE_URL}/photos/upload`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
+        if (!uploadRes.ok) { setUploadError(`שגיאה ${uploadRes.status}`); return; }
+        const uploaded = await uploadRes.json();
+        const url = uploaded[0]?.url;
+        if (url) {
+          await apiFetch(`/materials/${materialId}`, {
+            method: 'PATCH',
+            body: JSON.stringify({ deliveryImageUrl: url }),
+          });
+          if (isApt) loadApartmentMaterials(selectedApartment.id);
+          else loadProjectMaterials(selectedProject.id);
+        }
+      } catch (err) {
+        setUploadError('שגיאה בהעלאה');
+      } finally {
+        setUploading(false);
+      }
+    };
+    input.click();
+  }
+
   function deleteFile(id, isApt = false) {
     askDelete('האם למחוק קובץ זה?', async () => {
       try {
@@ -448,6 +490,23 @@ export default function ProjectsScreen() {
             <Text style={{ color: '#555', fontSize: 12 }}>✕ לא הגיע</Text>
           </TouchableOpacity>
         </View>
+        <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
+          <TouchableOpacity style={[styles.statusBtn, { backgroundColor: '#e6f1fb', flex: 1 }]} onPress={() => uploadMaterialFile(m.id, 'image', isApt)}>
+            <Text style={{ color: '#185fa5', fontSize: 12, textAlign: 'center' }}>📸 תמונת משלוח</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.statusBtn, { backgroundColor: '#f5f0ff', flex: 1 }]} onPress={() => uploadMaterialFile(m.id, 'pdf', isApt)}>
+            <Text style={{ color: '#6b35a0', fontSize: 12, textAlign: 'center' }}>📄 תעודת משלוח</Text>
+          </TouchableOpacity>
+        </View>
+        {!!m.deliveryImageUrl && (
+          m.deliveryImageUrl.toLowerCase().includes('.pdf') || m.deliveryImageUrl.includes('/raw/') ? (
+            <TouchableOpacity onPress={() => window.open(m.deliveryImageUrl, '_blank')} style={{ marginTop: 8 }}>
+              <Text style={{ color: '#185fa5', fontSize: 13, textAlign: 'right' }}>📄 פתח תעודת משלוח ←</Text>
+            </TouchableOpacity>
+          ) : (
+            <Image source={{ uri: m.deliveryImageUrl }} style={{ width: '100%', height: 160, borderRadius: 8, marginTop: 8 }} resizeMode="cover" />
+          )
+        )}
       </View>
     );
   }
