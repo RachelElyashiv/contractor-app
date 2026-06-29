@@ -924,7 +924,6 @@ export default function ProjectsScreen() {
           </View>
         </View>
       </Modal>
-      <input ref={fileInputRef} type="file" onChange={handleFileChange} style={{ display: 'none' }} />
       {confirmModalJsx}
     </View>
   );
