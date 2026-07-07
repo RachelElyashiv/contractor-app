@@ -18,6 +18,7 @@ export default function DashboardScreen({ onNavigate }) {
   const [invoiceSummary, setInvoiceSummary] = useState(null);
   const [expenseSummary, setExpenseSummary] = useState(null);
   const [salaryReport, setSalaryReport] = useState([]);
+  const [materialsCost, setMaterialsCost] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -26,13 +27,14 @@ export default function DashboardScreen({ onNavigate }) {
   async function loadData() {
     const now = new Date();
     try {
-      const [dash, att, stock, inv, exp, sal] = await Promise.all([
+      const [dash, att, stock, inv, exp, sal, mats] = await Promise.all([
         projects.getDashboard(),
         workers.getToday(),
         materials.getLowStock(),
         invoices.getSummary(),
         expenses.getSummary(),
         workers.getMonthly(now.getFullYear(), now.getMonth() + 1),
+        materials.getAll(),
       ]);
       setStats(dash.data);
       setAttendance(att.data);
@@ -40,6 +42,8 @@ export default function DashboardScreen({ onNavigate }) {
       setInvoiceSummary(inv.data);
       setExpenseSummary(exp.data);
       setSalaryReport(Array.isArray(sal.data) ? sal.data : []);
+      const matList = Array.isArray(mats.data) ? mats.data : [];
+      setMaterialsCost(matList.reduce((s, m) => s + (Number(m.quantity) || 0) * (Number(m.unitPrice) || 0), 0));
     } catch (e) {
       console.log('Dashboard error:', e);
     } finally {
@@ -125,7 +129,7 @@ export default function DashboardScreen({ onNavigate }) {
         const monthName = new Date().toLocaleDateString('he-IL', { month: 'long', year: 'numeric' });
         const totalExpenses = expenseSummary?.total || 0;
         const totalSalary = salaryReport.reduce((s, r) => s + Number(r.totalPay), 0);
-        const totalCosts = totalExpenses + totalSalary;
+        const totalCosts = totalExpenses + totalSalary + materialsCost;
         const pendingIncome = invoiceSummary?.pendingAmount || 0;
         return (
           <View style={styles.section}>
@@ -141,8 +145,12 @@ export default function DashboardScreen({ onNavigate }) {
               </View>
             </View>
             <View style={styles.monthRow}>
+              <Text style={styles.monthRowVal}>₪{Math.round(materialsCost).toLocaleString()}</Text>
+              <Text style={styles.monthRowLabel}>עלות חומרים</Text>
+            </View>
+            <View style={styles.monthRow}>
               <Text style={styles.monthRowVal}>₪{Math.round(totalExpenses).toLocaleString()}</Text>
-              <Text style={styles.monthRowLabel}>חומרים והוצאות</Text>
+              <Text style={styles.monthRowLabel}>הוצאות אחרות</Text>
             </View>
             <View style={styles.monthRow}>
               <Text style={styles.monthRowVal}>₪{Math.round(totalSalary).toLocaleString()}</Text>
