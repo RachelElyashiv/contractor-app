@@ -40,14 +40,18 @@ export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } =
   const [showSrcProject, setShowSrcProject] = useState(false);
   const [showSrcApartment, setShowSrcApartment] = useState(false);
   const [importing, setImporting] = useState(false);
+  // Pull a single material from inventory into a line item
+  const [allMaterials, setAllMaterials] = useState([]);
+  const [showMaterialPicker, setShowMaterialPicker] = useState(false);
 
-  useEffect(() => { loadData(); loadProjects(); }, []);
+  useEffect(() => { loadData(); loadProjects(); loadAllMaterials(); }, []);
 
   // Android back button: close any open popup before leaving the screen
   useEffect(() => {
     const onBack = () => {
       if (confirmDelete) { setConfirmDelete(null); return true; }
       if (pdfModal.visible) { setPdfModal({ visible: false, html: '' }); return true; }
+      if (showMaterialPicker) { setShowMaterialPicker(false); return true; }
       if (showSrcApartment) { setShowSrcApartment(false); return true; }
       if (showSrcProject) { setShowSrcProject(false); return true; }
       if (modalVisible) { setModalVisible(false); return true; }
@@ -55,7 +59,7 @@ export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } =
     };
     const sub = BackHandler.addEventListener('hardwareBackPress', onBack);
     return () => sub.remove();
-  }, [confirmDelete, pdfModal.visible, showSrcApartment, showSrcProject, modalVisible]);
+  }, [confirmDelete, pdfModal.visible, showMaterialPicker, showSrcApartment, showSrcProject, modalVisible]);
 
   // Load apartments of the chosen source project
   useEffect(() => {
@@ -79,6 +83,28 @@ export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } =
       const res = await projectsApi.getAll();
       setProjectsList(Array.isArray(res.data) ? res.data : []);
     } catch (e) { console.log('Projects error:', e); }
+  }
+
+  async function loadAllMaterials() {
+    try {
+      const res = await materialsApi.getAll();
+      setAllMaterials(Array.isArray(res.data) ? res.data : []);
+    } catch (e) { console.log('Materials error:', e); }
+  }
+
+  // Add a single inventory material as a new line item (price is editable so you can add profit)
+  function addMaterialItem(m) {
+    const newItem = {
+      description: m.name + (m.unit ? ` (${m.unit})` : ''),
+      quantity: '1',
+      unitPrice: String(m.unitPrice || 0),
+    };
+    setForm(f => {
+      // Replace the first empty row if present, otherwise append
+      const hasEmpty = f.items.length === 1 && !f.items[0].description && !f.items[0].unitPrice;
+      return { ...f, items: hasEmpty ? [newItem] : [...f.items, newItem] };
+    });
+    setShowMaterialPicker(false);
   }
 
   // Pull all materials of the project/apartment and turn them into quote line items
@@ -400,9 +426,14 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
                     onChangeText={v => { const items = [...form.items]; items[idx].unitPrice = v; setForm({ ...form, items }); }} keyboardType="numeric" textAlign="right" />
                 </View>
               ))}
-              <TouchableOpacity onPress={() => setForm({ ...form, items: [...form.items, { description: '', quantity: '1', unitPrice: '' }] })}>
-                <Text style={styles.addItem}>+ הוסף שורה</Text>
-              </TouchableOpacity>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 4 }}>
+                <TouchableOpacity onPress={() => setForm({ ...form, items: [...form.items, { description: '', quantity: '1', unitPrice: '' }] })}>
+                  <Text style={styles.addItem}>+ הוסף שורה</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => { loadAllMaterials(); setShowMaterialPicker(true); }}>
+                  <Text style={styles.addItem}>📦 משוך חומר מהמלאי</Text>
+                </TouchableOpacity>
+              </View>
               <TextInput style={styles.input} placeholder="הערות" value={form.notes}
                 onChangeText={v => setForm({ ...form, notes: v })} textAlign="right" />
               {createType === 'invoice' && (
@@ -492,6 +523,30 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
               {srcApartments.length === 0 && <Text style={{ textAlign: 'center', color: '#888', marginTop: 20 }}>אין דירות לפרויקט זה</Text>}
             </ScrollView>
             <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowSrcApartment(false)}>
+              <Text style={styles.btnSecondaryText}>סגור</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Pick a single material from inventory */}
+      <Modal visible={showMaterialPicker} animationType="slide" transparent>
+        <View style={styles.overlay}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>📦 משוך חומר מהמלאי</Text>
+            <Text style={{ textAlign: 'center', color: '#888', fontSize: 12, marginBottom: 10 }}>המחיר יטען לפי מחיר הקנייה — תוכלי לערוך אותו ולהוסיף רווח</Text>
+            <ScrollView>
+              {allMaterials.map(m => (
+                <TouchableOpacity key={m.id} style={styles.filterOption} onPress={() => addMaterialItem(m)}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text style={{ color: '#1a6b4a', fontSize: 13, fontWeight: '600' }}>₪{Number(m.unitPrice) || 0}{m.unit ? ` / ${m.unit}` : ''}</Text>
+                    <Text style={styles.filterOptionText}>{m.name}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+              {allMaterials.length === 0 && <Text style={{ textAlign: 'center', color: '#888', marginTop: 20 }}>אין חומרים במלאי</Text>}
+            </ScrollView>
+            <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowMaterialPicker(false)}>
               <Text style={styles.btnSecondaryText}>סגור</Text>
             </TouchableOpacity>
           </View>

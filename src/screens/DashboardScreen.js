@@ -131,6 +131,8 @@ export default function DashboardScreen({ onNavigate }) {
         const totalSalary = salaryReport.reduce((s, r) => s + Number(r.totalPay), 0);
         const totalCosts = totalExpenses + totalSalary + materialsCost;
         const pendingIncome = invoiceSummary?.pendingAmount || 0;
+        const revenue = invoiceSummary?.totalRevenue || 0;
+        const profit = revenue - totalCosts;
         return (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>📊 דוח חודשי — {monthName}</Text>
@@ -155,6 +157,14 @@ export default function DashboardScreen({ onNavigate }) {
             <View style={styles.monthRow}>
               <Text style={styles.monthRowVal}>₪{Math.round(totalSalary).toLocaleString()}</Text>
               <Text style={styles.monthRowLabel}>שכר עובדים ({salaryReport.reduce((s,r)=>s+r.daysPresent,0)} ימי עבודה)</Text>
+            </View>
+            <View style={styles.monthRow}>
+              <Text style={styles.monthRowVal}>₪{Math.round(revenue).toLocaleString()}</Text>
+              <Text style={styles.monthRowLabel}>הכנסות מחשבוניות</Text>
+            </View>
+            <View style={[styles.monthRow, { borderTopWidth: 2, borderTopColor: profit >= 0 ? '#1a6b4a' : '#a32d2d', marginTop: 4, paddingTop: 10 }]}>
+              <Text style={[styles.monthRowVal, { fontSize: 16, color: profit >= 0 ? '#1a6b4a' : '#a32d2d' }]}>₪{Math.round(profit).toLocaleString()}</Text>
+              <Text style={[styles.monthRowLabel, { fontSize: 14, fontWeight: '700', color: '#1a1a1a' }]}>💰 רווח (הכנסות − הוצאות)</Text>
             </View>
           </View>
         );
