@@ -3,7 +3,9 @@ import {
   ActivityIndicator,
   Alert,
   BackHandler,
+  Linking,
   Modal,
+  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -12,7 +14,11 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
 import { apartments as apartmentsApi, invoices, materials as materialsApi, projects as projectsApi } from '../services/api';
+
+const isWeb = Platform.OS === 'web';
 
 export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } = {}) {
   const [list, setList] = useState([]);
@@ -191,7 +197,7 @@ export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } =
   const statusColor = { paid: '#1a6b4a', sent: '#185fa5', overdue: '#a32d2d', draft: '#ba7517', cancelled: '#888' };
   const statusLabel = { paid: 'שולם ✓', sent: 'נשלח', overdue: 'איחור', draft: 'טיוטה', cancelled: 'בוטל' };
 
-  function printInvoice(inv) {
+  async function printInvoice(inv) {
     const typeLabel = inv.type === 'quote' ? 'הצעת מחיר' : 'חשבונית מס';
     const itemRows = (inv.items || []).map(it => `
       <tr>
@@ -254,7 +260,20 @@ export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } =
 ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
 <div class="footer">נוצר אוטומטית · ${new Date().toLocaleDateString('he-IL')}</div>
 </body></html>`;
-    setPdfModal({ visible: true, html });
+    if (isWeb) {
+      setPdfModal({ visible: true, html });
+    } else {
+      try {
+        const { uri } = await Print.printToFileAsync({ html });
+        if (await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: 'שיתוף מסמך', UTI: 'com.adobe.pdf' });
+        } else {
+          await Print.printAsync({ uri });
+        }
+      } catch (e) {
+        Alert.alert('שגיאה', 'לא הצלחנו ליצור PDF');
+      }
+    }
   }
 
   function shareOnWhatsApp(inv) {
@@ -279,7 +298,8 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
     const url = phone.length > 5
       ? `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`
       : `https://wa.me/?text=${encodeURIComponent(msg)}`;
-    window.open(url, '_blank');
+    if (isWeb) window.open(url, '_blank');
+    else Linking.openURL(url);
   }
 
   const invoiceList = list.filter(i => i.type === 'invoice' || i.type === 'receipt' || !i.type);
@@ -553,7 +573,8 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
         </View>
       </Modal>
 
-      {/* PDF in-app modal */}
+      {/* PDF in-app modal (web only — native uses expo-print/sharing) */}
+      {isWeb && (
       <Modal visible={pdfModal.visible} animationType="slide">
         <View style={{ flex: 1, backgroundColor: '#f0f4f0' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, backgroundColor: '#1a6b4a' }}>
@@ -579,6 +600,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
           ) : null}
         </View>
       </Modal>
+      )}
 
       <Modal visible={!!confirmDelete} transparent animationType="fade">
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 30 }}>

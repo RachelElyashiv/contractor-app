@@ -1,11 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
   BackHandler,
   Image,
+  Linking,
   Modal,
+  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -17,6 +21,48 @@ import {
 import { apartments as apartmentsApi, materials as materialsApi, projects as projectsApi, workers as workersApi } from '../services/api';
 
 const BASE_URL = 'https://contractor-backend-production.up.railway.app/api/v1';
+const isWeb = Platform.OS === 'web';
+
+// Open a URL (web opens a new tab, native uses the OS handler)
+function openUrl(url) {
+  if (isWeb) window.open(url, '_blank');
+  else Linking.openURL(url);
+}
+
+// Native file pickers — return RN-style file objects compatible with FormData
+async function pickImagesNative(multiple = true) {
+  const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (!perm.granted) { Alert.alert('הרשאה נדרשת', 'יש לאשר גישה לתמונות'); return null; }
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsMultipleSelection: multiple,
+    quality: 0.7,
+  });
+  if (result.canceled) return null;
+  return result.assets.map(a => {
+    const ext = (a.uri.split('.').pop() || 'jpg').split('?')[0];
+    return { uri: a.uri, name: a.fileName || `photo.${ext}`, type: a.mimeType || `image/${ext}` };
+  });
+}
+
+async function pickDocsNative(mime = '*/*') {
+  const result = await DocumentPicker.getDocumentAsync({ type: mime, multiple: false, copyToCacheDirectory: true });
+  if (result.canceled) return null;
+  return (result.assets || []).map(a => ({ uri: a.uri, name: a.name || 'file', type: a.mimeType || 'application/octet-stream' }));
+}
+
+// Web file picker — returns a Promise resolving to a FileList
+function pickFilesWeb(accept, multiple = false) {
+  return new Promise(resolve => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    if (accept) input.accept = accept;
+    input.multiple = multiple;
+    document.body.appendChild(input);
+    input.onchange = (e) => { const f = e.target.files; document.body.removeChild(input); resolve(f); };
+    input.click();
+  });
+}
 
 const DELIVERY_STATUS = {
   pending: { label: 'ממתין', color: '#ba7517', bg: '#faeeda' },
@@ -407,81 +453,61 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
     }
   }
 
-  function uploadToProject(projectId, type) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = type === 'pdf' ? '.pdf' : 'image/*';
-    input.multiple = type !== 'pdf';
-    document.body.appendChild(input);
-    input.onchange = async (e) => {
-      const files = e.target.files;
-      document.body.removeChild(input);
-      if (!files || files.length === 0) return;
-      const ok = await doUpload(files, projectId, null, type === 'pdf' ? 'PDF' : '');
-      if (ok) loadProjectFiles(projectId);
-    };
-    input.click();
+  async function uploadToProject(projectId, type) {
+    const files = isWeb
+      ? await pickFilesWeb(type === 'pdf' ? '.pdf' : 'image/*', type !== 'pdf')
+      : type === 'pdf' ? await pickDocsNative('application/pdf') : await pickImagesNative(true);
+    if (!files || files.length === 0) return;
+    const ok = await doUpload(files, projectId, null, type === 'pdf' ? 'PDF' : '');
+    if (ok) loadProjectFiles(projectId);
   }
 
-  function uploadToApartment(apartmentId, type) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = type === 'pdf' ? '.pdf' : 'image/*';
-    input.multiple = type !== 'pdf';
-    document.body.appendChild(input);
-    input.onchange = async (e) => {
-      const files = e.target.files;
-      document.body.removeChild(input);
-      if (!files || files.length === 0) return;
-      const ok = await doUpload(files, selectedProject.id, apartmentId, type === 'pdf' ? 'תוכנית PDF' : 'תוכנית דירה');
-      if (ok) loadApartmentFiles(apartmentId);
-    };
-    input.click();
+  async function uploadToApartment(apartmentId, type) {
+    const files = isWeb
+      ? await pickFilesWeb(type === 'pdf' ? '.pdf' : 'image/*', type !== 'pdf')
+      : type === 'pdf' ? await pickDocsNative('application/pdf') : await pickImagesNative(true);
+    if (!files || files.length === 0) return;
+    const ok = await doUpload(files, selectedProject.id, apartmentId, type === 'pdf' ? 'תוכנית PDF' : 'תוכנית דירה');
+    if (ok) loadApartmentFiles(apartmentId);
   }
 
-  function uploadMaterialFile(materialId, type, isApt = false) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    if (type === 'image') input.accept = 'image/*';
-    document.body.appendChild(input);
-    input.onchange = async (e) => {
-      const files = e.target.files;
-      document.body.removeChild(input);
-      if (!files || files.length === 0) return;
-      setUploading(true);
-      setUploadError('');
-      try {
-        const token = await getToken();
-        const formData = new FormData();
-        formData.append('files', files[0]);
-        if (selectedProject?.id) formData.append('projectId', selectedProject.id);
-        formData.append('caption', type === 'image' ? 'תמונת משלוח' : 'תעודת משלוח');
-        const uploadRes = await fetch(`${BASE_URL}/photos/upload`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-          body: formData,
+  async function uploadMaterialFile(materialId, type, isApt = false) {
+    const files = isWeb
+      ? await pickFilesWeb(type === 'image' ? 'image/*' : '', false)
+      : type === 'image' ? await pickImagesNative(false) : await pickDocsNative('*/*');
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    setUploadError('');
+    try {
+      const token = await getToken();
+      const formData = new FormData();
+      formData.append('files', files[0]);
+      if (selectedProject?.id) formData.append('projectId', selectedProject.id);
+      formData.append('caption', type === 'image' ? 'תמונת משלוח' : 'תעודת משלוח');
+      const uploadRes = await fetch(`${BASE_URL}/photos/upload`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      if (!uploadRes.ok) { setUploadError(`שגיאה ${uploadRes.status}`); return; }
+      const uploaded = await uploadRes.json();
+      const url = uploaded[0]?.url;
+      if (url) {
+        const field = type === 'image' ? 'deliveryImageUrl' : 'imageUrl';
+        await apiFetch(`/materials/${materialId}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ [field]: url }),
         });
-        if (!uploadRes.ok) { setUploadError(`שגיאה ${uploadRes.status}`); return; }
-        const uploaded = await uploadRes.json();
-        const url = uploaded[0]?.url;
-        if (url) {
-          const field = type === 'image' ? 'deliveryImageUrl' : 'imageUrl';
-          await apiFetch(`/materials/${materialId}`, {
-            method: 'PATCH',
-            body: JSON.stringify({ [field]: url }),
-          });
-          if (isApt) loadApartmentMaterials(selectedApartment.id);
-          else loadProjectMaterials(selectedProject.id);
-        } else {
-          setUploadError('שגיאה: לא התקבל קישור מהשרת');
-        }
-      } catch (err) {
-        setUploadError('שגיאה בהעלאה — בדקי חיבור');
-      } finally {
-        setUploading(false);
+        if (isApt) loadApartmentMaterials(selectedApartment.id);
+        else loadProjectMaterials(selectedProject.id);
+      } else {
+        setUploadError('שגיאה: לא התקבל קישור מהשרת');
       }
-    };
-    input.click();
+    } catch (err) {
+      setUploadError('שגיאה בהעלאה — בדקי חיבור');
+    } finally {
+      setUploading(false);
+    }
   }
 
   function deleteFile(id, isApt = false) {
@@ -503,7 +529,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
     const url = phone
       ? `https://wa.me/972${phone.startsWith('0') ? phone.slice(1) : phone}?text=${encodeURIComponent(msg)}`
       : `https://wa.me/?text=${encodeURIComponent(msg)}`;
-    window.open(url, '_blank');
+    openUrl(url);
   }
 
   function isPdf(photo) {
@@ -552,7 +578,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         )}
         {!!m.imageUrl && (
           m.imageUrl.toLowerCase().includes('.pdf') || m.imageUrl.includes('/raw/') ? (
-            <TouchableOpacity onPress={() => window.open(m.imageUrl, '_blank')} style={{ marginTop: 8, padding: 10, backgroundColor: '#f5f0ff', borderRadius: 8 }}>
+            <TouchableOpacity onPress={() => openUrl(m.imageUrl)} style={{ marginTop: 8, padding: 10, backgroundColor: '#f5f0ff', borderRadius: 8 }}>
               <Text style={{ color: '#6b35a0', fontSize: 13, textAlign: 'right' }}>📄 פתח תעודת משלוח ←</Text>
             </TouchableOpacity>
           ) : (
@@ -594,7 +620,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                 <View style={styles.pdfIcon}><Text style={styles.pdfIconText}>PDF</Text></View>
                 <View style={styles.pdfInfo}>
                   <Text style={styles.pdfName}>{pdf.caption || pdf.filename}</Text>
-                  <TouchableOpacity onPress={() => window.open(pdf.url, '_blank')}>
+                  <TouchableOpacity onPress={() => openUrl(pdf.url)}>
                     <Text style={styles.pdfOpen}>פתח קובץ</Text>
                   </TouchableOpacity>
                 </View>
