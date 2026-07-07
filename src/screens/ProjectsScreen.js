@@ -62,7 +62,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   const [projectMaterials, setProjectMaterials] = useState([]);
   const [filesLoading, setFilesLoading] = useState(false);
   const [addMaterialModal, setAddMaterialModal] = useState(false);
-  const [matForm, setMatForm] = useState({ name: '', unit: 'יחידות', quantity: '', supplier: '' });
+  const [matForm, setMatForm] = useState({ name: '', unit: 'יחידות', quantity: '', unitPrice: '', supplier: '' });
 
   // Apartments state
   const [projectApartments, setProjectApartments] = useState([]);
@@ -78,7 +78,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   const [aptWorkers, setAptWorkers] = useState([]);
   const [aptFilesLoading, setAptFilesLoading] = useState(false);
   const [addAptMaterialModal, setAddAptMaterialModal] = useState(false);
-  const [aptMatForm, setAptMatForm] = useState({ name: '', unit: 'יחידות', quantity: '', supplier: '' });
+  const [aptMatForm, setAptMatForm] = useState({ name: '', unit: 'יחידות', quantity: '', unitPrice: '', supplier: '' });
   const [progressModal, setProgressModal] = useState(false);
   const [progressValue, setProgressValue] = useState('');
 
@@ -248,11 +248,11 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
     try {
       const res = await apiFetch('/materials', {
         method: 'POST',
-        body: JSON.stringify({ ...matForm, quantity: Number(matForm.quantity) || 0, projectId: selectedProject.id, deliveryStatus: 'pending' }),
+        body: JSON.stringify({ ...matForm, quantity: Number(matForm.quantity) || 0, unitPrice: Number(matForm.unitPrice) || 0, projectId: selectedProject.id, deliveryStatus: 'pending' }),
       });
       if (res.ok) {
         setAddMaterialModal(false);
-        setMatForm({ name: '', unit: 'יחידות', quantity: '', supplier: '' });
+        setMatForm({ name: '', unit: 'יחידות', quantity: '', unitPrice: '', supplier: '' });
         loadProjectMaterials(selectedProject.id);
       }
     } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו להוסיף חומר'); }
@@ -268,6 +268,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         body: JSON.stringify({
           ...aptMatForm,
           quantity: Number(aptMatForm.quantity) || 0,
+          unitPrice: Number(aptMatForm.unitPrice) || 0,
           projectId: selectedProject.id,
           apartmentId: selectedApartment.id,
           deliveryStatus: 'pending',
@@ -275,7 +276,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
       });
       if (res.ok) {
         setAddAptMaterialModal(false);
-        setAptMatForm({ name: '', unit: 'יחידות', quantity: '', supplier: '' });
+        setAptMatForm({ name: '', unit: 'יחידות', quantity: '', unitPrice: '', supplier: '' });
         loadApartmentMaterials(selectedApartment.id);
       } else {
         const body = await res.json().catch(() => ({}));
@@ -701,6 +702,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                     { key: 'name', placeholder: 'שם חומר *' },
                     { key: 'unit', placeholder: 'יחידה (שקים, מטרים...)' },
                     { key: 'quantity', placeholder: 'כמות', keyboardType: 'numeric' },
+                    { key: 'unitPrice', placeholder: 'מחיר ליחידה ₪', keyboardType: 'numeric' },
                     { key: 'supplier', placeholder: 'ספק' },
                   ].map(f => (
                     <TextInput key={f.key} style={styles.input} placeholder={f.placeholder} value={aptMatForm[f.key]}
@@ -878,6 +880,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                     { key: 'name', placeholder: 'שם חומר *' },
                     { key: 'unit', placeholder: 'יחידה (שקים, מטרים...)' },
                     { key: 'quantity', placeholder: 'כמות', keyboardType: 'numeric' },
+                    { key: 'unitPrice', placeholder: 'מחיר ליחידה ₪', keyboardType: 'numeric' },
                     { key: 'supplier', placeholder: 'ספק' },
                   ].map(f => (
                     <TextInput key={f.key} style={styles.input} placeholder={f.placeholder} value={matForm[f.key]}
