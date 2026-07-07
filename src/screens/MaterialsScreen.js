@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
     ActivityIndicator,
     Alert,
+    BackHandler,
     Modal,
     RefreshControl,
     ScrollView,
@@ -11,20 +12,68 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import { materials } from '../services/api';
+import { apartments as apartmentsApi, materials, projects as projectsApi } from '../services/api';
 
-export default function MaterialsScreen() {
+export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } = {}) {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (pendingCreate) { setModalVisible(true); onClearPendingCreate?.(); }
+  }, [pendingCreate]);
   const [form, setForm] = useState({ name: '', unit: 'יחידות', quantity: '', minQuantity: '', unitPrice: '', supplier: '' });
+  // Assign material to a project + apartment (optional)
+  const [projectsList, setProjectsList] = useState([]);
+  const [matApartments, setMatApartments] = useState([]);
+  const [matProjectId, setMatProjectId] = useState(null);
+  const [matApartmentId, setMatApartmentId] = useState(null);
+  const [showMatProject, setShowMatProject] = useState(false);
+  const [showMatApartment, setShowMatApartment] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const pendingDeleteFn = useRef(null);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => { loadData(); loadProjects(); }, []);
+
+  // Android back button: close any open popup before leaving the screen
+  useEffect(() => {
+    const onBack = () => {
+      if (confirmDelete) { setConfirmDelete(null); return true; }
+      if (showMatApartment) { setShowMatApartment(false); return true; }
+      if (showMatProject) { setShowMatProject(false); return true; }
+      if (modalVisible) { setModalVisible(false); return true; }
+      return false;
+    };
+    const sub = BackHandler.addEventListener('hardwareBackPress', onBack);
+    return () => sub.remove();
+  }, [confirmDelete, showMatApartment, showMatProject, modalVisible]);
+
+  // Load apartments for the material form when a project is chosen
+  useEffect(() => {
+    if (matProjectId) {
+      apartmentsApi.getByProject(matProjectId)
+        .then(res => {
+          const arr = Array.isArray(res.data) ? res.data : [];
+          arr.sort((a, b) => (parseInt(a.number, 10) || 0) - (parseInt(b.number, 10) || 0));
+          setMatApartments(arr);
+        })
+        .catch(() => setMatApartments([]));
+      setMatApartmentId(null);
+    } else {
+      setMatApartments([]);
+      setMatApartmentId(null);
+    }
+  }, [matProjectId]);
+
+  async function loadProjects() {
+    try {
+      const res = await projectsApi.getAll();
+      setProjectsList(Array.isArray(res.data) ? res.data : []);
+    } catch (e) { console.log('Projects error:', e); }
+  }
 
   async function loadData() {
     try {
@@ -48,9 +97,13 @@ export default function MaterialsScreen() {
         quantity: Number(form.quantity) || 0,
         minQuantity: Number(form.minQuantity) || 0,
         unitPrice: Number(form.unitPrice) || 0,
+        ...(matProjectId ? { projectId: matProjectId } : {}),
+        ...(matApartmentId ? { apartmentId: matApartmentId } : {}),
       });
       setModalVisible(false);
       setForm({ name: '', unit: 'יחידות', quantity: '', minQuantity: '', unitPrice: '', supplier: '' });
+      setMatProjectId(null);
+      setMatApartmentId(null);
       loadData();
     } catch (e) {
       setFormError('שגיאה בשרת — נסי שוב');
@@ -75,6 +128,9 @@ export default function MaterialsScreen() {
     };
     setConfirmDelete({ message: 'האם למחוק חומר זה?' });
   }
+
+  const matProject = projectsList.find(p => p.id === matProjectId);
+  const matApartment = matApartments.find(a => a.id === matApartmentId);
 
   if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#1a6b4a" />;
 
@@ -145,6 +201,16 @@ export default function MaterialsScreen() {
                   textAlign="right"
                 />
               ))}
+
+              {/* Assign to project + apartment (optional) */}
+              <TouchableOpacity style={styles.selectorBtn} onPress={() => setShowMatProject(true)}>
+                <Text style={styles.selectorText}>{matProject ? `📁 ${matProject.name}` : '📁 שייך לפרויקט (לא חובה)'}</Text>
+              </TouchableOpacity>
+              {matProjectId ? (
+                <TouchableOpacity style={styles.selectorBtn} onPress={() => setShowMatApartment(true)}>
+                  <Text style={styles.selectorText}>{matApartment ? `🏠 ${matApartment.name}` : '🏠 שייך לדירה (לא חובה)'}</Text>
+                </TouchableOpacity>
+              ) : null}
             </ScrollView>
             {formError ? <Text style={{ color: '#a32d2d', textAlign: 'center', marginBottom: 8 }}>{formError}</Text> : null}
             <View style={styles.modalActions}>
@@ -155,6 +221,56 @@ export default function MaterialsScreen() {
                 <Text style={styles.btnSecondaryText}>ביטול</Text>
               </TouchableOpacity>
             </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Pick project for material */}
+      <Modal visible={showMatProject} animationType="slide" transparent>
+        <View style={styles.overlay}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>שייך לפרויקט</Text>
+            <ScrollView>
+              <TouchableOpacity style={styles.filterOption} onPress={() => { setMatProjectId(null); setShowMatProject(false); }}>
+                <Text style={styles.filterOptionText}>ללא פרויקט</Text>
+              </TouchableOpacity>
+              {projectsList.map(p => (
+                <TouchableOpacity key={p.id} style={[styles.filterOption, matProjectId === p.id && styles.filterOptionActive]}
+                  onPress={() => { setMatProjectId(p.id); setShowMatProject(false); }}>
+                  <Text style={[styles.filterOptionText, matProjectId === p.id && { color: '#1a6b4a', fontWeight: '600' }]}>{p.name}</Text>
+                </TouchableOpacity>
+              ))}
+              {projectsList.length === 0 && <Text style={styles.empty}>אין פרויקטים עדיין</Text>}
+            </ScrollView>
+            <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowMatProject(false)}>
+              <Text style={styles.btnSecondaryText}>סגור</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Pick apartment for material */}
+      <Modal visible={showMatApartment} animationType="slide" transparent>
+        <View style={styles.overlay}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>שייך לדירה</Text>
+            <ScrollView>
+              <TouchableOpacity style={styles.filterOption} onPress={() => { setMatApartmentId(null); setShowMatApartment(false); }}>
+                <Text style={styles.filterOptionText}>ללא דירה</Text>
+              </TouchableOpacity>
+              {matApartments.map(a => (
+                <TouchableOpacity key={a.id} style={[styles.filterOption, matApartmentId === a.id && styles.filterOptionActive]}
+                  onPress={() => { setMatApartmentId(a.id); setShowMatApartment(false); }}>
+                  <Text style={[styles.filterOptionText, matApartmentId === a.id && { color: '#1a6b4a', fontWeight: '600' }]}>
+                    🏠 {a.name}{a.number ? ` (${a.number})` : ''}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+              {matApartments.length === 0 && <Text style={styles.empty}>אין דירות לפרויקט זה</Text>}
+            </ScrollView>
+            <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowMatApartment(false)}>
+              <Text style={styles.btnSecondaryText}>סגור</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -201,6 +317,11 @@ const styles = StyleSheet.create({
   modal: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 24, maxHeight: '85%' },
   modalTitle: { fontSize: 18, fontWeight: '600', textAlign: 'center', marginBottom: 16, color: '#1a1a1a' },
   input: { borderWidth: 0.5, borderColor: '#ddd', borderRadius: 10, padding: 12, marginBottom: 12, fontSize: 15, backgroundColor: '#fafafa' },
+  selectorBtn: { borderWidth: 0.5, borderColor: '#1a6b4a', borderRadius: 10, padding: 12, marginBottom: 12, backgroundColor: '#e8f5ef' },
+  selectorText: { fontSize: 15, color: '#1a6b4a', textAlign: 'right' },
+  filterOption: { padding: 14, borderBottomWidth: 0.5, borderBottomColor: '#eee' },
+  filterOptionActive: { backgroundColor: '#e8f5ef' },
+  filterOptionText: { fontSize: 15, color: '#333', textAlign: 'right' },
   modalActions: { flexDirection: 'row', gap: 10, marginTop: 8 },
   btnPrimary: { flex: 1, backgroundColor: '#1a6b4a', padding: 14, borderRadius: 10, alignItems: 'center' },
   btnPrimaryText: { color: '#fff', fontWeight: '600', fontSize: 15 },

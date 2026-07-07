@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  BackHandler,
   Modal,
   RefreshControl,
   ScrollView,
@@ -11,23 +12,103 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { invoices } from '../services/api';
+import { apartments as apartmentsApi, invoices, materials as materialsApi, projects as projectsApi } from '../services/api';
 
-export default function InvoicesScreen() {
+export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } = {}) {
   const [list, setList] = useState([]);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (pendingCreate) { setCreateType('invoice'); setModalVisible(true); onClearPendingCreate?.(); }
+  }, [pendingCreate]);
   const [activeTab, setActiveTab] = useState('invoices');
   const [createType, setCreateType] = useState('invoice');
   const [form, setForm] = useState({ clientName: '', clientPhone: '', notes: '', taxPercent: '17', items: [{ description: '', quantity: '1', unitPrice: '' }] });
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [pdfModal, setPdfModal] = useState({ visible: false, html: '' });
   const pendingDeleteFn = useRef(null);
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  // Import-from-project state
+  const [projectsList, setProjectsList] = useState([]);
+  const [srcApartments, setSrcApartments] = useState([]);
+  const [srcProjectId, setSrcProjectId] = useState(null);
+  const [srcApartmentId, setSrcApartmentId] = useState(null);
+  const [showSrcProject, setShowSrcProject] = useState(false);
+  const [showSrcApartment, setShowSrcApartment] = useState(false);
+  const [importing, setImporting] = useState(false);
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => { loadData(); loadProjects(); }, []);
+
+  // Android back button: close any open popup before leaving the screen
+  useEffect(() => {
+    const onBack = () => {
+      if (confirmDelete) { setConfirmDelete(null); return true; }
+      if (pdfModal.visible) { setPdfModal({ visible: false, html: '' }); return true; }
+      if (showSrcApartment) { setShowSrcApartment(false); return true; }
+      if (showSrcProject) { setShowSrcProject(false); return true; }
+      if (modalVisible) { setModalVisible(false); return true; }
+      return false;
+    };
+    const sub = BackHandler.addEventListener('hardwareBackPress', onBack);
+    return () => sub.remove();
+  }, [confirmDelete, pdfModal.visible, showSrcApartment, showSrcProject, modalVisible]);
+
+  // Load apartments of the chosen source project
+  useEffect(() => {
+    if (srcProjectId) {
+      apartmentsApi.getByProject(srcProjectId)
+        .then(res => {
+          const arr = Array.isArray(res.data) ? res.data : [];
+          arr.sort((a, b) => (parseInt(a.number, 10) || 0) - (parseInt(b.number, 10) || 0));
+          setSrcApartments(arr);
+        })
+        .catch(() => setSrcApartments([]));
+      setSrcApartmentId(null);
+    } else {
+      setSrcApartments([]);
+      setSrcApartmentId(null);
+    }
+  }, [srcProjectId]);
+
+  async function loadProjects() {
+    try {
+      const res = await projectsApi.getAll();
+      setProjectsList(Array.isArray(res.data) ? res.data : []);
+    } catch (e) { console.log('Projects error:', e); }
+  }
+
+  // Pull all materials of the project/apartment and turn them into quote line items
+  async function importFromProject() {
+    if (!srcProjectId) { setFormError('בחרי פרויקט קודם'); return; }
+    setImporting(true);
+    try {
+      const res = srcApartmentId
+        ? await materialsApi.getByApartment(srcApartmentId)
+        : await materialsApi.getByProject(srcProjectId);
+      const mats = Array.isArray(res.data) ? res.data : [];
+      const items = mats.map(m => ({
+        description: m.name + (m.unit ? ` (${m.unit})` : ''),
+        quantity: String(m.quantity || 1),
+        unitPrice: String(m.unitPrice || 0),
+      }));
+      const proj = projectsList.find(p => p.id === srcProjectId);
+      setForm(f => ({
+        ...f,
+        clientName: f.clientName || proj?.clientName || '',
+        clientPhone: f.clientPhone || proj?.clientPhone || '',
+        items: items.length ? items : f.items,
+      }));
+      setFormError(items.length ? '' : 'לא נמצאו חומרים לפרויקט/דירה זו — הוסיפי פריטים ידנית');
+    } catch (e) {
+      setFormError('שגיאה בטעינת החומרים — נסי שוב');
+    } finally {
+      setImporting(false);
+    }
+  }
 
   async function loadData() {
     try {
@@ -56,6 +137,8 @@ export default function InvoicesScreen() {
       });
       setModalVisible(false);
       setForm({ clientName: '', clientPhone: '', notes: '', taxPercent: '17', items: [{ description: '', quantity: '1', unitPrice: '' }] });
+      setSrcProjectId(null);
+      setSrcApartmentId(null);
       loadData();
     } catch (e) {
       const msg = e?.response?.data?.message || e?.message || 'שגיאה בשרת';
@@ -144,11 +227,8 @@ export default function InvoicesScreen() {
 </table>
 ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
 <div class="footer">נוצר אוטומטית · ${new Date().toLocaleDateString('he-IL')}</div>
-<script>window.onload=()=>window.print();</script>
 </body></html>`;
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    window.open(url, '_blank');
+    setPdfModal({ visible: true, html });
   }
 
   function shareOnWhatsApp(inv) {
@@ -180,6 +260,8 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
   const quoteList = list.filter(i => i.type === 'quote');
 
   const displayList = activeTab === 'quotes' ? quoteList : invoiceList;
+  const srcProject = projectsList.find(p => p.id === srcProjectId);
+  const srcApartment = srcApartments.find(a => a.id === srcApartmentId);
 
   if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#1a6b4a" />;
 
@@ -284,6 +366,25 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
               {createType === 'quote' ? '📋 הצעת מחיר חדשה' : '🧾 חשבונית חדשה'}
             </Text>
             <ScrollView>
+              {/* Auto-fill from a project / apartment */}
+              <View style={styles.importBox}>
+                <Text style={styles.importTitle}>📥 בנה מפרויקט (אופציונלי)</Text>
+                <Text style={styles.importHint}>בחרי פרויקט/דירה כדי לטעון את כל החומרים כפריטים אוטומטית</Text>
+                <TouchableOpacity style={styles.selectorBtn} onPress={() => setShowSrcProject(true)}>
+                  <Text style={styles.selectorText}>{srcProject ? `📁 ${srcProject.name}` : '📁 בחרי פרויקט'}</Text>
+                </TouchableOpacity>
+                {srcProjectId ? (
+                  <TouchableOpacity style={styles.selectorBtn} onPress={() => setShowSrcApartment(true)}>
+                    <Text style={styles.selectorText}>{srcApartment ? `🏠 ${srcApartment.name}` : '🏠 כל הדירות בפרויקט'}</Text>
+                  </TouchableOpacity>
+                ) : null}
+                {srcProjectId ? (
+                  <TouchableOpacity style={[styles.importBtn, importing && { opacity: 0.6 }]} onPress={importFromProject} disabled={importing}>
+                    <Text style={styles.importBtnText}>{importing ? 'טוען...' : '📥 טען חומרים כפריטים'}</Text>
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+
               <TextInput style={styles.input} placeholder="שם לקוח *" value={form.clientName}
                 onChangeText={v => setForm({ ...form, clientName: v })} textAlign="right" />
               <TextInput style={styles.input} placeholder="טלפון לקוח" value={form.clientPhone}
@@ -308,6 +409,32 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
                 <TextInput style={styles.input} placeholder="מע״מ %" value={form.taxPercent}
                   onChangeText={v => setForm({ ...form, taxPercent: v })} keyboardType="numeric" textAlign="right" />
               )}
+              {/* Live total preview */}
+              {(() => {
+                const subtotal = form.items.reduce((s, it) =>
+                  s + (Number(it.quantity) || 1) * (Number(it.unitPrice) || 0), 0);
+                const tax = createType === 'invoice' ? subtotal * ((Number(form.taxPercent) || 17) / 100) : 0;
+                const total = subtotal + tax;
+                if (subtotal === 0) return null;
+                return (
+                  <View style={{ backgroundColor: '#f0f7f3', borderRadius: 10, padding: 12, marginBottom: 8 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                      <Text style={{ color: '#555', fontSize: 13 }}>₪{subtotal.toLocaleString()}</Text>
+                      <Text style={{ color: '#555', fontSize: 13 }}>סכום לפני מע"מ</Text>
+                    </View>
+                    {createType === 'invoice' && (
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <Text style={{ color: '#555', fontSize: 13 }}>₪{tax.toLocaleString()}</Text>
+                        <Text style={{ color: '#555', fontSize: 13 }}>מע"מ ({form.taxPercent || 17}%)</Text>
+                      </View>
+                    )}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 1, borderTopColor: '#c8e6d6', paddingTop: 6, marginTop: 4 }}>
+                      <Text style={{ color: '#1a6b4a', fontSize: 15, fontWeight: 'bold' }}>₪{total.toLocaleString()}</Text>
+                      <Text style={{ color: '#1a6b4a', fontSize: 15, fontWeight: 'bold' }}>סה"כ לתשלום</Text>
+                    </View>
+                  </View>
+                );
+              })()}
             </ScrollView>
             {!!formError && <Text style={{ color: '#a32d2d', textAlign: 'center', marginBottom: 8 }}>{formError}</Text>}
             <View style={styles.modalActions}>
@@ -316,11 +443,85 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
                   {submitting ? 'שולח...' : createType === 'quote' ? 'צור הצעה' : 'צור חשבונית'}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnSecondary} onPress={() => { setModalVisible(false); setFormError(''); }}>
+              <TouchableOpacity style={styles.btnSecondary} onPress={() => { setModalVisible(false); setFormError(''); setSrcProjectId(null); setSrcApartmentId(null); }}>
                 <Text style={styles.btnSecondaryText}>ביטול</Text>
               </TouchableOpacity>
             </View>
           </View>
+        </View>
+      </Modal>
+
+      {/* Pick source project */}
+      <Modal visible={showSrcProject} animationType="slide" transparent>
+        <View style={styles.overlay}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>בחרי פרויקט</Text>
+            <ScrollView>
+              {projectsList.map(p => (
+                <TouchableOpacity key={p.id} style={[styles.filterOption, srcProjectId === p.id && styles.filterOptionActive]}
+                  onPress={() => { setSrcProjectId(p.id); setShowSrcProject(false); }}>
+                  <Text style={[styles.filterOptionText, srcProjectId === p.id && { color: '#1a6b4a', fontWeight: '600' }]}>{p.name}</Text>
+                </TouchableOpacity>
+              ))}
+              {projectsList.length === 0 && <Text style={{ textAlign: 'center', color: '#888', marginTop: 20 }}>אין פרויקטים עדיין</Text>}
+            </ScrollView>
+            <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowSrcProject(false)}>
+              <Text style={styles.btnSecondaryText}>סגור</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Pick source apartment */}
+      <Modal visible={showSrcApartment} animationType="slide" transparent>
+        <View style={styles.overlay}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>בחרי דירה</Text>
+            <ScrollView>
+              <TouchableOpacity style={styles.filterOption} onPress={() => { setSrcApartmentId(null); setShowSrcApartment(false); }}>
+                <Text style={styles.filterOptionText}>כל הדירות בפרויקט</Text>
+              </TouchableOpacity>
+              {srcApartments.map(a => (
+                <TouchableOpacity key={a.id} style={[styles.filterOption, srcApartmentId === a.id && styles.filterOptionActive]}
+                  onPress={() => { setSrcApartmentId(a.id); setShowSrcApartment(false); }}>
+                  <Text style={[styles.filterOptionText, srcApartmentId === a.id && { color: '#1a6b4a', fontWeight: '600' }]}>
+                    🏠 {a.name}{a.number ? ` (${a.number})` : ''}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+              {srcApartments.length === 0 && <Text style={{ textAlign: 'center', color: '#888', marginTop: 20 }}>אין דירות לפרויקט זה</Text>}
+            </ScrollView>
+            <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowSrcApartment(false)}>
+              <Text style={styles.btnSecondaryText}>סגור</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* PDF in-app modal */}
+      <Modal visible={pdfModal.visible} animationType="slide">
+        <View style={{ flex: 1, backgroundColor: '#f0f4f0' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, backgroundColor: '#1a6b4a' }}>
+            <TouchableOpacity onPress={() => {
+                const iframe = document.querySelector('iframe[title="invoice-preview"]');
+                if (iframe) iframe.contentWindow.print();
+              }}
+              style={{ backgroundColor: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 8 }}>
+              <Text style={{ color: '#fff', fontWeight: '600' }}>🖨 הדפס</Text>
+            </TouchableOpacity>
+            <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>תצוגת מסמך</Text>
+            <TouchableOpacity onPress={() => setPdfModal({ visible: false, html: '' })}
+              style={{ backgroundColor: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 8 }}>
+              <Text style={{ color: '#fff', fontWeight: '600' }}>✕ סגור</Text>
+            </TouchableOpacity>
+          </View>
+          {pdfModal.html ? (
+            <iframe
+              srcDoc={pdfModal.html}
+              style={{ width: '100%', height: 'calc(100vh - 60px)', border: 'none', display: 'block' }}
+              title="invoice-preview"
+            />
+          ) : null}
         </View>
       </Modal>
 
@@ -375,6 +576,16 @@ const styles = StyleSheet.create({
   modalTitle: { fontSize: 18, fontWeight: '600', textAlign: 'center', marginBottom: 16, color: '#1a1a1a' },
   input: { borderWidth: 0.5, borderColor: '#ddd', borderRadius: 10, padding: 12, marginBottom: 12, fontSize: 15, backgroundColor: '#fafafa' },
   itemsTitle: { fontSize: 14, fontWeight: '600', textAlign: 'right', marginBottom: 8, color: '#1a1a1a' },
+  importBox: { backgroundColor: '#f0f7f3', borderRadius: 12, padding: 12, marginBottom: 14, borderWidth: 0.5, borderColor: '#c8e6d6' },
+  importTitle: { fontSize: 14, fontWeight: '600', color: '#1a6b4a', textAlign: 'right', marginBottom: 4 },
+  importHint: { fontSize: 12, color: '#5a7a68', textAlign: 'right', marginBottom: 10 },
+  selectorBtn: { borderWidth: 0.5, borderColor: '#1a6b4a', borderRadius: 10, padding: 11, marginBottom: 8, backgroundColor: '#fff' },
+  selectorText: { fontSize: 14, color: '#1a6b4a', textAlign: 'right' },
+  importBtn: { backgroundColor: '#1a6b4a', borderRadius: 10, padding: 11, alignItems: 'center', marginTop: 2 },
+  importBtnText: { color: '#fff', fontSize: 14, fontWeight: '600' },
+  filterOption: { padding: 14, borderBottomWidth: 0.5, borderBottomColor: '#eee' },
+  filterOptionActive: { backgroundColor: '#e8f5ef' },
+  filterOptionText: { fontSize: 15, color: '#333', textAlign: 'right' },
   itemRow: { flexDirection: 'row', gap: 6 },
   addItem: { color: '#1a6b4a', textAlign: 'right', fontSize: 14, marginBottom: 12 },
   modalActions: { flexDirection: 'row', gap: 10, marginTop: 8 },

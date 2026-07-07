@@ -45,6 +45,8 @@ export const workers = {
 
 export const materials = {
   getAll: () => api.get('/materials'),
+  getByProject: (projectId) => api.get(`/materials?projectId=${projectId}`),
+  getByApartment: (apartmentId) => api.get(`/materials?apartmentId=${apartmentId}`),
   getLowStock: () => api.get('/materials/low-stock'),
   create: (data) => api.post('/materials', data),
   update: (id, data) => api.patch(`/materials/${id}`, data),

@@ -13,15 +13,18 @@ export default function LoginScreen({ onSwitch }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { login } = useAuth();
 
   async function handleLogin() {
-    if (!email || !password) return Alert.alert('שגיאה', 'מלא את כל השדות');
+    setError('');
+    if (!email || !password) { setError('חובה למלא אימייל וסיסמה'); return; }
     setLoading(true);
     try {
       await login(email, password);
     } catch (e) {
-      Alert.alert('שגיאה', 'אימייל או סיסמה שגויים');
+      const msg = e?.response?.data?.message || 'אימייל או סיסמה שגויים';
+      setError(Array.isArray(msg) ? msg.join(', ') : String(msg));
     } finally {
       setLoading(false);
     }
@@ -50,6 +53,12 @@ export default function LoginScreen({ onSwitch }) {
           secureTextEntry
           textAlign="right"
         />
+
+        {!!error && (
+          <View style={{ backgroundColor: '#fcebeb', borderRadius: 8, padding: 10, marginBottom: 10 }}>
+            <Text style={{ color: '#a32d2d', textAlign: 'center', fontSize: 14 }}>{error}</Text>
+          </View>
+        )}
 
         <TouchableOpacity style={styles.btn} onPress={handleLogin} disabled={loading}>
           {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>התחבר</Text>}

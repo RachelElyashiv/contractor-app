@@ -10,7 +10,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { expenses, invoices, materials, projects, workers } from '../services/api';
 
-export default function DashboardScreen() {
+export default function DashboardScreen({ onNavigate }) {
   const { user, logout } = useAuth();
   const [stats, setStats] = useState(null);
   const [attendance, setAttendance] = useState([]);
@@ -65,6 +65,20 @@ export default function DashboardScreen() {
         <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
           <Text style={styles.logoutText}>יציאה</Text>
         </TouchableOpacity>
+      </View>
+
+      {/* Quick Actions */}
+      <View style={styles.quickRow}>
+        {[
+          { label: '+ פרויקט', tab: 1, bg: '#e8f5ef', color: '#1a6b4a' },
+          { label: '+ עובד', tab: 2, bg: '#e6f1fb', color: '#185fa5' },
+          { label: '+ חשבונית', tab: 4, bg: '#faeeda', color: '#8a5200' },
+          { label: '+ חומר', tab: 3, bg: '#fcebeb', color: '#a32d2d' },
+        ].map(a => (
+          <TouchableOpacity key={a.tab} style={[styles.quickBtn, { backgroundColor: a.bg }]} onPress={() => onNavigate?.(a.tab, 'create')}>
+            <Text style={[styles.quickBtnText, { color: a.color }]}>{a.label}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       <View style={styles.statsGrid}>
@@ -189,4 +203,7 @@ const styles = StyleSheet.create({
   monthRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderTopWidth: 0.5, borderTopColor: '#f0f0f0' },
   monthRowLabel: { fontSize: 13, color: '#555', textAlign: 'right' },
   monthRowVal: { fontSize: 13, fontWeight: '600', color: '#1a1a1a' },
+  quickRow: { flexDirection: 'row', paddingHorizontal: 12, paddingTop: 12, gap: 8 },
+  quickBtn: { flex: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center' },
+  quickBtnText: { fontSize: 13, fontWeight: '600' },
 });

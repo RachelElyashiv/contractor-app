@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  BackHandler,
   Modal,
   RefreshControl,
   ScrollView,
@@ -13,13 +14,25 @@ import {
 } from 'react-native';
 import { apartments as apartmentsApi, projects as projectsApi, workers } from '../services/api';
 
-export default function WorkersScreen() {
+export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = {}) {
   const [list, setList] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (pendingCreate) { setModalVisible(true); onClearPendingCreate?.(); }
+  }, [pendingCreate]);
   const [form, setForm] = useState({ firstName: '', lastName: '', phone: '', role: '', dailyRate: '' });
+  const [workerError, setWorkerError] = useState('');
+  const [workerSubmitting, setWorkerSubmitting] = useState(false);
+  // Assign-to-project/apartment state for the "add worker" form
+  const [formProjectId, setFormProjectId] = useState(null);
+  const [formApartmentId, setFormApartmentId] = useState(null);
+  const [formApartments, setFormApartments] = useState([]);
+  const [showFormProject, setShowFormProject] = useState(false);
+  const [showFormApartment, setShowFormApartment] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const pendingDeleteFn = useRef(null);
   const [activeTab, setActiveTab] = useState('attendance');
@@ -38,6 +51,21 @@ export default function WorkersScreen() {
   useEffect(() => { loadData(); loadProjects(); }, []);
   useEffect(() => { loadSalaryReport(); }, [salaryMonth, salaryYear]);
 
+  // Android back button: close any open popup before leaving the screen
+  useEffect(() => {
+    const onBack = () => {
+      if (confirmDelete) { setConfirmDelete(null); return true; }
+      if (showFormApartment) { setShowFormApartment(false); return true; }
+      if (showFormProject) { setShowFormProject(false); return true; }
+      if (showApartmentFilter) { setShowApartmentFilter(false); return true; }
+      if (showProjectFilter) { setShowProjectFilter(false); return true; }
+      if (modalVisible) { setModalVisible(false); return true; }
+      return false;
+    };
+    const sub = BackHandler.addEventListener('hardwareBackPress', onBack);
+    return () => sub.remove();
+  }, [confirmDelete, showFormApartment, showFormProject, showApartmentFilter, showProjectFilter, modalVisible]);
+
   useEffect(() => {
     if (selectedProjectId) {
       loadApartments(selectedProjectId);
@@ -51,6 +79,23 @@ export default function WorkersScreen() {
   useEffect(() => {
     loadAttendance();
   }, [selectedProjectId, selectedApartmentId]);
+
+  // Load apartments for the "add worker" form when a project is chosen
+  useEffect(() => {
+    if (formProjectId) {
+      apartmentsApi.getByProject(formProjectId)
+        .then(res => {
+          const arr = Array.isArray(res.data) ? res.data : [];
+          arr.sort((a, b) => (parseInt(a.number, 10) || 0) - (parseInt(b.number, 10) || 0));
+          setFormApartments(arr);
+        })
+        .catch(() => setFormApartments([]));
+      setFormApartmentId(null);
+    } else {
+      setFormApartments([]);
+      setFormApartmentId(null);
+    }
+  }, [formProjectId]);
 
   async function loadSalaryReport() {
     try {
@@ -90,13 +135,38 @@ export default function WorkersScreen() {
   }
 
   async function createWorker() {
-    if (!form.firstName || !form.lastName) return Alert.alert('שגיאה', 'מלא שם פרטי ומשפחה');
+    if (!form.firstName || !form.lastName) { setWorkerError('חובה למלא שם פרטי ושם משפחה'); return; }
+    setWorkerError('');
+    setWorkerSubmitting(true);
     try {
-      await workers.create({ ...form, dailyRate: Number(form.dailyRate) || 0 });
+      const res = await workers.create({ ...form, dailyRate: Number(form.dailyRate) || 0 });
+      const newId = res?.data?.id;
+      // If a project was chosen, mark the new worker present there today (this links them to project/apartment)
+      if (newId && formProjectId) {
+        const today = new Date().toISOString().split('T')[0];
+        await workers.markAttendance(newId, {
+          date: today,
+          status: 'present',
+          checkIn: new Date().toTimeString().slice(0, 5),
+          hoursWorked: 8,
+          projectId: formProjectId,
+          apartmentId: formApartmentId || undefined,
+        });
+      }
       setModalVisible(false);
+      setWorkerError('');
       setForm({ firstName: '', lastName: '', phone: '', role: '', dailyRate: '' });
+      setFormProjectId(null);
+      setFormApartmentId(null);
       loadData();
-    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו להוסיף עובד'); }
+    } catch (e) {
+      const status = e?.response?.status;
+      const msg = e?.response?.data?.message;
+      if (status === 401) setWorkerError('החיבור פג — התנתקי והתחברי מחדש');
+      else setWorkerError(msg ? String(msg) : 'שגיאה בשרת — נסי שוב');
+    } finally {
+      setWorkerSubmitting(false);
+    }
   }
 
   async function markPresent(workerId) {
@@ -139,6 +209,8 @@ export default function WorkersScreen() {
 
   const selectedProject = projectsList.find(p => p.id === selectedProjectId);
   const selectedApartment = apartmentsList.find(a => a.id === selectedApartmentId);
+  const formProject = projectsList.find(p => p.id === formProjectId);
+  const formApartment = formApartments.find(a => a.id === formApartmentId);
 
   if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#1a6b4a" />;
 
@@ -347,14 +419,76 @@ export default function WorkersScreen() {
               <TextInput key={f.key} style={styles.input} placeholder={f.placeholder} value={form[f.key]}
                 onChangeText={v => setForm({ ...form, [f.key]: v })} keyboardType={f.keyboardType || 'default'} textAlign="right" />
             ))}
-            <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.btnPrimary} onPress={createWorker}>
-                <Text style={styles.btnPrimaryText}>הוסף עובד</Text>
+
+            {/* Assign to project + apartment (optional) */}
+            <TouchableOpacity style={styles.selectorBtn} onPress={() => setShowFormProject(true)}>
+              <Text style={styles.selectorText}>{formProject ? `📁 ${formProject.name}` : '📁 שייך לפרויקט (לא חובה)'}</Text>
+            </TouchableOpacity>
+            {formProjectId ? (
+              <TouchableOpacity style={styles.selectorBtn} onPress={() => setShowFormApartment(true)}>
+                <Text style={styles.selectorText}>{formApartment ? `🏠 ${formApartment.name}` : '🏠 שייך לדירה (לא חובה)'}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnSecondary} onPress={() => setModalVisible(false)}>
+            ) : null}
+
+            {workerError ? <Text style={{ color: '#a32d2d', textAlign: 'center', marginBottom: 8 }}>{workerError}</Text> : null}
+            <View style={styles.modalActions}>
+              <TouchableOpacity style={[styles.btnPrimary, workerSubmitting && { opacity: 0.6 }]} onPress={createWorker} disabled={workerSubmitting}>
+                <Text style={styles.btnPrimaryText}>{workerSubmitting ? 'מוסיף...' : 'הוסף עובד'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.btnSecondary} onPress={() => { setModalVisible(false); setWorkerError(''); }}>
                 <Text style={styles.btnSecondaryText}>ביטול</Text>
               </TouchableOpacity>
             </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Form: pick project for new worker */}
+      <Modal visible={showFormProject} animationType="slide" transparent>
+        <View style={styles.overlay}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>שייך לפרויקט</Text>
+            <ScrollView>
+              <TouchableOpacity style={styles.filterOption} onPress={() => { setFormProjectId(null); setShowFormProject(false); }}>
+                <Text style={styles.filterOptionText}>ללא פרויקט</Text>
+              </TouchableOpacity>
+              {projectsList.map(p => (
+                <TouchableOpacity key={p.id} style={[styles.filterOption, formProjectId === p.id && styles.filterOptionActive]}
+                  onPress={() => { setFormProjectId(p.id); setShowFormProject(false); }}>
+                  <Text style={[styles.filterOptionText, formProjectId === p.id && { color: '#1a6b4a', fontWeight: '600' }]}>{p.name}</Text>
+                </TouchableOpacity>
+              ))}
+              {projectsList.length === 0 && <Text style={styles.empty}>אין פרויקטים עדיין</Text>}
+            </ScrollView>
+            <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowFormProject(false)}>
+              <Text style={styles.btnSecondaryText}>סגור</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Form: pick apartment for new worker */}
+      <Modal visible={showFormApartment} animationType="slide" transparent>
+        <View style={styles.overlay}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>שייך לדירה</Text>
+            <ScrollView>
+              <TouchableOpacity style={styles.filterOption} onPress={() => { setFormApartmentId(null); setShowFormApartment(false); }}>
+                <Text style={styles.filterOptionText}>ללא דירה</Text>
+              </TouchableOpacity>
+              {formApartments.map(a => (
+                <TouchableOpacity key={a.id} style={[styles.filterOption, formApartmentId === a.id && styles.filterOptionActive]}
+                  onPress={() => { setFormApartmentId(a.id); setShowFormApartment(false); }}>
+                  <Text style={[styles.filterOptionText, formApartmentId === a.id && { color: '#1a6b4a', fontWeight: '600' }]}>
+                    🏠 {a.name}{a.number ? ` (${a.number})` : ''}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+              {formApartments.length === 0 && <Text style={styles.empty}>אין דירות לפרויקט זה</Text>}
+            </ScrollView>
+            <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowFormApartment(false)}>
+              <Text style={styles.btnSecondaryText}>סגור</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -418,6 +552,8 @@ const styles = StyleSheet.create({
   modal: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 24, maxHeight: '80%' },
   modalTitle: { fontSize: 18, fontWeight: '600', textAlign: 'center', marginBottom: 16, color: '#1a1a1a' },
   input: { borderWidth: 0.5, borderColor: '#ddd', borderRadius: 10, padding: 12, marginBottom: 12, fontSize: 15, backgroundColor: '#fafafa' },
+  selectorBtn: { borderWidth: 0.5, borderColor: '#1a6b4a', borderRadius: 10, padding: 12, marginBottom: 12, backgroundColor: '#e8f5ef' },
+  selectorText: { fontSize: 15, color: '#1a6b4a', textAlign: 'right' },
   modalActions: { flexDirection: 'row', gap: 10, marginTop: 8 },
   btnPrimary: { flex: 1, backgroundColor: '#1a6b4a', padding: 14, borderRadius: 10, alignItems: 'center' },
   btnPrimaryText: { color: '#fff', fontWeight: '600', fontSize: 15 },

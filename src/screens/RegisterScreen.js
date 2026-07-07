@@ -8,15 +8,25 @@ import { useAuth } from '../context/AuthContext';
 export default function RegisterScreen({ onSwitch }) {
   const [form, setForm] = useState({ fullName: '', email: '', password: '', companyName: '', phone: '' });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { register } = useAuth();
 
   async function handleRegister() {
-    if (!form.fullName || !form.email || !form.password) return Alert.alert('שגיאה', 'מלא את כל השדות החובה');
+    setError('');
+    if (!form.fullName || !form.email || !form.password) {
+      setError('חובה למלא שם, אימייל וסיסמה');
+      return;
+    }
+    if (form.password.length < 6) {
+      setError('הסיסמה חייבת להיות לפחות 6 תווים');
+      return;
+    }
     setLoading(true);
     try {
       await register(form);
     } catch (e) {
-      Alert.alert('שגיאה', e.response?.data?.message || 'שגיאה בהרשמה');
+      const msg = e?.response?.data?.message || e?.message || 'שגיאה בהרשמה';
+      setError(Array.isArray(msg) ? msg.join(', ') : String(msg));
     } finally {
       setLoading(false);
     }
@@ -48,6 +58,12 @@ export default function RegisterScreen({ onSwitch }) {
               textAlign="right"
             />
           ))}
+
+          {!!error && (
+            <View style={{ backgroundColor: '#fcebeb', borderRadius: 8, padding: 10, marginBottom: 10 }}>
+              <Text style={{ color: '#a32d2d', textAlign: 'center', fontSize: 14 }}>{error}</Text>
+            </View>
+          )}
 
           <TouchableOpacity style={styles.btn} onPress={handleRegister} disabled={loading}>
             {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>הירשם</Text>}

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  BackHandler,
   Image,
   Modal,
   RefreshControl,
@@ -40,11 +41,17 @@ async function apiFetch(path, opts = {}) {
   return res;
 }
 
-export default function ProjectsScreen() {
+export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } = {}) {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (pendingCreate) { setModalVisible(true); onClearPendingCreate?.(); }
+  }, [pendingCreate]);
+  const [projectError, setProjectError] = useState('');
+  const [projectSubmitting, setProjectSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
 
@@ -93,6 +100,24 @@ export default function ProjectsScreen() {
   }
 
   useEffect(() => { loadProjects(); }, []);
+
+  // Android back button: close popups, then step back apartment -> project -> list
+  useEffect(() => {
+    const onBack = () => {
+      if (confirmDelete) { setConfirmDelete(null); return true; }
+      if (progressModal) { setProgressModal(false); return true; }
+      if (addWorkerModal) { setAddWorkerModal(false); return true; }
+      if (addAptMaterialModal) { setAddAptMaterialModal(false); return true; }
+      if (addApartmentModal) { setAddApartmentModal(false); return true; }
+      if (addMaterialModal) { setAddMaterialModal(false); return true; }
+      if (modalVisible) { setModalVisible(false); return true; }
+      if (selectedApartment) { setSelectedApartment(null); return true; }
+      if (selectedProject) { setSelectedProject(null); return true; }
+      return false; // nothing open — let the app-level handler go to dashboard
+    };
+    const sub = BackHandler.addEventListener('hardwareBackPress', onBack);
+    return () => sub.remove();
+  }, [confirmDelete, progressModal, addWorkerModal, addAptMaterialModal, addApartmentModal, addMaterialModal, modalVisible, selectedApartment, selectedProject]);
 
   useEffect(() => {
     if (selectedProject) {
@@ -145,7 +170,10 @@ export default function ProjectsScreen() {
     setApartmentsLoading(true);
     try {
       const res = await apartmentsApi.getByProject(projectId);
-      setProjectApartments(Array.isArray(res.data) ? res.data : []);
+      const arr = Array.isArray(res.data) ? res.data : [];
+      // Sort by apartment number so they always appear in order (1,2,3...)
+      arr.sort((a, b) => (parseInt(a.number, 10) || 0) - (parseInt(b.number, 10) || 0));
+      setProjectApartments(arr);
     } catch (e) { console.log(e); } finally {
       setApartmentsLoading(false);
     }
@@ -177,7 +205,9 @@ export default function ProjectsScreen() {
   }
 
   async function createProject() {
-    if (!form.name || !form.clientName) return Alert.alert('שגיאה', 'מלא שם פרויקט ולקוח');
+    if (!form.name || !form.clientName) { setProjectError('חובה למלא שם פרויקט ושם לקוח'); return; }
+    setProjectError('');
+    setProjectSubmitting(true);
     try {
       const { apartmentCount, endDate, ...projectData } = form;
       let parsedEndDate = null;
@@ -193,17 +223,24 @@ export default function ProjectsScreen() {
         const project = await res.json();
         const count = parseInt(apartmentCount) || 0;
         if (count > 0 && project?.id) {
-          await Promise.all(
-            Array.from({ length: count }, (_, i) =>
-              apartmentsApi.create({ name: `דירה ${i + 1}`, number: String(i + 1), projectId: project.id })
-            )
-          );
+          // Create one at a time (in order) so numbering stays 1,2,3... and never races
+          for (let i = 0; i < count; i++) {
+            await apartmentsApi.create({ name: `דירה ${i + 1}`, number: String(i + 1), projectId: project.id });
+          }
         }
         setModalVisible(false);
+        setProjectError('');
         setForm({ name: '', clientName: '', clientPhone: '', address: '', city: '', budget: '', apartmentCount: '', endDate: '' });
         loadProjects();
+      } else {
+        const body = await res.json().catch(() => ({}));
+        setProjectError(body?.message ? String(body.message) : `שגיאה בשרת (${res.status}) — נסי שוב`);
       }
-    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו ליצור פרויקט'); }
+    } catch (e) {
+      setProjectError('אין חיבור לשרת — בדקי אינטרנט ונסי שוב');
+    } finally {
+      setProjectSubmitting(false);
+    }
   }
 
   async function addMaterial() {
@@ -1001,11 +1038,12 @@ export default function ProjectsScreen() {
                   onChangeText={v => setForm({ ...form, [f.key]: v })} keyboardType={f.keyboardType || 'default'} textAlign="right" />
               ))}
             </ScrollView>
+            {projectError ? <Text style={{ color: '#a32d2d', textAlign: 'center', marginBottom: 8 }}>{projectError}</Text> : null}
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.btnPrimary} onPress={createProject}>
-                <Text style={styles.btnPrimaryText}>צור פרויקט</Text>
+              <TouchableOpacity style={[styles.btnPrimary, projectSubmitting && { opacity: 0.6 }]} onPress={createProject} disabled={projectSubmitting}>
+                <Text style={styles.btnPrimaryText}>{projectSubmitting ? 'יוצר...' : 'צור פרויקט'}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnSecondary} onPress={() => setModalVisible(false)}>
+              <TouchableOpacity style={styles.btnSecondary} onPress={() => { setModalVisible(false); setProjectError(''); }}>
                 <Text style={styles.btnSecondaryText}>ביטול</Text>
               </TouchableOpacity>
             </View>

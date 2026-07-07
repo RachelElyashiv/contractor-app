@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, BackHandler, StyleSheet, Text, TouchableOpacity, ToastAndroid, Platform, View } from 'react-native';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import DashboardScreen from '../screens/DashboardScreen';
 import InvoicesScreen from '../screens/InvoicesScreen';
@@ -25,6 +25,37 @@ function MainApp() {
   const { user, loading } = auth;
   const [showRegister, setShowRegister] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+  const [pendingCreate, setPendingCreate] = useState(false);
+
+  function handleNavigate(tab: number, action?: string) {
+    setActiveTab(tab);
+    if (action === 'create') setPendingCreate(true);
+  }
+
+  // Android hardware/gesture back button.
+  // Screens register their own handlers first (to close popups / go back a view);
+  // this parent handler runs last: non-dashboard tab -> dashboard, dashboard -> double-press to exit.
+  const activeTabRef = useRef(activeTab);
+  activeTabRef.current = activeTab;
+  const lastBackRef = useRef(0);
+  useEffect(() => {
+    const onBack = () => {
+      if (activeTabRef.current !== 0) {
+        setActiveTab(0);
+        return true; // consumed — go to dashboard
+      }
+      // Already on dashboard: require a second press within 2s to exit
+      const now = Date.now();
+      if (now - lastBackRef.current < 2000) {
+        return false; // let the OS close the app
+      }
+      lastBackRef.current = now;
+      if (Platform.OS === 'android') ToastAndroid.show('לחצי שוב ליציאה', ToastAndroid.SHORT);
+      return true;
+    };
+    const sub = BackHandler.addEventListener('hardwareBackPress', onBack);
+    return () => sub.remove();
+  }, []);
 
   if (loading) return (
     <View style={{ flex: 1, justifyContent: 'center' }}>
@@ -43,7 +74,11 @@ function MainApp() {
   return (
     <View style={styles.container}>
       <View style={styles.screen}>
-        <ActiveScreen />
+        <ActiveScreen
+          onNavigate={handleNavigate}
+          pendingCreate={pendingCreate}
+          onClearPendingCreate={() => setPendingCreate(false)}
+        />
       </View>
       <View style={styles.tabBar}>
         {tabs.map((tab, idx) => {
