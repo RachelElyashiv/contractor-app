@@ -36,7 +36,16 @@
           }
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-sharing",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "האפליקציה צריכה גישה לתמונות כדי להעלות תמונות שטח ומסמכים.",
+          "cameraPermission": "האפליקציה צריכה גישה למצלמה כדי לצלם תמונות שטח."
+        }
+      ],
+      "expo-document-picker"
     ],
     "experiments": {
       "typedRoutes": true,
