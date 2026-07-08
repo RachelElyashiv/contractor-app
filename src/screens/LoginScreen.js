@@ -38,6 +38,7 @@ export default function LoginScreen({ onSwitch }) {
 
         <TextInput
           style={styles.input}
+          placeholderTextColor="#9a9a9a"
           placeholder="אימייל"
           value={email}
           onChangeText={setEmail}
@@ -47,6 +48,7 @@ export default function LoginScreen({ onSwitch }) {
         />
         <TextInput
           style={styles.input}
+          placeholderTextColor="#9a9a9a"
           placeholder="סיסמה"
           value={password}
           onChangeText={setPassword}
@@ -77,7 +79,7 @@ const styles = StyleSheet.create({
   card: { backgroundColor: '#fff', borderRadius: 16, padding: 24, elevation: 3 },
   title: { fontSize: 28, fontWeight: 'bold', textAlign: 'center', color: '#1a6b4a', marginBottom: 4 },
   subtitle: { fontSize: 14, textAlign: 'center', color: '#888', marginBottom: 24 },
-  input: { borderWidth: 0.5, borderColor: '#ddd', borderRadius: 10, padding: 12, marginBottom: 14, fontSize: 15, backgroundColor: '#fafafa' },
+  input: { borderWidth: 0.5, borderColor: '#ddd', borderRadius: 10, padding: 12, marginBottom: 14, fontSize: 15, backgroundColor: '#fafafa', color: '#1a1a1a' },
   btn: { backgroundColor: '#1a6b4a', padding: 14, borderRadius: 10, alignItems: 'center', marginTop: 4 },
   btnText: { color: '#fff', fontSize: 16, fontWeight: '600' },
   switchText: { textAlign: 'center', color: '#1a6b4a', marginTop: 16, fontSize: 14 },

@@ -416,7 +416,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
               { key: 'role', placeholder: 'תפקיד (בנאי, חשמלאי...)' },
               { key: 'dailyRate', placeholder: 'שכר יומי ₪', keyboardType: 'numeric' },
             ].map(f => (
-              <TextInput key={f.key} style={styles.input} placeholder={f.placeholder} value={form[f.key]}
+              <TextInput key={f.key} style={styles.input} placeholderTextColor="#9a9a9a" placeholder={f.placeholder} value={form[f.key]}
                 onChangeText={v => setForm({ ...form, [f.key]: v })} keyboardType={f.keyboardType || 'default'} textAlign="right" />
             ))}
 
@@ -551,7 +551,7 @@ const styles = StyleSheet.create({
   overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modal: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 24, maxHeight: '80%' },
   modalTitle: { fontSize: 18, fontWeight: '600', textAlign: 'center', marginBottom: 16, color: '#1a1a1a' },
-  input: { borderWidth: 0.5, borderColor: '#ddd', borderRadius: 10, padding: 12, marginBottom: 12, fontSize: 15, backgroundColor: '#fafafa' },
+  input: { borderWidth: 0.5, borderColor: '#ddd', borderRadius: 10, padding: 12, marginBottom: 12, fontSize: 15, backgroundColor: '#fafafa', color: '#1a1a1a' },
   selectorBtn: { borderWidth: 0.5, borderColor: '#1a6b4a', borderRadius: 10, padding: 12, marginBottom: 12, backgroundColor: '#e8f5ef' },
   selectorText: { fontSize: 15, color: '#1a6b4a', textAlign: 'right' },
   modalActions: { flexDirection: 'row', gap: 10, marginTop: 8 },

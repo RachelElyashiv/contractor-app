@@ -731,7 +731,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                     { key: 'unitPrice', placeholder: 'מחיר ליחידה ₪', keyboardType: 'numeric' },
                     { key: 'supplier', placeholder: 'ספק' },
                   ].map(f => (
-                    <TextInput key={f.key} style={styles.input} placeholder={f.placeholder} value={aptMatForm[f.key]}
+                    <TextInput key={f.key} style={styles.input} placeholderTextColor="#9a9a9a" placeholder={f.placeholder} value={aptMatForm[f.key]}
                       onChangeText={v => setAptMatForm({ ...aptMatForm, [f.key]: v })} keyboardType={f.keyboardType || 'default'} textAlign="right" />
                   ))}
                   {aptMatError ? <Text style={{ color: '#a32d2d', textAlign: 'center', marginBottom: 8 }}>{aptMatError}</Text> : null}
@@ -803,7 +803,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                     { key: 'role', placeholder: 'תפקיד (בנאי, חשמלאי...)' },
                     { key: 'dailyRate', placeholder: 'שכר יומי ₪', keyboardType: 'numeric' },
                   ].map(f => (
-                    <TextInput key={f.key} style={styles.input} placeholder={f.placeholder}
+                    <TextInput key={f.key} style={styles.input} placeholderTextColor="#9a9a9a" placeholder={f.placeholder}
                       value={workerForm[f.key]}
                       onChangeText={v => setWorkerForm({ ...workerForm, [f.key]: v })}
                       keyboardType={f.keyboardType || 'default'} textAlign="right" />
@@ -827,7 +827,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
           <View style={styles.overlay}>
             <View style={[styles.modal, { paddingBottom: 30 }]}>
               <Text style={styles.modalTitle}>עדכן אחוז התקדמות</Text>
-              <TextInput style={styles.input} placeholder="0-100" value={progressValue}
+              <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder="0-100" value={progressValue}
                 onChangeText={setProgressValue} keyboardType="numeric" textAlign="right" />
               <View style={styles.modalActions}>
                 <TouchableOpacity style={styles.btnPrimary} onPress={updateApartmentProgress}>
@@ -909,7 +909,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                     { key: 'unitPrice', placeholder: 'מחיר ליחידה ₪', keyboardType: 'numeric' },
                     { key: 'supplier', placeholder: 'ספק' },
                   ].map(f => (
-                    <TextInput key={f.key} style={styles.input} placeholder={f.placeholder} value={matForm[f.key]}
+                    <TextInput key={f.key} style={styles.input} placeholderTextColor="#9a9a9a" placeholder={f.placeholder} value={matForm[f.key]}
                       onChangeText={v => setMatForm({ ...matForm, [f.key]: v })} keyboardType={f.keyboardType || 'default'} textAlign="right" />
                   ))}
                   <View style={styles.modalActions}>
@@ -971,7 +971,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                     { key: 'number', placeholder: 'מספר דירה / קומה' },
                     { key: 'description', placeholder: 'תיאור (אופציונלי)' },
                   ].map(f => (
-                    <TextInput key={f.key} style={styles.input} placeholder={f.placeholder} value={aptForm[f.key]}
+                    <TextInput key={f.key} style={styles.input} placeholderTextColor="#9a9a9a" placeholder={f.placeholder} value={aptForm[f.key]}
                       onChangeText={v => setAptForm({ ...aptForm, [f.key]: v })} textAlign="right" />
                   ))}
                   <View style={styles.modalActions}>
@@ -1063,7 +1063,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                 { key: 'apartmentCount', placeholder: 'מספר דירות בפרויקט', keyboardType: 'numeric' },
                 { key: 'endDate', placeholder: 'תאריך יעד (DD/MM/YYYY)' },
               ].map(f => (
-                <TextInput key={f.key} style={styles.input} placeholder={f.placeholder} value={form[f.key]}
+                <TextInput key={f.key} style={styles.input} placeholderTextColor="#9a9a9a" placeholder={f.placeholder} value={form[f.key]}
                   onChangeText={v => setForm({ ...form, [f.key]: v })} keyboardType={f.keyboardType || 'default'} textAlign="right" />
               ))}
             </ScrollView>
@@ -1154,7 +1154,7 @@ const styles = StyleSheet.create({
   overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modal: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 24, maxHeight: '85%' },
   modalTitle: { fontSize: 18, fontWeight: '600', textAlign: 'center', marginBottom: 16, color: '#1a1a1a' },
-  input: { borderWidth: 0.5, borderColor: '#ddd', borderRadius: 10, padding: 12, marginBottom: 12, fontSize: 15, backgroundColor: '#fafafa' },
+  input: { borderWidth: 0.5, borderColor: '#ddd', borderRadius: 10, padding: 12, marginBottom: 12, fontSize: 15, backgroundColor: '#fafafa', color: '#1a1a1a' },
   modalActions: { flexDirection: 'row', gap: 10, marginTop: 8 },
   btnPrimary: { flex: 1, backgroundColor: '#1a6b4a', padding: 14, borderRadius: 10, alignItems: 'center' },
   btnPrimaryText: { color: '#fff', fontWeight: '600', fontSize: 15 },

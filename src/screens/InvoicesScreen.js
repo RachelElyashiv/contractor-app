@@ -431,18 +431,18 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
                 ) : null}
               </View>
 
-              <TextInput style={styles.input} placeholder="שם לקוח *" value={form.clientName}
+              <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder="שם לקוח *" value={form.clientName}
                 onChangeText={v => setForm({ ...form, clientName: v })} textAlign="right" />
-              <TextInput style={styles.input} placeholder="טלפון לקוח" value={form.clientPhone}
+              <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder="טלפון לקוח" value={form.clientPhone}
                 onChangeText={v => setForm({ ...form, clientPhone: v })} keyboardType="phone-pad" textAlign="right" />
               <Text style={styles.itemsTitle}>פריטים</Text>
               {form.items.map((item, idx) => (
                 <View key={idx} style={styles.itemRow}>
-                  <TextInput style={[styles.input, { flex: 2 }]} placeholder="תיאור" value={item.description}
+                  <TextInput style={[styles.input, { flex: 2 }]} placeholderTextColor="#9a9a9a" placeholder="תיאור" value={item.description}
                     onChangeText={v => { const items = [...form.items]; items[idx].description = v; setForm({ ...form, items }); }} textAlign="right" />
-                  <TextInput style={[styles.input, { flex: 1, marginRight: 6 }]} placeholder="כמות" value={item.quantity}
+                  <TextInput style={[styles.input, { flex: 1, marginRight: 6 }]} placeholderTextColor="#9a9a9a" placeholder="כמות" value={item.quantity}
                     onChangeText={v => { const items = [...form.items]; items[idx].quantity = v; setForm({ ...form, items }); }} keyboardType="numeric" textAlign="right" />
-                  <TextInput style={[styles.input, { flex: 1, marginRight: 6 }]} placeholder="מחיר" value={item.unitPrice}
+                  <TextInput style={[styles.input, { flex: 1, marginRight: 6 }]} placeholderTextColor="#9a9a9a" placeholder="מחיר" value={item.unitPrice}
                     onChangeText={v => { const items = [...form.items]; items[idx].unitPrice = v; setForm({ ...form, items }); }} keyboardType="numeric" textAlign="right" />
                 </View>
               ))}
@@ -454,10 +454,10 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
                   <Text style={styles.addItem}>📦 משוך חומר מהמלאי</Text>
                 </TouchableOpacity>
               </View>
-              <TextInput style={styles.input} placeholder="הערות" value={form.notes}
+              <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder="הערות" value={form.notes}
                 onChangeText={v => setForm({ ...form, notes: v })} textAlign="right" />
               {createType === 'invoice' && (
-                <TextInput style={styles.input} placeholder="מע״מ %" value={form.taxPercent}
+                <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder="מע״מ %" value={form.taxPercent}
                   onChangeText={v => setForm({ ...form, taxPercent: v })} keyboardType="numeric" textAlign="right" />
               )}
               {/* Live total preview */}
@@ -651,7 +651,7 @@ const styles = StyleSheet.create({
   overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modal: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 24, maxHeight: '90%' },
   modalTitle: { fontSize: 18, fontWeight: '600', textAlign: 'center', marginBottom: 16, color: '#1a1a1a' },
-  input: { borderWidth: 0.5, borderColor: '#ddd', borderRadius: 10, padding: 12, marginBottom: 12, fontSize: 15, backgroundColor: '#fafafa' },
+  input: { borderWidth: 0.5, borderColor: '#ddd', borderRadius: 10, padding: 12, marginBottom: 12, fontSize: 15, backgroundColor: '#fafafa', color: '#1a1a1a' },
   itemsTitle: { fontSize: 14, fontWeight: '600', textAlign: 'right', marginBottom: 8, color: '#1a1a1a' },
   importBox: { backgroundColor: '#f0f7f3', borderRadius: 12, padding: 12, marginBottom: 14, borderWidth: 0.5, borderColor: '#c8e6d6' },
   importTitle: { fontSize: 14, fontWeight: '600', color: '#1a6b4a', textAlign: 'right', marginBottom: 4 },
