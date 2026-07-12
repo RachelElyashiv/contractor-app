@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/רחל/Downloads/contractor-backend/contractor-backend/**)",
+      "Bash(npx nest *)",
+      "PowerShell(git add src/app/index.tsx src/screens/DashboardScreen.js src/screens/InvoicesScreen.js src/screens/LoginScreen.js src/screens/MaterialsScreen.js src/screens/ProjectsScreen.js src/screens/RegisterScreen.js src/screens/WorkersScreen.js src/services/api.js)",
+      "PowerShell(git push origin main)",
+      "PowerShell(git add src/screens/ProjectsScreen.js)",
+      "PowerShell(git add src/screens/DashboardScreen.js)"
+    ]
+  }
+}

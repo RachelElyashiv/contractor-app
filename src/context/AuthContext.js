@@ -10,23 +10,22 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    async function loadStoredAuth() {
+      try {
+        const storedToken = await AsyncStorage.getItem('token');
+        const storedUser = await AsyncStorage.getItem('user');
+        if (storedToken && storedUser) {
+          setToken(storedToken);
+          setUser(JSON.parse(storedUser));
+        }
+      } catch (e) {
+        console.log('Auth load error:', e);
+      } finally {
+        setLoading(false);
+      }
+    }
     loadStoredAuth();
   }, []);
-
-  async function loadStoredAuth() {
-    try {
-      const storedToken = await AsyncStorage.getItem('token');
-      const storedUser = await AsyncStorage.getItem('user');
-      if (storedToken && storedUser) {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
-      }
-    } catch (e) {
-      console.log('Auth load error:', e);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   async function login(email, password) {
     const res = await auth.login(email, password);

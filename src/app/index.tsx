@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useRef, useState } from 'react';
+import { ComponentType, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, BackHandler, StyleSheet, Text, TouchableOpacity, ToastAndroid, Platform, View } from 'react-native';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import DashboardScreen from '../screens/DashboardScreen';
@@ -35,12 +35,10 @@ function MainApp() {
   // Android hardware/gesture back button.
   // Screens register their own handlers first (to close popups / go back a view);
   // this parent handler runs last: non-dashboard tab -> dashboard, dashboard -> double-press to exit.
-  const activeTabRef = useRef(activeTab);
-  activeTabRef.current = activeTab;
   const lastBackRef = useRef(0);
   useEffect(() => {
     const onBack = () => {
-      if (activeTabRef.current !== 0) {
+      if (activeTab !== 0) {
         setActiveTab(0);
         return true; // consumed — go to dashboard
       }
@@ -55,7 +53,7 @@ function MainApp() {
     };
     const sub = BackHandler.addEventListener('hardwareBackPress', onBack);
     return () => sub.remove();
-  }, []);
+  }, [activeTab]);
 
   if (loading) return (
     <View style={{ flex: 1, justifyContent: 'center' }}>
@@ -69,7 +67,7 @@ function MainApp() {
       : <LoginScreen onSwitch={() => setShowRegister(true)} />;
   }
 
-  const ActiveScreen = tabs[activeTab].component;
+  const ActiveScreen = tabs[activeTab].component as ComponentType<any>;
 
   return (
     <View style={styles.container}>
