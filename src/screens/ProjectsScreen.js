@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import PdfViewer from '../components/PdfViewer';
 import { apartments as apartmentsApi, materials as materialsApi, projects as projectsApi, workers as workersApi } from '../services/api';
 
 const BASE_URL = 'https://contractor-backend-production.up.railway.app/api/v1';
@@ -136,6 +137,9 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   const [addWorkerModal, setAddWorkerModal] = useState(false);
   const [workerForm, setWorkerForm] = useState({ firstName: '', lastName: '', phone: '', role: '', dailyRate: '' });
 
+  // In-app document viewer
+  const [docViewer, setDocViewer] = useState({ visible: false, uri: '', title: '' });
+
   // Confirm delete dialog
   const [confirmDelete, setConfirmDelete] = useState(null); // { message }
   const pendingDeleteFn = useRef(null);
@@ -150,6 +154,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   // Android back button: close popups, then step back apartment -> project -> list
   useEffect(() => {
     const onBack = () => {
+      if (docViewer.visible) { setDocViewer({ visible: false, uri: '', title: '' }); return true; }
       if (confirmDelete) { setConfirmDelete(null); return true; }
       if (progressModal) { setProgressModal(false); return true; }
       if (addWorkerModal) { setAddWorkerModal(false); return true; }
@@ -163,7 +168,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
     };
     const sub = BackHandler.addEventListener('hardwareBackPress', onBack);
     return () => sub.remove();
-  }, [confirmDelete, progressModal, addWorkerModal, addAptMaterialModal, addApartmentModal, addMaterialModal, modalVisible, selectedApartment, selectedProject]);
+  }, [docViewer.visible, confirmDelete, progressModal, addWorkerModal, addAptMaterialModal, addApartmentModal, addMaterialModal, modalVisible, selectedApartment, selectedProject]);
 
   useEffect(() => {
     if (selectedProject) {
@@ -578,7 +583,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         )}
         {!!m.imageUrl && (
           m.imageUrl.toLowerCase().includes('.pdf') || m.imageUrl.includes('/raw/') ? (
-            <TouchableOpacity onPress={() => openUrl(m.imageUrl)} style={{ marginTop: 8, padding: 10, backgroundColor: '#f5f0ff', borderRadius: 8 }}>
+            <TouchableOpacity onPress={() => setDocViewer({ visible: true, uri: m.imageUrl, title: 'תעודת משלוח' })} style={{ marginTop: 8, padding: 10, backgroundColor: '#f5f0ff', borderRadius: 8 }}>
               <Text style={{ color: '#6b35a0', fontSize: 13, textAlign: 'right' }}>📄 פתח תעודת משלוח ←</Text>
             </TouchableOpacity>
           ) : (
@@ -620,7 +625,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                 <View style={styles.pdfIcon}><Text style={styles.pdfIconText}>PDF</Text></View>
                 <View style={styles.pdfInfo}>
                   <Text style={styles.pdfName}>{pdf.caption || pdf.filename}</Text>
-                  <TouchableOpacity onPress={() => openUrl(pdf.url)}>
+                  <TouchableOpacity onPress={() => setDocViewer({ visible: true, uri: pdf.url, title: pdf.caption || pdf.filename })}>
                     <Text style={styles.pdfOpen}>פתח קובץ</Text>
                   </TouchableOpacity>
                 </View>
@@ -659,6 +664,16 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         </View>
       </View>
     </Modal>
+  );
+
+  const docViewerJsx = (
+    <PdfViewer
+      visible={docViewer.visible}
+      uri={docViewer.uri}
+      title={docViewer.title}
+      onShare={() => openUrl(docViewer.uri)}
+      onClose={() => setDocViewer({ visible: false, uri: '', title: '' })}
+    />
   );
 
   if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#1a6b4a" />;
@@ -841,6 +856,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
           </View>
         </Modal>
         {confirmModalJsx}
+        {docViewerJsx}
       </View>
     );
   }
@@ -988,6 +1004,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
           </View>
         )}
         {confirmModalJsx}
+        {docViewerJsx}
       </View>
     );
   }
@@ -1080,6 +1097,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         </View>
       </Modal>
       {confirmModalJsx}
+      {docViewerJsx}
     </View>
   );
 }

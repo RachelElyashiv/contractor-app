@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import PdfViewer from '../components/PdfViewer';
 
 const BASE_URL = 'https://contractor-backend-production.up.railway.app/api/v1';
 const isWeb = Platform.OS === 'web';
@@ -23,6 +24,7 @@ export default function PhotosScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [docViewer, setDocViewer] = useState({ visible: false, uri: '', title: '' });
   const fileInputRef = useRef(null);
 
   useEffect(() => { loadPhotos(); }, []);
@@ -189,7 +191,11 @@ export default function PhotosScreen() {
     }
   }
 
-  function openFile(url) {
+  function openFile(url, title) {
+    setDocViewer({ visible: true, uri: url, title: title || 'תצוגת מסמך' });
+  }
+
+  function openExternally(url) {
     if (isWeb) window.open(url, '_blank');
     else Linking.openURL(url);
   }
@@ -261,7 +267,7 @@ export default function PhotosScreen() {
                 </View>
                 <View style={styles.pdfInfo}>
                   <Text style={styles.pdfName}>{pdf.caption || pdf.filename}</Text>
-                  <TouchableOpacity onPress={() => openFile(pdf.url)}>
+                  <TouchableOpacity onPress={() => openFile(pdf.url, pdf.caption || pdf.filename)}>
                     <Text style={styles.pdfOpen}>פתח קובץ</Text>
                   </TouchableOpacity>
                 </View>
@@ -284,6 +290,14 @@ export default function PhotosScreen() {
           </View>
         )}
       </ScrollView>
+
+      <PdfViewer
+        visible={docViewer.visible}
+        uri={docViewer.uri}
+        title={docViewer.title}
+        onShare={() => openExternally(docViewer.uri)}
+        onClose={() => setDocViewer({ visible: false, uri: '', title: '' })}
+      />
     </View>
   );
 }

@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
+import PdfViewer from '../components/PdfViewer';
 import { apartments as apartmentsApi, invoices, materials as materialsApi, projects as projectsApi } from '../services/api';
 
 const isWeb = Platform.OS === 'web';
@@ -260,19 +261,21 @@ export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } =
 ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
 <div class="footer">נוצר אוטומטית · ${new Date().toLocaleDateString('he-IL')}</div>
 </body></html>`;
-    if (isWeb) {
-      setPdfModal({ visible: true, html });
-    } else {
-      try {
-        const { uri } = await Print.printToFileAsync({ html });
-        if (await Sharing.isAvailableAsync()) {
-          await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: 'שיתוף מסמך', UTI: 'com.adobe.pdf' });
-        } else {
-          await Print.printAsync({ uri });
-        }
-      } catch (e) {
-        Alert.alert('שגיאה', 'לא הצלחנו ליצור PDF');
+    setPdfModal({ visible: true, html });
+  }
+
+  // Generate a real PDF from the currently-open invoice and hand it to the OS
+  // share sheet (for sending to the client). Only used on native.
+  async function sharePdf() {
+    try {
+      const { uri } = await Print.printToFileAsync({ html: pdfModal.html });
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: 'שיתוף מסמך', UTI: 'com.adobe.pdf' });
+      } else {
+        await Print.printAsync({ uri });
       }
+    } catch (e) {
+      Alert.alert('שגיאה', 'לא הצלחנו ליצור PDF');
     }
   }
 
@@ -573,34 +576,14 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
         </View>
       </Modal>
 
-      {/* PDF in-app modal (web only — native uses expo-print/sharing) */}
-      {isWeb && (
-      <Modal visible={pdfModal.visible} animationType="slide">
-        <View style={{ flex: 1, backgroundColor: '#f0f4f0' }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, backgroundColor: '#1a6b4a' }}>
-            <TouchableOpacity onPress={() => {
-                const iframe = document.querySelector('iframe[title="invoice-preview"]');
-                if (iframe) iframe.contentWindow.print();
-              }}
-              style={{ backgroundColor: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 8 }}>
-              <Text style={{ color: '#fff', fontWeight: '600' }}>🖨 הדפס</Text>
-            </TouchableOpacity>
-            <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>תצוגת מסמך</Text>
-            <TouchableOpacity onPress={() => setPdfModal({ visible: false, html: '' })}
-              style={{ backgroundColor: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 8 }}>
-              <Text style={{ color: '#fff', fontWeight: '600' }}>✕ סגור</Text>
-            </TouchableOpacity>
-          </View>
-          {pdfModal.html ? (
-            <iframe
-              srcDoc={pdfModal.html}
-              style={{ width: '100%', height: 'calc(100vh - 60px)', border: 'none', display: 'block' }}
-              title="invoice-preview"
-            />
-          ) : null}
-        </View>
-      </Modal>
-      )}
+      {/* In-app document viewer — shows the invoice inside the app on web and native */}
+      <PdfViewer
+        visible={pdfModal.visible}
+        html={pdfModal.html}
+        title="תצוגת מסמך"
+        onShare={isWeb ? undefined : sharePdf}
+        onClose={() => setPdfModal({ visible: false, html: '' })}
+      />
 
       <Modal visible={!!confirmDelete} transparent animationType="fade">
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 30 }}>
