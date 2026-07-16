@@ -128,7 +128,7 @@ export default function DashboardScreen({ onNavigate }) {
       {(() => {
         const monthName = new Date().toLocaleDateString('he-IL', { month: 'long', year: 'numeric' });
         const totalExpenses = expenseSummary?.total || 0;
-        const totalSalary = salaryReport.reduce((s, r) => s + Number(r.totalPay), 0);
+        const totalSalary = salaryReport.reduce((s, r) => s + (Number(r.totalPay) || 0), 0);
         const totalCosts = totalExpenses + totalSalary + materialsCost;
         const pendingIncome = invoiceSummary?.pendingAmount || 0;
         const revenue = invoiceSummary?.totalRevenue || 0;
@@ -156,7 +156,7 @@ export default function DashboardScreen({ onNavigate }) {
             </View>
             <View style={styles.monthRow}>
               <Text style={styles.monthRowVal}>₪{Math.round(totalSalary).toLocaleString()}</Text>
-              <Text style={styles.monthRowLabel}>שכר עובדים ({salaryReport.reduce((s,r)=>s+r.daysPresent,0)} ימי עבודה)</Text>
+              <Text style={styles.monthRowLabel}>שכר עובדים ({salaryReport.reduce((s,r)=>s+(Number(r.daysPresent)||0),0)} ימי עבודה)</Text>
             </View>
             <View style={styles.monthRow}>
               <Text style={styles.monthRowVal}>₪{Math.round(revenue).toLocaleString()}</Text>
