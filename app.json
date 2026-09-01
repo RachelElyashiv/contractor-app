@@ -7,8 +7,15 @@
     "icon": "./assets/images/icon.png",
     "scheme": "contractorapp",
     "userInterfaceStyle": "light",
+    "description": "אפליקציה לניהול דוחות שטח ומסמכים עבור קבלנים וייעוצים מקצועיים",
+    "privacy": "https://github.com/rachelelyashiv/contractor-app/blob/main/PRIVACY_POLICY.md",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "supportsTabletMode": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "האפליקציה צריכה גישה למצלמה כדי לצלם תמונות שטח.",
+        "NSPhotoLibraryUsageDescription": "האפליקציה צריכה גישה לתמונות כדי להעלות תמונות שטח ומסמכים."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +25,14 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.rachelelyashiv.contractorapp"
+      "package": "com.rachelelyashiv.contractorapp",
+      "versionCode": 1,
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "INTERNET"
+      ]
     },
     "web": {
       "output": "static",
