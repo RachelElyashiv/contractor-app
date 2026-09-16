@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const BASE_URL = 'https://contractor-backend-production.up.railway.app/api/v1';
+const BASE_URL = 'https://contractor-api-301065183146.us-central1.run.app/api/v1';
 const api = axios.create({
   baseURL: BASE_URL,
   timeout: 10000,
