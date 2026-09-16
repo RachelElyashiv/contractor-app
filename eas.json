@@ -17,14 +17,13 @@
     "production": {
       "autoIncrement": true,
       "android": {
-        "buildType": "aab"
+        "buildType": "app-bundle"
       }
     }
   },
   "submit": {
     "production": {
       "android": {
-        "serviceAccount": "@credentials.json",
         "track": "internal"
       }
     }
