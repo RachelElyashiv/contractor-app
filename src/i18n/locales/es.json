@@ -5,7 +5,13 @@
     "close": "Cerrar",
     "share": "Compartir",
     "print": "Imprimir",
-    "open": "Abrir"
+    "open": "Abrir",
+    "error": "Error",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "permissionRequired": "Permiso necesario",
+    "add": "+ Añadir",
+    "submitting": "Enviando…"
   },
   "nav": {
     "dashboard": "Panel",
@@ -40,5 +46,91 @@
   "document": {
     "title": "Documento",
     "loading": "Cargando documento…"
+  },
+  "dashboard": {
+    "greeting": "Hola, {{name}}",
+    "subtitle": "Panel principal",
+    "logout": "Cerrar sesión",
+    "actions": {
+      "addProject": "+ Proyecto",
+      "addWorker": "+ Trabajador",
+      "addInvoice": "+ Factura",
+      "addMaterial": "+ Material"
+    },
+    "stats": {
+      "activeProjects": "Proyectos activos",
+      "workersToday": "Trabajadores hoy",
+      "revenue": "Ingresos",
+      "lowMaterials": "Materiales bajos"
+    },
+    "stockAlerts": "Alertas de stock",
+    "stockItem": "{{name}} – quedan {{qty}} {{unit}}",
+    "attendanceToday": "Asistencia de hoy",
+    "monthlyReport": "Informe mensual — {{month}}",
+    "totalExpenses": "Gastos totales",
+    "toCollect": "Por cobrar",
+    "materialsCost": "Coste de materiales",
+    "otherExpenses": "Otros gastos",
+    "wages": "Salarios ({{days}} días trabajados)",
+    "invoiceIncome": "Ingresos por facturas",
+    "profit": "Beneficio (ingresos − gastos)",
+    "recentProjects": "Proyectos recientes"
+  },
+  "photos": {
+    "title": "Archivos y fotos",
+    "upload": "+ Subir",
+    "uploading": "Subiendo…",
+    "siteImages": "Fotos de obra ({{count}})",
+    "pdfFiles": "Archivos PDF ({{count}})",
+    "openFile": "Abrir archivo",
+    "empty": "Aún no hay archivos",
+    "emptyHint": "Pulsa \"+ Subir\" para añadir fotos",
+    "addPhoto": "Añadir foto",
+    "chooseSource": "Elige una fuente",
+    "gallery": "Galería",
+    "camera": "Cámara",
+    "deleteFile": "Eliminar archivo",
+    "confirmDelete": "¿Eliminar \"{{name}}\"?",
+    "errors": {
+      "uploadFailed": "No se pudo subir",
+      "uploadError": "Error al subir",
+      "deleteFailed": "No se pudo eliminar",
+      "deleteError": "Error al eliminar",
+      "needGalleryPermission": "Permite el acceso a tus fotos para subirlas",
+      "needCameraPermission": "Permite el acceso a la cámara para hacer fotos"
+    }
+  },
+  "materials": {
+    "defaultUnit": "unidades",
+    "title": "Materiales y stock",
+    "lowBadge": "Stock bajo",
+    "supplier": "Proveedor: {{name}}",
+    "price": "Precio: ₪{{price}} por {{unit}}",
+    "empty": "Aún no hay materiales. Pulsa + Añadir.",
+    "newMaterial": "Material nuevo",
+    "addMaterial": "Añadir material",
+    "assignProject": "Asignar a proyecto",
+    "assignProjectPlaceholder": "Asignar a un proyecto (opcional)",
+    "assignApartment": "Asignar a vivienda",
+    "assignApartmentPlaceholder": "Asignar a una vivienda (opcional)",
+    "noProject": "Sin proyecto",
+    "noApartment": "Sin vivienda",
+    "noProjectsYet": "Aún no hay proyectos",
+    "noApartmentsForProject": "No hay viviendas para este proyecto",
+    "confirmDelete": "¿Eliminar este material?",
+    "fields": {
+      "name": "Nombre del material *",
+      "unit": "Unidad (sacos, metros…)",
+      "quantity": "Cantidad en stock",
+      "minQuantity": "Cantidad mínima para alerta",
+      "unitPrice": "Precio por unidad ₪",
+      "supplier": "Proveedor"
+    },
+    "errors": {
+      "nameRequired": "Introduce el nombre del material",
+      "serverError": "Error del servidor — inténtalo de nuevo",
+      "stockUpdateFailed": "No se pudo actualizar el stock",
+      "deleteFailed": "Error al eliminar el material"
+    }
   }
 }

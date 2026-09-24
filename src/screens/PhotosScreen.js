@@ -15,11 +15,13 @@ import {
   View,
 } from 'react-native';
 import PdfViewer from '../components/PdfViewer';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const BASE_URL = 'https://contractor-backend-production.up.railway.app/api/v1';
 const isWeb = Platform.OS === 'web';
 
 export default function PhotosScreen() {
+  const { t } = useLanguage();
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -62,9 +64,9 @@ export default function PhotosScreen() {
         body: formData,
       });
       if (res.ok) loadPhotos();
-      else Alert.alert('שגיאה', 'לא הצלחנו להעלות');
+      else Alert.alert(t('common.error'), t('photos.errors.uploadFailed'));
     } catch (e) {
-      Alert.alert('שגיאה', 'שגיאה בהעלאה');
+      Alert.alert(t('common.error'), t('photos.errors.uploadError'));
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -75,7 +77,7 @@ export default function PhotosScreen() {
   async function pickAndUploadMobile() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert('הרשאה נדרשת', 'יש לאשר גישה לתמונות כדי להעלות');
+      Alert.alert(t('common.permissionRequired'), t('photos.errors.needGalleryPermission'));
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -104,9 +106,9 @@ export default function PhotosScreen() {
         body: formData,
       });
       if (res.ok) loadPhotos();
-      else Alert.alert('שגיאה', 'לא הצלחנו להעלות');
+      else Alert.alert(t('common.error'), t('photos.errors.uploadFailed'));
     } catch (e) {
-      Alert.alert('שגיאה', 'שגיאה בהעלאה');
+      Alert.alert(t('common.error'), t('photos.errors.uploadError'));
     } finally {
       setUploading(false);
     }
@@ -116,7 +118,7 @@ export default function PhotosScreen() {
   async function takePhotoMobile() {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert('הרשאה נדרשת', 'יש לאשר גישה למצלמה כדי לצלם');
+      Alert.alert(t('common.permissionRequired'), t('photos.errors.needCameraPermission'));
       return;
     }
     const result = await ImagePicker.launchCameraAsync({
@@ -142,9 +144,9 @@ export default function PhotosScreen() {
         body: formData,
       });
       if (res.ok) loadPhotos();
-      else Alert.alert('שגיאה', 'לא הצלחנו להעלות');
+      else Alert.alert(t('common.error'), t('photos.errors.uploadFailed'));
     } catch (e) {
-      Alert.alert('שגיאה', 'שגיאה בהעלאה');
+      Alert.alert(t('common.error'), t('photos.errors.uploadError'));
     } finally {
       setUploading(false);
     }
@@ -156,23 +158,23 @@ export default function PhotosScreen() {
       fileInputRef.current?.click();
     } else {
       // בטלפון: לתת בחירה בין גלריה למצלמה
-      Alert.alert('הוספת תמונה', 'בחר מקור', [
-        { text: 'גלריה', onPress: pickAndUploadMobile },
-        { text: 'מצלמה', onPress: takePhotoMobile },
-        { text: 'ביטול', style: 'cancel' },
+      Alert.alert(t('photos.addPhoto'), t('photos.chooseSource'), [
+        { text: t('photos.gallery'), onPress: pickAndUploadMobile },
+        { text: t('photos.camera'), onPress: takePhotoMobile },
+        { text: t('common.cancel'), style: 'cancel' },
       ]);
     }
   }
 
   function deletePhoto(id, filename) {
     if (isWeb) {
-      const confirmed = window.confirm(`האם למחוק את "${filename}"?`);
+      const confirmed = window.confirm(t('photos.confirmDelete', { name: filename }));
       if (!confirmed) return;
       doDelete(id);
     } else {
-      Alert.alert('מחיקת קובץ', `האם למחוק את "${filename}"?`, [
-        { text: 'ביטול', style: 'cancel' },
-        { text: 'מחק', style: 'destructive', onPress: () => doDelete(id) },
+      Alert.alert(t('photos.deleteFile'), t('photos.confirmDelete', { name: filename }), [
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('common.delete'), style: 'destructive', onPress: () => doDelete(id) },
       ]);
     }
   }
@@ -185,14 +187,14 @@ export default function PhotosScreen() {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) loadPhotos();
-      else Alert.alert('שגיאה', 'לא הצלחנו למחוק');
+      else Alert.alert(t('common.error'), t('photos.errors.deleteFailed'));
     } catch (e) {
-      Alert.alert('שגיאה', 'שגיאה במחיקה');
+      Alert.alert(t('common.error'), t('photos.errors.deleteError'));
     }
   }
 
   function openFile(url, title) {
-    setDocViewer({ visible: true, uri: url, title: title || 'תצוגת מסמך' });
+    setDocViewer({ visible: true, uri: url, title: title || t('document.title') });
   }
 
   function openExternally(url) {
@@ -213,9 +215,9 @@ export default function PhotosScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>קבצים ותמונות</Text>
+        <Text style={styles.headerTitle}>{t('photos.title')}</Text>
         <TouchableOpacity style={styles.addBtn} onPress={handleUploadPress} disabled={uploading}>
-          <Text style={styles.addBtnText}>{uploading ? 'מעלה...' : '+ העלה'}</Text>
+          <Text style={styles.addBtnText}>{uploading ? t('photos.uploading') : t('photos.upload')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -235,7 +237,7 @@ export default function PhotosScreen() {
       >
         {images.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>📸 תמונות שטח ({images.length})</Text>
+            <Text style={styles.sectionTitle}>📸 {t('photos.siteImages', { count: images.length })}</Text>
             <View style={styles.grid}>
               {images.map(photo => (
                 <View key={photo.id} style={styles.photoCard}>
@@ -259,7 +261,7 @@ export default function PhotosScreen() {
 
         {pdfs.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>📄 קבצי PDF ({pdfs.length})</Text>
+            <Text style={styles.sectionTitle}>📄 {t('photos.pdfFiles', { count: pdfs.length })}</Text>
             {pdfs.map(pdf => (
               <View key={pdf.id} style={styles.pdfCard}>
                 <View style={styles.pdfIcon}>
@@ -268,7 +270,7 @@ export default function PhotosScreen() {
                 <View style={styles.pdfInfo}>
                   <Text style={styles.pdfName}>{pdf.caption || pdf.filename}</Text>
                   <TouchableOpacity onPress={() => openFile(pdf.url, pdf.caption || pdf.filename)}>
-                    <Text style={styles.pdfOpen}>פתח קובץ</Text>
+                    <Text style={styles.pdfOpen}>{t('photos.openFile')}</Text>
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
@@ -285,8 +287,8 @@ export default function PhotosScreen() {
         {photos.length === 0 && (
           <View style={styles.empty}>
             <Text style={styles.emptyIcon}>📁</Text>
-            <Text style={styles.emptyText}>אין קבצים עדיין</Text>
-            <Text style={styles.emptySub}>לחץ "+ העלה" להוסיף תמונות</Text>
+            <Text style={styles.emptyText}>{t('photos.empty')}</Text>
+            <Text style={styles.emptySub}>{t('photos.emptyHint')}</Text>
           </View>
         )}
       </ScrollView>

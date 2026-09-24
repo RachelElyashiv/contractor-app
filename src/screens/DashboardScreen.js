@@ -9,8 +9,10 @@ import {
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { expenses, invoices, materials, projects, workers } from '../services/api';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function DashboardScreen({ onNavigate }) {
+  const { t, lang } = useLanguage();
   const { user, logout } = useAuth();
   const [stats, setStats] = useState(null);
   const [attendance, setAttendance] = useState([]);
@@ -63,21 +65,21 @@ export default function DashboardScreen({ onNavigate }) {
     >
       <View style={styles.header}>
         <View>
-          <Text style={styles.headerTitle}>שלום, {user?.fullName?.split(' ')[0]} 👋</Text>
-          <Text style={styles.headerSub}>{user?.companyName || 'דשבורד ראשי'}</Text>
+          <Text style={styles.headerTitle}>{t('dashboard.greeting', { name: user?.fullName?.split(' ')[0] })} 👋</Text>
+          <Text style={styles.headerSub}>{user?.companyName || t('dashboard.subtitle')}</Text>
         </View>
         <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
-          <Text style={styles.logoutText}>יציאה</Text>
+          <Text style={styles.logoutText}>{t('dashboard.logout')}</Text>
         </TouchableOpacity>
       </View>
 
       {/* Quick Actions */}
       <View style={styles.quickRow}>
         {[
-          { label: '+ פרויקט', tab: 1, bg: '#e8f5ef', color: '#1a6b4a' },
-          { label: '+ עובד', tab: 2, bg: '#e6f1fb', color: '#185fa5' },
-          { label: '+ חשבונית', tab: 4, bg: '#faeeda', color: '#8a5200' },
-          { label: '+ חומר', tab: 3, bg: '#fcebeb', color: '#a32d2d' },
+          { label: t('dashboard.actions.addProject'), tab: 1, bg: '#e8f5ef', color: '#1a6b4a' },
+          { label: t('dashboard.actions.addWorker'), tab: 2, bg: '#e6f1fb', color: '#185fa5' },
+          { label: t('dashboard.actions.addInvoice'), tab: 4, bg: '#faeeda', color: '#8a5200' },
+          { label: t('dashboard.actions.addMaterial'), tab: 3, bg: '#fcebeb', color: '#a32d2d' },
         ].map(a => (
           <TouchableOpacity key={a.tab} style={[styles.quickBtn, { backgroundColor: a.bg }]} onPress={() => onNavigate?.(a.tab, 'create')}>
             <Text style={[styles.quickBtnText, { color: a.color }]}>{a.label}</Text>
@@ -88,33 +90,33 @@ export default function DashboardScreen({ onNavigate }) {
       <View style={styles.statsGrid}>
         <View style={[styles.statCard, { backgroundColor: '#e8f5ef' }]}>
           <Text style={styles.statVal}>{stats?.active || 0}</Text>
-          <Text style={styles.statLabel}>פרויקטים פעילים</Text>
+          <Text style={styles.statLabel}>{t('dashboard.stats.activeProjects')}</Text>
         </View>
         <View style={[styles.statCard, { backgroundColor: '#e6f1fb' }]}>
           <Text style={styles.statVal}>{presentWorkers}</Text>
-          <Text style={styles.statLabel}>עובדים היום</Text>
+          <Text style={styles.statLabel}>{t('dashboard.stats.workersToday')}</Text>
         </View>
         <View style={[styles.statCard, { backgroundColor: '#faeeda' }]}>
           <Text style={styles.statVal}>₪{Math.round((invoiceSummary?.totalRevenue || 0) / 1000)}K</Text>
-          <Text style={styles.statLabel}>הכנסות</Text>
+          <Text style={styles.statLabel}>{t('dashboard.stats.revenue')}</Text>
         </View>
         <View style={[styles.statCard, { backgroundColor: '#fcebeb' }]}>
           <Text style={styles.statVal}>{lowStock?.length || 0}</Text>
-          <Text style={styles.statLabel}>חומרים נמוכים</Text>
+          <Text style={styles.statLabel}>{t('dashboard.stats.lowMaterials')}</Text>
         </View>
       </View>
 
       {lowStock?.length > 0 && (
         <View style={styles.alertCard}>
-          <Text style={styles.alertTitle}>⚠️ התראות מלאי</Text>
+          <Text style={styles.alertTitle}>⚠️ {t('dashboard.stockAlerts')}</Text>
           {lowStock.map(m => (
-            <Text key={m.id} style={styles.alertItem}>• {m.name} – נשאר {m.quantity} {m.unit}</Text>
+            <Text key={m.id} style={styles.alertItem}>• {t('dashboard.stockItem', { name: m.name, qty: m.quantity, unit: m.unit })}</Text>
           ))}
         </View>
       )}
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>נוכחות היום</Text>
+        <Text style={styles.sectionTitle}>{t('dashboard.attendanceToday')}</Text>
         {attendance.slice(0, 5).map(w => (
           <View key={w.id} style={styles.workerRow}>
             <View style={[styles.dot, { backgroundColor: w.todayAttendance ? '#1a6b4a' : '#ccc' }]} />
@@ -126,7 +128,7 @@ export default function DashboardScreen({ onNavigate }) {
 
       {/* Monthly report */}
       {(() => {
-        const monthName = new Date().toLocaleDateString('he-IL', { month: 'long', year: 'numeric' });
+        const monthName = new Date().toLocaleDateString(lang, { month: 'long', year: 'numeric' });
         const totalExpenses = expenseSummary?.total || 0;
         const totalSalary = salaryReport.reduce((s, r) => s + (Number(r.totalPay) || 0), 0);
         const totalCosts = totalExpenses + totalSalary + materialsCost;
@@ -135,43 +137,43 @@ export default function DashboardScreen({ onNavigate }) {
         const profit = revenue - totalCosts;
         return (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>📊 דוח חודשי — {monthName}</Text>
+            <Text style={styles.sectionTitle}>📊 {t('dashboard.monthlyReport', { month: monthName })}</Text>
             <View style={{ flexDirection: 'row', gap: 10, marginBottom: 12 }}>
               <View style={[styles.monthCard, { backgroundColor: '#fcebeb' }]}>
                 <Text style={styles.monthVal}>₪{Math.round(totalCosts).toLocaleString()}</Text>
-                <Text style={styles.monthLabel}>סה"כ הוצאות</Text>
+                <Text style={styles.monthLabel}>{t('dashboard.totalExpenses')}</Text>
               </View>
               <View style={[styles.monthCard, { backgroundColor: '#e6f1fb' }]}>
                 <Text style={styles.monthVal}>₪{Math.round(pendingIncome).toLocaleString()}</Text>
-                <Text style={styles.monthLabel}>לגבייה</Text>
+                <Text style={styles.monthLabel}>{t('dashboard.toCollect')}</Text>
               </View>
             </View>
             <View style={styles.monthRow}>
               <Text style={styles.monthRowVal}>₪{Math.round(materialsCost).toLocaleString()}</Text>
-              <Text style={styles.monthRowLabel}>עלות חומרים</Text>
+              <Text style={styles.monthRowLabel}>{t('dashboard.materialsCost')}</Text>
             </View>
             <View style={styles.monthRow}>
               <Text style={styles.monthRowVal}>₪{Math.round(totalExpenses).toLocaleString()}</Text>
-              <Text style={styles.monthRowLabel}>הוצאות אחרות</Text>
+              <Text style={styles.monthRowLabel}>{t('dashboard.otherExpenses')}</Text>
             </View>
             <View style={styles.monthRow}>
               <Text style={styles.monthRowVal}>₪{Math.round(totalSalary).toLocaleString()}</Text>
-              <Text style={styles.monthRowLabel}>שכר עובדים ({salaryReport.reduce((s,r)=>s+(Number(r.daysPresent)||0),0)} ימי עבודה)</Text>
+              <Text style={styles.monthRowLabel}>{t('dashboard.wages', { days: salaryReport.reduce((s,r)=>s+(Number(r.daysPresent)||0),0) })}</Text>
             </View>
             <View style={styles.monthRow}>
               <Text style={styles.monthRowVal}>₪{Math.round(revenue).toLocaleString()}</Text>
-              <Text style={styles.monthRowLabel}>הכנסות מחשבוניות</Text>
+              <Text style={styles.monthRowLabel}>{t('dashboard.invoiceIncome')}</Text>
             </View>
             <View style={[styles.monthRow, { borderTopWidth: 2, borderTopColor: profit >= 0 ? '#1a6b4a' : '#a32d2d', marginTop: 4, paddingTop: 10 }]}>
               <Text style={[styles.monthRowVal, { fontSize: 16, color: profit >= 0 ? '#1a6b4a' : '#a32d2d' }]}>₪{Math.round(profit).toLocaleString()}</Text>
-              <Text style={[styles.monthRowLabel, { fontSize: 14, fontWeight: '700', color: '#1a1a1a' }]}>💰 רווח (הכנסות − הוצאות)</Text>
+              <Text style={[styles.monthRowLabel, { fontSize: 14, fontWeight: '700', color: '#1a1a1a' }]}>💰 {t('dashboard.profit')}</Text>
             </View>
           </View>
         );
       })()}
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>פרויקטים אחרונים</Text>
+        <Text style={styles.sectionTitle}>{t('dashboard.recentProjects')}</Text>
         {stats?.projects?.slice(0, 3).map(p => (
           <View key={p.id} style={styles.projectRow}>
             <View style={{ flex: 1 }}>

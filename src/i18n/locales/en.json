@@ -5,7 +5,13 @@
     "close": "Close",
     "share": "Share",
     "print": "Print",
-    "open": "Open"
+    "open": "Open",
+    "error": "Error",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "permissionRequired": "Permission required",
+    "add": "+ Add",
+    "submitting": "Sending…"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -40,5 +46,91 @@
   "document": {
     "title": "Document",
     "loading": "Loading document…"
+  },
+  "dashboard": {
+    "greeting": "Hello, {{name}}",
+    "subtitle": "Main dashboard",
+    "logout": "Sign out",
+    "actions": {
+      "addProject": "+ Project",
+      "addWorker": "+ Worker",
+      "addInvoice": "+ Invoice",
+      "addMaterial": "+ Material"
+    },
+    "stats": {
+      "activeProjects": "Active projects",
+      "workersToday": "Workers today",
+      "revenue": "Revenue",
+      "lowMaterials": "Low materials"
+    },
+    "stockAlerts": "Stock alerts",
+    "stockItem": "{{name}} – {{qty}} {{unit}} left",
+    "attendanceToday": "Attendance today",
+    "monthlyReport": "Monthly report — {{month}}",
+    "totalExpenses": "Total expenses",
+    "toCollect": "To collect",
+    "materialsCost": "Materials cost",
+    "otherExpenses": "Other expenses",
+    "wages": "Wages ({{days}} work days)",
+    "invoiceIncome": "Invoice income",
+    "profit": "Profit (income − expenses)",
+    "recentProjects": "Recent projects"
+  },
+  "photos": {
+    "title": "Files and photos",
+    "upload": "+ Upload",
+    "uploading": "Uploading…",
+    "siteImages": "Site photos ({{count}})",
+    "pdfFiles": "PDF files ({{count}})",
+    "openFile": "Open file",
+    "empty": "No files yet",
+    "emptyHint": "Tap \"+ Upload\" to add photos",
+    "addPhoto": "Add photo",
+    "chooseSource": "Choose a source",
+    "gallery": "Gallery",
+    "camera": "Camera",
+    "deleteFile": "Delete file",
+    "confirmDelete": "Delete \"{{name}}\"?",
+    "errors": {
+      "uploadFailed": "Upload failed",
+      "uploadError": "Error while uploading",
+      "deleteFailed": "Delete failed",
+      "deleteError": "Error while deleting",
+      "needGalleryPermission": "Allow access to your photos to upload",
+      "needCameraPermission": "Allow camera access to take photos"
+    }
+  },
+  "materials": {
+    "defaultUnit": "units",
+    "title": "Materials and stock",
+    "lowBadge": "Low stock",
+    "supplier": "Supplier: {{name}}",
+    "price": "Price: ₪{{price}} per {{unit}}",
+    "empty": "No materials yet. Tap + Add.",
+    "newMaterial": "New material",
+    "addMaterial": "Add material",
+    "assignProject": "Assign to project",
+    "assignProjectPlaceholder": "Assign to a project (optional)",
+    "assignApartment": "Assign to apartment",
+    "assignApartmentPlaceholder": "Assign to an apartment (optional)",
+    "noProject": "No project",
+    "noApartment": "No apartment",
+    "noProjectsYet": "No projects yet",
+    "noApartmentsForProject": "No apartments for this project",
+    "confirmDelete": "Delete this material?",
+    "fields": {
+      "name": "Material name *",
+      "unit": "Unit (bags, metres…)",
+      "quantity": "Quantity in stock",
+      "minQuantity": "Minimum quantity for alert",
+      "unitPrice": "Price per unit ₪",
+      "supplier": "Supplier"
+    },
+    "errors": {
+      "nameRequired": "Enter a material name",
+      "serverError": "Server error — please try again",
+      "stockUpdateFailed": "Could not update stock",
+      "deleteFailed": "Error deleting material"
+    }
   }
 }

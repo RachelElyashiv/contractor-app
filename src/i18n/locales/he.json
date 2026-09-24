@@ -5,7 +5,13 @@
     "close": "סגור",
     "share": "שתף",
     "print": "הדפס",
-    "open": "פתח"
+    "open": "פתח",
+    "error": "שגיאה",
+    "cancel": "ביטול",
+    "delete": "מחק",
+    "permissionRequired": "הרשאה נדרשת",
+    "add": "+ הוסף",
+    "submitting": "שולח..."
   },
   "nav": {
     "dashboard": "דשבורד",
@@ -40,5 +46,91 @@
   "document": {
     "title": "תצוגת מסמך",
     "loading": "טוען מסמך…"
+  },
+  "dashboard": {
+    "greeting": "שלום, {{name}}",
+    "subtitle": "דשבורד ראשי",
+    "logout": "יציאה",
+    "actions": {
+      "addProject": "+ פרויקט",
+      "addWorker": "+ עובד",
+      "addInvoice": "+ חשבונית",
+      "addMaterial": "+ חומר"
+    },
+    "stats": {
+      "activeProjects": "פרויקטים פעילים",
+      "workersToday": "עובדים היום",
+      "revenue": "הכנסות",
+      "lowMaterials": "חומרים נמוכים"
+    },
+    "stockAlerts": "התראות מלאי",
+    "stockItem": "{{name}} – נשאר {{qty}} {{unit}}",
+    "attendanceToday": "נוכחות היום",
+    "monthlyReport": "דוח חודשי — {{month}}",
+    "totalExpenses": "סה\"כ הוצאות",
+    "toCollect": "לגבייה",
+    "materialsCost": "עלות חומרים",
+    "otherExpenses": "הוצאות אחרות",
+    "wages": "שכר עובדים ({{days}} ימי עבודה)",
+    "invoiceIncome": "הכנסות מחשבוניות",
+    "profit": "רווח (הכנסות − הוצאות)",
+    "recentProjects": "פרויקטים אחרונים"
+  },
+  "photos": {
+    "title": "קבצים ותמונות",
+    "upload": "+ העלה",
+    "uploading": "מעלה...",
+    "siteImages": "תמונות שטח ({{count}})",
+    "pdfFiles": "קבצי PDF ({{count}})",
+    "openFile": "פתח קובץ",
+    "empty": "אין קבצים עדיין",
+    "emptyHint": "לחץ \"+ העלה\" להוסיף תמונות",
+    "addPhoto": "הוספת תמונה",
+    "chooseSource": "בחר מקור",
+    "gallery": "גלריה",
+    "camera": "מצלמה",
+    "deleteFile": "מחיקת קובץ",
+    "confirmDelete": "האם למחוק את \"{{name}}\"?",
+    "errors": {
+      "uploadFailed": "לא הצלחנו להעלות",
+      "uploadError": "שגיאה בהעלאה",
+      "deleteFailed": "לא הצלחנו למחוק",
+      "deleteError": "שגיאה במחיקה",
+      "needGalleryPermission": "יש לאשר גישה לתמונות כדי להעלות",
+      "needCameraPermission": "יש לאשר גישה למצלמה כדי לצלם"
+    }
+  },
+  "materials": {
+    "defaultUnit": "יחידות",
+    "title": "חומרים ומלאי",
+    "lowBadge": "מלאי נמוך",
+    "supplier": "ספק: {{name}}",
+    "price": "מחיר: ₪{{price}} ל{{unit}}",
+    "empty": "אין חומרים עדיין. לחץ + הוסף.",
+    "newMaterial": "חומר חדש",
+    "addMaterial": "הוסף חומר",
+    "assignProject": "שייך לפרויקט",
+    "assignProjectPlaceholder": "שייך לפרויקט (לא חובה)",
+    "assignApartment": "שייך לדירה",
+    "assignApartmentPlaceholder": "שייך לדירה (לא חובה)",
+    "noProject": "ללא פרויקט",
+    "noApartment": "ללא דירה",
+    "noProjectsYet": "אין פרויקטים עדיין",
+    "noApartmentsForProject": "אין דירות לפרויקט זה",
+    "confirmDelete": "האם למחוק חומר זה?",
+    "fields": {
+      "name": "שם חומר *",
+      "unit": "יחידה (שקים, מטרים...)",
+      "quantity": "כמות במלאי",
+      "minQuantity": "כמות מינימום להתראה",
+      "unitPrice": "מחיר ליחידה ₪",
+      "supplier": "ספק"
+    },
+    "errors": {
+      "nameRequired": "חובה למלא שם חומר",
+      "serverError": "שגיאה בשרת — נסי שוב",
+      "stockUpdateFailed": "לא הצלחנו לעדכן מלאי",
+      "deleteFailed": "שגיאה במחיקת חומר"
+    }
   }
 }

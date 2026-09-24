@@ -5,7 +5,13 @@
     "close": "Închide",
     "share": "Distribuie",
     "print": "Printează",
-    "open": "Deschide"
+    "open": "Deschide",
+    "error": "Eroare",
+    "cancel": "Anulează",
+    "delete": "Șterge",
+    "permissionRequired": "Permisiune necesară",
+    "add": "+ Adaugă",
+    "submitting": "Se trimite…"
   },
   "nav": {
     "dashboard": "Panou",
@@ -40,5 +46,91 @@
   "document": {
     "title": "Document",
     "loading": "Se încarcă documentul…"
+  },
+  "dashboard": {
+    "greeting": "Salut, {{name}}",
+    "subtitle": "Panou principal",
+    "logout": "Deconectare",
+    "actions": {
+      "addProject": "+ Proiect",
+      "addWorker": "+ Muncitor",
+      "addInvoice": "+ Factură",
+      "addMaterial": "+ Material"
+    },
+    "stats": {
+      "activeProjects": "Proiecte active",
+      "workersToday": "Muncitori azi",
+      "revenue": "Venituri",
+      "lowMaterials": "Materiale puține"
+    },
+    "stockAlerts": "Alerte de stoc",
+    "stockItem": "{{name}} – au rămas {{qty}} {{unit}}",
+    "attendanceToday": "Prezența de azi",
+    "monthlyReport": "Raport lunar — {{month}}",
+    "totalExpenses": "Total cheltuieli",
+    "toCollect": "De încasat",
+    "materialsCost": "Costul materialelor",
+    "otherExpenses": "Alte cheltuieli",
+    "wages": "Salarii ({{days}} zile lucrate)",
+    "invoiceIncome": "Venituri din facturi",
+    "profit": "Profit (venituri − cheltuieli)",
+    "recentProjects": "Proiecte recente"
+  },
+  "photos": {
+    "title": "Fișiere și fotografii",
+    "upload": "+ Încarcă",
+    "uploading": "Se încarcă…",
+    "siteImages": "Fotografii de șantier ({{count}})",
+    "pdfFiles": "Fișiere PDF ({{count}})",
+    "openFile": "Deschide fișierul",
+    "empty": "Încă nu există fișiere",
+    "emptyHint": "Apasă \"+ Încarcă\" pentru a adăuga fotografii",
+    "addPhoto": "Adaugă fotografie",
+    "chooseSource": "Alege sursa",
+    "gallery": "Galerie",
+    "camera": "Cameră",
+    "deleteFile": "Șterge fișierul",
+    "confirmDelete": "Ștergi \"{{name}}\"?",
+    "errors": {
+      "uploadFailed": "Încărcarea a eșuat",
+      "uploadError": "Eroare la încărcare",
+      "deleteFailed": "Ștergerea a eșuat",
+      "deleteError": "Eroare la ștergere",
+      "needGalleryPermission": "Permite accesul la fotografii pentru încărcare",
+      "needCameraPermission": "Permite accesul la cameră pentru a fotografia"
+    }
+  },
+  "materials": {
+    "defaultUnit": "bucăți",
+    "title": "Materiale și stoc",
+    "lowBadge": "Stoc redus",
+    "supplier": "Furnizor: {{name}}",
+    "price": "Preț: ₪{{price}} pe {{unit}}",
+    "empty": "Încă nu există materiale. Apasă + Adaugă.",
+    "newMaterial": "Material nou",
+    "addMaterial": "Adaugă material",
+    "assignProject": "Atribuie unui proiect",
+    "assignProjectPlaceholder": "Atribuie unui proiect (opțional)",
+    "assignApartment": "Atribuie unui apartament",
+    "assignApartmentPlaceholder": "Atribuie unui apartament (opțional)",
+    "noProject": "Fără proiect",
+    "noApartment": "Fără apartament",
+    "noProjectsYet": "Încă nu există proiecte",
+    "noApartmentsForProject": "Nu există apartamente pentru acest proiect",
+    "confirmDelete": "Ștergi acest material?",
+    "fields": {
+      "name": "Numele materialului *",
+      "unit": "Unitate (saci, metri…)",
+      "quantity": "Cantitate în stoc",
+      "minQuantity": "Cantitate minimă pentru alertă",
+      "unitPrice": "Preț pe unitate ₪",
+      "supplier": "Furnizor"
+    },
+    "errors": {
+      "nameRequired": "Introdu numele materialului",
+      "serverError": "Eroare de server — încearcă din nou",
+      "stockUpdateFailed": "Nu s-a putut actualiza stocul",
+      "deleteFailed": "Eroare la ștergerea materialului"
+    }
   }
 }

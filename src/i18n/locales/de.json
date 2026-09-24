@@ -5,7 +5,13 @@
     "close": "Schließen",
     "share": "Teilen",
     "print": "Drucken",
-    "open": "Öffnen"
+    "open": "Öffnen",
+    "error": "Fehler",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "permissionRequired": "Berechtigung erforderlich",
+    "add": "+ Hinzufügen",
+    "submitting": "Wird gesendet…"
   },
   "nav": {
     "dashboard": "Übersicht",
@@ -40,5 +46,91 @@
   "document": {
     "title": "Dokument",
     "loading": "Dokument wird geladen…"
+  },
+  "dashboard": {
+    "greeting": "Hallo, {{name}}",
+    "subtitle": "Haupt-Übersicht",
+    "logout": "Abmelden",
+    "actions": {
+      "addProject": "+ Projekt",
+      "addWorker": "+ Arbeiter",
+      "addInvoice": "+ Rechnung",
+      "addMaterial": "+ Material"
+    },
+    "stats": {
+      "activeProjects": "Aktive Projekte",
+      "workersToday": "Arbeiter heute",
+      "revenue": "Einnahmen",
+      "lowMaterials": "Wenig Material"
+    },
+    "stockAlerts": "Bestandswarnungen",
+    "stockItem": "{{name}} – noch {{qty}} {{unit}}",
+    "attendanceToday": "Anwesenheit heute",
+    "monthlyReport": "Monatsbericht — {{month}}",
+    "totalExpenses": "Gesamtausgaben",
+    "toCollect": "Offene Forderungen",
+    "materialsCost": "Materialkosten",
+    "otherExpenses": "Sonstige Ausgaben",
+    "wages": "Löhne ({{days}} Arbeitstage)",
+    "invoiceIncome": "Einnahmen aus Rechnungen",
+    "profit": "Gewinn (Einnahmen − Ausgaben)",
+    "recentProjects": "Letzte Projekte"
+  },
+  "photos": {
+    "title": "Dateien und Fotos",
+    "upload": "+ Hochladen",
+    "uploading": "Wird hochgeladen…",
+    "siteImages": "Baustellenfotos ({{count}})",
+    "pdfFiles": "PDF-Dateien ({{count}})",
+    "openFile": "Datei öffnen",
+    "empty": "Noch keine Dateien",
+    "emptyHint": "Tippen Sie auf \"+ Hochladen\", um Fotos hinzuzufügen",
+    "addPhoto": "Foto hinzufügen",
+    "chooseSource": "Quelle wählen",
+    "gallery": "Galerie",
+    "camera": "Kamera",
+    "deleteFile": "Datei löschen",
+    "confirmDelete": "\"{{name}}\" löschen?",
+    "errors": {
+      "uploadFailed": "Hochladen fehlgeschlagen",
+      "uploadError": "Fehler beim Hochladen",
+      "deleteFailed": "Löschen fehlgeschlagen",
+      "deleteError": "Fehler beim Löschen",
+      "needGalleryPermission": "Erlauben Sie den Zugriff auf Ihre Fotos zum Hochladen",
+      "needCameraPermission": "Erlauben Sie den Kamerazugriff zum Fotografieren"
+    }
+  },
+  "materials": {
+    "defaultUnit": "Stück",
+    "title": "Material und Bestand",
+    "lowBadge": "Geringer Bestand",
+    "supplier": "Lieferant: {{name}}",
+    "price": "Preis: ₪{{price}} pro {{unit}}",
+    "empty": "Noch kein Material. Auf + Hinzufügen tippen.",
+    "newMaterial": "Neues Material",
+    "addMaterial": "Material hinzufügen",
+    "assignProject": "Projekt zuordnen",
+    "assignProjectPlaceholder": "Einem Projekt zuordnen (optional)",
+    "assignApartment": "Wohnung zuordnen",
+    "assignApartmentPlaceholder": "Einer Wohnung zuordnen (optional)",
+    "noProject": "Kein Projekt",
+    "noApartment": "Keine Wohnung",
+    "noProjectsYet": "Noch keine Projekte",
+    "noApartmentsForProject": "Keine Wohnungen für dieses Projekt",
+    "confirmDelete": "Dieses Material löschen?",
+    "fields": {
+      "name": "Materialname *",
+      "unit": "Einheit (Säcke, Meter…)",
+      "quantity": "Menge im Bestand",
+      "minQuantity": "Mindestmenge für Warnung",
+      "unitPrice": "Preis pro Einheit ₪",
+      "supplier": "Lieferant"
+    },
+    "errors": {
+      "nameRequired": "Geben Sie einen Materialnamen ein",
+      "serverError": "Serverfehler — bitte erneut versuchen",
+      "stockUpdateFailed": "Bestand konnte nicht aktualisiert werden",
+      "deleteFailed": "Fehler beim Löschen des Materials"
+    }
   }
 }

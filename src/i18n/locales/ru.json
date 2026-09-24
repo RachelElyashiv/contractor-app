@@ -5,7 +5,13 @@
     "close": "Закрыть",
     "share": "Поделиться",
     "print": "Печать",
-    "open": "Открыть"
+    "open": "Открыть",
+    "error": "Ошибка",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "permissionRequired": "Требуется разрешение",
+    "add": "+ Добавить",
+    "submitting": "Отправка…"
   },
   "nav": {
     "dashboard": "Панель",
@@ -40,5 +46,91 @@
   "document": {
     "title": "Документ",
     "loading": "Загрузка документа…"
+  },
+  "dashboard": {
+    "greeting": "Здравствуйте, {{name}}",
+    "subtitle": "Главная панель",
+    "logout": "Выйти",
+    "actions": {
+      "addProject": "+ Проект",
+      "addWorker": "+ Рабочий",
+      "addInvoice": "+ Счёт",
+      "addMaterial": "+ Материал"
+    },
+    "stats": {
+      "activeProjects": "Активные проекты",
+      "workersToday": "Рабочих сегодня",
+      "revenue": "Доход",
+      "lowMaterials": "Мало материалов"
+    },
+    "stockAlerts": "Оповещения о запасах",
+    "stockItem": "{{name}} – осталось {{qty}} {{unit}}",
+    "attendanceToday": "Посещаемость сегодня",
+    "monthlyReport": "Месячный отчёт — {{month}}",
+    "totalExpenses": "Всего расходов",
+    "toCollect": "К получению",
+    "materialsCost": "Стоимость материалов",
+    "otherExpenses": "Прочие расходы",
+    "wages": "Зарплата ({{days}} рабочих дней)",
+    "invoiceIncome": "Доход от счетов",
+    "profit": "Прибыль (доход − расходы)",
+    "recentProjects": "Последние проекты"
+  },
+  "photos": {
+    "title": "Файлы и фото",
+    "upload": "+ Загрузить",
+    "uploading": "Загрузка…",
+    "siteImages": "Фото объекта ({{count}})",
+    "pdfFiles": "Файлы PDF ({{count}})",
+    "openFile": "Открыть файл",
+    "empty": "Файлов пока нет",
+    "emptyHint": "Нажмите \"+ Загрузить\", чтобы добавить фото",
+    "addPhoto": "Добавить фото",
+    "chooseSource": "Выберите источник",
+    "gallery": "Галерея",
+    "camera": "Камера",
+    "deleteFile": "Удалить файл",
+    "confirmDelete": "Удалить \"{{name}}\"?",
+    "errors": {
+      "uploadFailed": "Не удалось загрузить",
+      "uploadError": "Ошибка при загрузке",
+      "deleteFailed": "Не удалось удалить",
+      "deleteError": "Ошибка при удалении",
+      "needGalleryPermission": "Разрешите доступ к фото для загрузки",
+      "needCameraPermission": "Разрешите доступ к камере для съёмки"
+    }
+  },
+  "materials": {
+    "defaultUnit": "шт.",
+    "title": "Материалы и запасы",
+    "lowBadge": "Мало на складе",
+    "supplier": "Поставщик: {{name}}",
+    "price": "Цена: ₪{{price}} за {{unit}}",
+    "empty": "Материалов пока нет. Нажмите + Добавить.",
+    "newMaterial": "Новый материал",
+    "addMaterial": "Добавить материал",
+    "assignProject": "Привязать к проекту",
+    "assignProjectPlaceholder": "Привязать к проекту (необязательно)",
+    "assignApartment": "Привязать к квартире",
+    "assignApartmentPlaceholder": "Привязать к квартире (необязательно)",
+    "noProject": "Без проекта",
+    "noApartment": "Без квартиры",
+    "noProjectsYet": "Проектов пока нет",
+    "noApartmentsForProject": "Для этого проекта нет квартир",
+    "confirmDelete": "Удалить этот материал?",
+    "fields": {
+      "name": "Название материала *",
+      "unit": "Единица (мешки, метры…)",
+      "quantity": "Количество на складе",
+      "minQuantity": "Минимальный остаток для оповещения",
+      "unitPrice": "Цена за единицу ₪",
+      "supplier": "Поставщик"
+    },
+    "errors": {
+      "nameRequired": "Введите название материала",
+      "serverError": "Ошибка сервера — попробуйте снова",
+      "stockUpdateFailed": "Не удалось обновить запас",
+      "deleteFailed": "Ошибка при удалении материала"
+    }
   }
 }

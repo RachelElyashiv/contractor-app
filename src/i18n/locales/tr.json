@@ -5,7 +5,13 @@
     "close": "Kapat",
     "share": "Paylaş",
     "print": "Yazdır",
-    "open": "Aç"
+    "open": "Aç",
+    "error": "Hata",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "permissionRequired": "İzin gerekli",
+    "add": "+ Ekle",
+    "submitting": "Gönderiliyor…"
   },
   "nav": {
     "dashboard": "Panel",
@@ -40,5 +46,91 @@
   "document": {
     "title": "Belge",
     "loading": "Belge yükleniyor…"
+  },
+  "dashboard": {
+    "greeting": "Merhaba, {{name}}",
+    "subtitle": "Ana panel",
+    "logout": "Çıkış yap",
+    "actions": {
+      "addProject": "+ Proje",
+      "addWorker": "+ İşçi",
+      "addInvoice": "+ Fatura",
+      "addMaterial": "+ Malzeme"
+    },
+    "stats": {
+      "activeProjects": "Aktif projeler",
+      "workersToday": "Bugünkü işçiler",
+      "revenue": "Gelir",
+      "lowMaterials": "Az malzeme"
+    },
+    "stockAlerts": "Stok uyarıları",
+    "stockItem": "{{name}} – {{qty}} {{unit}} kaldı",
+    "attendanceToday": "Bugünkü devam",
+    "monthlyReport": "Aylık rapor — {{month}}",
+    "totalExpenses": "Toplam gider",
+    "toCollect": "Tahsil edilecek",
+    "materialsCost": "Malzeme maliyeti",
+    "otherExpenses": "Diğer giderler",
+    "wages": "Ücretler ({{days}} iş günü)",
+    "invoiceIncome": "Fatura geliri",
+    "profit": "Kâr (gelir − gider)",
+    "recentProjects": "Son projeler"
+  },
+  "photos": {
+    "title": "Dosyalar ve fotoğraflar",
+    "upload": "+ Yükle",
+    "uploading": "Yükleniyor…",
+    "siteImages": "Şantiye fotoğrafları ({{count}})",
+    "pdfFiles": "PDF dosyaları ({{count}})",
+    "openFile": "Dosyayı aç",
+    "empty": "Henüz dosya yok",
+    "emptyHint": "Fotoğraf eklemek için \"+ Yükle\"ye dokunun",
+    "addPhoto": "Fotoğraf ekle",
+    "chooseSource": "Kaynak seçin",
+    "gallery": "Galeri",
+    "camera": "Kamera",
+    "deleteFile": "Dosyayı sil",
+    "confirmDelete": "\"{{name}}\" silinsin mi?",
+    "errors": {
+      "uploadFailed": "Yükleme başarısız",
+      "uploadError": "Yükleme sırasında hata",
+      "deleteFailed": "Silme başarısız",
+      "deleteError": "Silme sırasında hata",
+      "needGalleryPermission": "Yüklemek için fotoğraflara erişime izin verin",
+      "needCameraPermission": "Fotoğraf çekmek için kameraya erişime izin verin"
+    }
+  },
+  "materials": {
+    "defaultUnit": "adet",
+    "title": "Malzemeler ve stok",
+    "lowBadge": "Düşük stok",
+    "supplier": "Tedarikçi: {{name}}",
+    "price": "Fiyat: ₪{{price}} / {{unit}}",
+    "empty": "Henüz malzeme yok. + Ekle'ye dokunun.",
+    "newMaterial": "Yeni malzeme",
+    "addMaterial": "Malzeme ekle",
+    "assignProject": "Projeye ata",
+    "assignProjectPlaceholder": "Bir projeye ata (isteğe bağlı)",
+    "assignApartment": "Daireye ata",
+    "assignApartmentPlaceholder": "Bir daireye ata (isteğe bağlı)",
+    "noProject": "Proje yok",
+    "noApartment": "Daire yok",
+    "noProjectsYet": "Henüz proje yok",
+    "noApartmentsForProject": "Bu proje için daire yok",
+    "confirmDelete": "Bu malzeme silinsin mi?",
+    "fields": {
+      "name": "Malzeme adı *",
+      "unit": "Birim (çuval, metre…)",
+      "quantity": "Stoktaki miktar",
+      "minQuantity": "Uyarı için minimum miktar",
+      "unitPrice": "Birim fiyatı ₪",
+      "supplier": "Tedarikçi"
+    },
+    "errors": {
+      "nameRequired": "Malzeme adını girin",
+      "serverError": "Sunucu hatası — tekrar deneyin",
+      "stockUpdateFailed": "Stok güncellenemedi",
+      "deleteFailed": "Malzeme silinirken hata"
+    }
   }
 }

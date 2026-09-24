@@ -5,7 +5,13 @@
     "close": "Fermer",
     "share": "Partager",
     "print": "Imprimer",
-    "open": "Ouvrir"
+    "open": "Ouvrir",
+    "error": "Erreur",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "permissionRequired": "Autorisation requise",
+    "add": "+ Ajouter",
+    "submitting": "Envoi…"
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -40,5 +46,91 @@
   "document": {
     "title": "Document",
     "loading": "Chargement du document…"
+  },
+  "dashboard": {
+    "greeting": "Bonjour, {{name}}",
+    "subtitle": "Tableau de bord principal",
+    "logout": "Déconnexion",
+    "actions": {
+      "addProject": "+ Projet",
+      "addWorker": "+ Ouvrier",
+      "addInvoice": "+ Facture",
+      "addMaterial": "+ Matériau"
+    },
+    "stats": {
+      "activeProjects": "Projets actifs",
+      "workersToday": "Ouvriers aujourd'hui",
+      "revenue": "Revenus",
+      "lowMaterials": "Matériaux faibles"
+    },
+    "stockAlerts": "Alertes de stock",
+    "stockItem": "{{name}} – il reste {{qty}} {{unit}}",
+    "attendanceToday": "Présence du jour",
+    "monthlyReport": "Rapport mensuel — {{month}}",
+    "totalExpenses": "Dépenses totales",
+    "toCollect": "À encaisser",
+    "materialsCost": "Coût des matériaux",
+    "otherExpenses": "Autres dépenses",
+    "wages": "Salaires ({{days}} jours travaillés)",
+    "invoiceIncome": "Revenus des factures",
+    "profit": "Bénéfice (revenus − dépenses)",
+    "recentProjects": "Projets récents"
+  },
+  "photos": {
+    "title": "Fichiers et photos",
+    "upload": "+ Importer",
+    "uploading": "Import en cours…",
+    "siteImages": "Photos de chantier ({{count}})",
+    "pdfFiles": "Fichiers PDF ({{count}})",
+    "openFile": "Ouvrir le fichier",
+    "empty": "Aucun fichier pour l'instant",
+    "emptyHint": "Appuyez sur « + Importer » pour ajouter des photos",
+    "addPhoto": "Ajouter une photo",
+    "chooseSource": "Choisir une source",
+    "gallery": "Galerie",
+    "camera": "Appareil photo",
+    "deleteFile": "Supprimer le fichier",
+    "confirmDelete": "Supprimer « {{name}} » ?",
+    "errors": {
+      "uploadFailed": "Échec de l'import",
+      "uploadError": "Erreur lors de l'import",
+      "deleteFailed": "Échec de la suppression",
+      "deleteError": "Erreur lors de la suppression",
+      "needGalleryPermission": "Autorisez l'accès à vos photos pour les importer",
+      "needCameraPermission": "Autorisez l'accès à l'appareil photo pour prendre des photos"
+    }
+  },
+  "materials": {
+    "defaultUnit": "unités",
+    "title": "Matériaux et stock",
+    "lowBadge": "Stock faible",
+    "supplier": "Fournisseur : {{name}}",
+    "price": "Prix : ₪{{price}} par {{unit}}",
+    "empty": "Aucun matériau pour l'instant. Appuyez sur + Ajouter.",
+    "newMaterial": "Nouveau matériau",
+    "addMaterial": "Ajouter un matériau",
+    "assignProject": "Affecter à un projet",
+    "assignProjectPlaceholder": "Affecter à un projet (facultatif)",
+    "assignApartment": "Affecter à un logement",
+    "assignApartmentPlaceholder": "Affecter à un logement (facultatif)",
+    "noProject": "Aucun projet",
+    "noApartment": "Aucun logement",
+    "noProjectsYet": "Aucun projet pour l'instant",
+    "noApartmentsForProject": "Aucun logement pour ce projet",
+    "confirmDelete": "Supprimer ce matériau ?",
+    "fields": {
+      "name": "Nom du matériau *",
+      "unit": "Unité (sacs, mètres…)",
+      "quantity": "Quantité en stock",
+      "minQuantity": "Quantité minimale pour alerte",
+      "unitPrice": "Prix unitaire ₪",
+      "supplier": "Fournisseur"
+    },
+    "errors": {
+      "nameRequired": "Saisissez le nom du matériau",
+      "serverError": "Erreur du serveur — réessayez",
+      "stockUpdateFailed": "Impossible de mettre à jour le stock",
+      "deleteFailed": "Erreur lors de la suppression du matériau"
+    }
   }
 }

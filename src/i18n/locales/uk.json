@@ -5,7 +5,13 @@
     "close": "Закрити",
     "share": "Поділитися",
     "print": "Друк",
-    "open": "Відкрити"
+    "open": "Відкрити",
+    "error": "Помилка",
+    "cancel": "Скасувати",
+    "delete": "Видалити",
+    "permissionRequired": "Потрібен дозвіл",
+    "add": "+ Додати",
+    "submitting": "Надсилання…"
   },
   "nav": {
     "dashboard": "Панель",
@@ -40,5 +46,91 @@
   "document": {
     "title": "Документ",
     "loading": "Завантаження документа…"
+  },
+  "dashboard": {
+    "greeting": "Вітаємо, {{name}}",
+    "subtitle": "Головна панель",
+    "logout": "Вийти",
+    "actions": {
+      "addProject": "+ Проєкт",
+      "addWorker": "+ Робітник",
+      "addInvoice": "+ Рахунок",
+      "addMaterial": "+ Матеріал"
+    },
+    "stats": {
+      "activeProjects": "Активні проєкти",
+      "workersToday": "Робітників сьогодні",
+      "revenue": "Дохід",
+      "lowMaterials": "Мало матеріалів"
+    },
+    "stockAlerts": "Сповіщення про запаси",
+    "stockItem": "{{name}} – залишилось {{qty}} {{unit}}",
+    "attendanceToday": "Відвідуваність сьогодні",
+    "monthlyReport": "Місячний звіт — {{month}}",
+    "totalExpenses": "Усього витрат",
+    "toCollect": "До отримання",
+    "materialsCost": "Вартість матеріалів",
+    "otherExpenses": "Інші витрати",
+    "wages": "Зарплата ({{days}} робочих днів)",
+    "invoiceIncome": "Дохід від рахунків",
+    "profit": "Прибуток (дохід − витрати)",
+    "recentProjects": "Останні проєкти"
+  },
+  "photos": {
+    "title": "Файли та фото",
+    "upload": "+ Завантажити",
+    "uploading": "Завантаження…",
+    "siteImages": "Фото об'єкта ({{count}})",
+    "pdfFiles": "Файли PDF ({{count}})",
+    "openFile": "Відкрити файл",
+    "empty": "Файлів ще немає",
+    "emptyHint": "Натисніть \"+ Завантажити\", щоб додати фото",
+    "addPhoto": "Додати фото",
+    "chooseSource": "Оберіть джерело",
+    "gallery": "Галерея",
+    "camera": "Камера",
+    "deleteFile": "Видалити файл",
+    "confirmDelete": "Видалити \"{{name}}\"?",
+    "errors": {
+      "uploadFailed": "Не вдалося завантажити",
+      "uploadError": "Помилка під час завантаження",
+      "deleteFailed": "Не вдалося видалити",
+      "deleteError": "Помилка під час видалення",
+      "needGalleryPermission": "Дозвольте доступ до фото для завантаження",
+      "needCameraPermission": "Дозвольте доступ до камери для зйомки"
+    }
+  },
+  "materials": {
+    "defaultUnit": "шт.",
+    "title": "Матеріали та запаси",
+    "lowBadge": "Малий запас",
+    "supplier": "Постачальник: {{name}}",
+    "price": "Ціна: ₪{{price}} за {{unit}}",
+    "empty": "Матеріалів ще немає. Натисніть + Додати.",
+    "newMaterial": "Новий матеріал",
+    "addMaterial": "Додати матеріал",
+    "assignProject": "Прив'язати до проєкту",
+    "assignProjectPlaceholder": "Прив'язати до проєкту (необов'язково)",
+    "assignApartment": "Прив'язати до квартири",
+    "assignApartmentPlaceholder": "Прив'язати до квартири (необов'язково)",
+    "noProject": "Без проєкту",
+    "noApartment": "Без квартири",
+    "noProjectsYet": "Проєктів ще немає",
+    "noApartmentsForProject": "Для цього проєкту немає квартир",
+    "confirmDelete": "Видалити цей матеріал?",
+    "fields": {
+      "name": "Назва матеріалу *",
+      "unit": "Одиниця (мішки, метри…)",
+      "quantity": "Кількість на складі",
+      "minQuantity": "Мінімальний залишок для сповіщення",
+      "unitPrice": "Ціна за одиницю ₪",
+      "supplier": "Постачальник"
+    },
+    "errors": {
+      "nameRequired": "Введіть назву матеріалу",
+      "serverError": "Помилка сервера — спробуйте ще раз",
+      "stockUpdateFailed": "Не вдалося оновити запас",
+      "deleteFailed": "Помилка під час видалення матеріалу"
+    }
   }
 }

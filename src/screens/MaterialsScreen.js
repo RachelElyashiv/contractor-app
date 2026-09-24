@@ -13,8 +13,10 @@ import {
     View
 } from 'react-native';
 import { apartments as apartmentsApi, materials, projects as projectsApi } from '../services/api';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } = {}) {
+  const { t } = useLanguage();
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -23,7 +25,7 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
   useEffect(() => {
     if (pendingCreate) { setModalVisible(true); onClearPendingCreate?.(); }
   }, [pendingCreate]);
-  const [form, setForm] = useState({ name: '', unit: 'יחידות', quantity: '', minQuantity: '', unitPrice: '', supplier: '' });
+  const [form, setForm] = useState({ name: '', unit: t('materials.defaultUnit'), quantity: '', minQuantity: '', unitPrice: '', supplier: '' });
   // Assign material to a project + apartment (optional)
   const [projectsList, setProjectsList] = useState([]);
   const [matApartments, setMatApartments] = useState([]);
@@ -88,7 +90,7 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
   }
 
   async function createMaterial() {
-    if (!form.name) { setFormError('חובה למלא שם חומר'); return; }
+    if (!form.name) { setFormError(t('materials.errors.nameRequired')); return; }
     setFormError('');
     setSubmitting(true);
     try {
@@ -101,12 +103,12 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
         ...(matApartmentId ? { apartmentId: matApartmentId } : {}),
       });
       setModalVisible(false);
-      setForm({ name: '', unit: 'יחידות', quantity: '', minQuantity: '', unitPrice: '', supplier: '' });
+      setForm({ name: '', unit: t('materials.defaultUnit'), quantity: '', minQuantity: '', unitPrice: '', supplier: '' });
       setMatProjectId(null);
       setMatApartmentId(null);
       loadData();
     } catch (e) {
-      setFormError('שגיאה בשרת — נסי שוב');
+      setFormError(t('materials.errors.serverError'));
     } finally {
       setSubmitting(false);
     }
@@ -117,16 +119,16 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
       await materials.adjust(id, delta);
       loadData();
     } catch (e) {
-      Alert.alert('שגיאה', 'לא הצלחנו לעדכן מלאי');
+      Alert.alert(t('common.error'), t('materials.errors.stockUpdateFailed'));
     }
   }
 
   function deleteMaterial(id) {
     pendingDeleteFn.current = async () => {
       try { await materials.delete(id); loadData(); }
-      catch (e) { Alert.alert('שגיאה', 'שגיאה במחיקת חומר'); }
+      catch (e) { Alert.alert(t('common.error'), t('materials.errors.deleteFailed')); }
     };
-    setConfirmDelete({ message: 'האם למחוק חומר זה?' });
+    setConfirmDelete({ message: t('materials.confirmDelete') });
   }
 
   const matProject = projectsList.find(p => p.id === matProjectId);
@@ -137,9 +139,9 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>חומרים ומלאי</Text>
+        <Text style={styles.headerTitle}>{t('materials.title')}</Text>
         <TouchableOpacity style={styles.addBtn} onPress={() => setModalVisible(true)}>
-          <Text style={styles.addBtnText}>+ הוסף</Text>
+          <Text style={styles.addBtnText}>{t('common.add')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -153,14 +155,14 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
               <View style={styles.cardTop}>
                 <Text style={styles.matName}>{m.name}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  {isLow && <Text style={styles.lowBadge}>⚠️ מלאי נמוך</Text>}
+                  {isLow && <Text style={styles.lowBadge}>⚠️ {t('materials.lowBadge')}</Text>}
                   <TouchableOpacity onPress={() => deleteMaterial(m.id)}>
                     <Text style={{ fontSize: 18, color: '#ccc' }}>🗑</Text>
                   </TouchableOpacity>
                 </View>
               </View>
-              {!!m.supplier && <Text style={styles.meta}>ספק: {m.supplier}</Text>}
-              {m.unitPrice > 0 && <Text style={styles.meta}>מחיר: ₪{m.unitPrice} ל{m.unit}</Text>}
+              {!!m.supplier && <Text style={styles.meta}>{t('materials.supplier', { name: m.supplier })}</Text>}
+              {m.unitPrice > 0 && <Text style={styles.meta}>{t('materials.price', { price: m.unitPrice, unit: m.unit })}</Text>}
               <View style={styles.stockRow}>
                 <TouchableOpacity style={styles.stockBtn} onPress={() => adjustStock(m.id, -1)}>
                   <Text style={styles.stockBtnText}>−</Text>
@@ -175,21 +177,21 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
             </View>
           );
         })}
-        {list.length === 0 && <Text style={styles.empty}>אין חומרים עדיין. לחץ + הוסף.</Text>}
+        {list.length === 0 && <Text style={styles.empty}>{t('materials.empty')}</Text>}
       </ScrollView>
 
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.overlay}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>חומר חדש</Text>
+            <Text style={styles.modalTitle}>{t('materials.newMaterial')}</Text>
             <ScrollView>
               {[
-                { key: 'name', placeholder: 'שם חומר *' },
-                { key: 'unit', placeholder: 'יחידה (שקים, מטרים...)' },
-                { key: 'quantity', placeholder: 'כמות במלאי', keyboardType: 'numeric' },
-                { key: 'minQuantity', placeholder: 'כמות מינימום להתראה', keyboardType: 'numeric' },
-                { key: 'unitPrice', placeholder: 'מחיר ליחידה ₪', keyboardType: 'numeric' },
-                { key: 'supplier', placeholder: 'ספק' },
+                { key: 'name', placeholder: t('materials.fields.name') },
+                { key: 'unit', placeholder: t('materials.fields.unit') },
+                { key: 'quantity', placeholder: t('materials.fields.quantity'), keyboardType: 'numeric' },
+                { key: 'minQuantity', placeholder: t('materials.fields.minQuantity'), keyboardType: 'numeric' },
+                { key: 'unitPrice', placeholder: t('materials.fields.unitPrice'), keyboardType: 'numeric' },
+                { key: 'supplier', placeholder: t('materials.fields.supplier') },
               ].map(f => (
                 <TextInput
                   key={f.key}
@@ -205,21 +207,21 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
 
               {/* Assign to project + apartment (optional) */}
               <TouchableOpacity style={styles.selectorBtn} onPress={() => setShowMatProject(true)}>
-                <Text style={styles.selectorText}>{matProject ? `📁 ${matProject.name}` : '📁 שייך לפרויקט (לא חובה)'}</Text>
+                <Text style={styles.selectorText}>{matProject ? `📁 ${matProject.name}` : `📁 ${t('materials.assignProjectPlaceholder')}`}</Text>
               </TouchableOpacity>
               {matProjectId ? (
                 <TouchableOpacity style={styles.selectorBtn} onPress={() => setShowMatApartment(true)}>
-                  <Text style={styles.selectorText}>{matApartment ? `🏠 ${matApartment.name}` : '🏠 שייך לדירה (לא חובה)'}</Text>
+                  <Text style={styles.selectorText}>{matApartment ? `🏠 ${matApartment.name}` : `🏠 ${t('materials.assignApartmentPlaceholder')}`}</Text>
                 </TouchableOpacity>
               ) : null}
             </ScrollView>
             {formError ? <Text style={{ color: '#a32d2d', textAlign: 'center', marginBottom: 8 }}>{formError}</Text> : null}
             <View style={styles.modalActions}>
               <TouchableOpacity style={[styles.btnPrimary, submitting && { opacity: 0.6 }]} onPress={createMaterial} disabled={submitting}>
-                <Text style={styles.btnPrimaryText}>{submitting ? 'שולח...' : 'הוסף חומר'}</Text>
+                <Text style={styles.btnPrimaryText}>{submitting ? t('common.submitting') : t('materials.addMaterial')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btnSecondary} onPress={() => { setModalVisible(false); setFormError(''); }}>
-                <Text style={styles.btnSecondaryText}>ביטול</Text>
+                <Text style={styles.btnSecondaryText}>{t('common.cancel')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -230,10 +232,10 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
       <Modal visible={showMatProject} animationType="slide" transparent>
         <View style={styles.overlay}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>שייך לפרויקט</Text>
+            <Text style={styles.modalTitle}>{t('materials.assignProject')}</Text>
             <ScrollView>
               <TouchableOpacity style={styles.filterOption} onPress={() => { setMatProjectId(null); setShowMatProject(false); }}>
-                <Text style={styles.filterOptionText}>ללא פרויקט</Text>
+                <Text style={styles.filterOptionText}>{t('materials.noProject')}</Text>
               </TouchableOpacity>
               {projectsList.map(p => (
                 <TouchableOpacity key={p.id} style={[styles.filterOption, matProjectId === p.id && styles.filterOptionActive]}
@@ -241,10 +243,10 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
                   <Text style={[styles.filterOptionText, matProjectId === p.id && { color: '#1a6b4a', fontWeight: '600' }]}>{p.name}</Text>
                 </TouchableOpacity>
               ))}
-              {projectsList.length === 0 && <Text style={styles.empty}>אין פרויקטים עדיין</Text>}
+              {projectsList.length === 0 && <Text style={styles.empty}>{t('materials.noProjectsYet')}</Text>}
             </ScrollView>
             <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowMatProject(false)}>
-              <Text style={styles.btnSecondaryText}>סגור</Text>
+              <Text style={styles.btnSecondaryText}>{t('common.close')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -254,10 +256,10 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
       <Modal visible={showMatApartment} animationType="slide" transparent>
         <View style={styles.overlay}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>שייך לדירה</Text>
+            <Text style={styles.modalTitle}>{t('materials.assignApartment')}</Text>
             <ScrollView>
               <TouchableOpacity style={styles.filterOption} onPress={() => { setMatApartmentId(null); setShowMatApartment(false); }}>
-                <Text style={styles.filterOptionText}>ללא דירה</Text>
+                <Text style={styles.filterOptionText}>{t('materials.noApartment')}</Text>
               </TouchableOpacity>
               {matApartments.map(a => (
                 <TouchableOpacity key={a.id} style={[styles.filterOption, matApartmentId === a.id && styles.filterOptionActive]}
@@ -267,10 +269,10 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
                   </Text>
                 </TouchableOpacity>
               ))}
-              {matApartments.length === 0 && <Text style={styles.empty}>אין דירות לפרויקט זה</Text>}
+              {matApartments.length === 0 && <Text style={styles.empty}>{t('materials.noApartmentsForProject')}</Text>}
             </ScrollView>
             <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowMatApartment(false)}>
-              <Text style={styles.btnSecondaryText}>סגור</Text>
+              <Text style={styles.btnSecondaryText}>{t('common.close')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -283,11 +285,11 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
             <View style={{ flexDirection: 'row', gap: 10 }}>
               <TouchableOpacity style={{ flex: 1, backgroundColor: '#fcebeb', padding: 14, borderRadius: 10, alignItems: 'center' }}
                 onPress={() => { const fn = pendingDeleteFn.current; pendingDeleteFn.current = null; setConfirmDelete(null); fn?.(); }}>
-                <Text style={{ color: '#a32d2d', fontWeight: '600', fontSize: 15 }}>מחק</Text>
+                <Text style={{ color: '#a32d2d', fontWeight: '600', fontSize: 15 }}>{t('common.delete')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={{ flex: 1, backgroundColor: '#f0f0f0', padding: 14, borderRadius: 10, alignItems: 'center' }}
                 onPress={() => { pendingDeleteFn.current = null; setConfirmDelete(null); }}>
-                <Text style={{ color: '#555', fontSize: 15 }}>ביטול</Text>
+                <Text style={{ color: '#555', fontSize: 15 }}>{t('common.cancel')}</Text>
               </TouchableOpacity>
             </View>
           </View>

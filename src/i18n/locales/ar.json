@@ -5,7 +5,13 @@
     "close": "إغلاق",
     "share": "مشاركة",
     "print": "طباعة",
-    "open": "فتح"
+    "open": "فتح",
+    "error": "خطأ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "permissionRequired": "إذن مطلوب",
+    "add": "+ إضافة",
+    "submitting": "جارٍ الإرسال…"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -40,5 +46,91 @@
   "document": {
     "title": "عرض المستند",
     "loading": "جارٍ تحميل المستند…"
+  },
+  "dashboard": {
+    "greeting": "مرحباً، {{name}}",
+    "subtitle": "اللوحة الرئيسية",
+    "logout": "تسجيل الخروج",
+    "actions": {
+      "addProject": "+ مشروع",
+      "addWorker": "+ عامل",
+      "addInvoice": "+ فاتورة",
+      "addMaterial": "+ مادة"
+    },
+    "stats": {
+      "activeProjects": "المشاريع النشطة",
+      "workersToday": "العمال اليوم",
+      "revenue": "الإيرادات",
+      "lowMaterials": "مواد منخفضة"
+    },
+    "stockAlerts": "تنبيهات المخزون",
+    "stockItem": "{{name}} – المتبقي {{qty}} {{unit}}",
+    "attendanceToday": "حضور اليوم",
+    "monthlyReport": "تقرير شهري — {{month}}",
+    "totalExpenses": "إجمالي المصروفات",
+    "toCollect": "للتحصيل",
+    "materialsCost": "تكلفة المواد",
+    "otherExpenses": "مصروفات أخرى",
+    "wages": "الأجور ({{days}} أيام عمل)",
+    "invoiceIncome": "إيرادات الفواتير",
+    "profit": "الربح (الإيرادات − المصروفات)",
+    "recentProjects": "أحدث المشاريع"
+  },
+  "photos": {
+    "title": "الملفات والصور",
+    "upload": "+ رفع",
+    "uploading": "جارٍ الرفع…",
+    "siteImages": "صور الموقع ({{count}})",
+    "pdfFiles": "ملفات PDF ({{count}})",
+    "openFile": "فتح الملف",
+    "empty": "لا توجد ملفات بعد",
+    "emptyHint": "اضغط \"+ رفع\" لإضافة صور",
+    "addPhoto": "إضافة صورة",
+    "chooseSource": "اختر المصدر",
+    "gallery": "المعرض",
+    "camera": "الكاميرا",
+    "deleteFile": "حذف الملف",
+    "confirmDelete": "حذف \"{{name}}\"؟",
+    "errors": {
+      "uploadFailed": "فشل الرفع",
+      "uploadError": "خطأ أثناء الرفع",
+      "deleteFailed": "فشل الحذف",
+      "deleteError": "خطأ أثناء الحذف",
+      "needGalleryPermission": "يرجى السماح بالوصول إلى الصور للرفع",
+      "needCameraPermission": "يرجى السماح بالوصول إلى الكاميرا للتصوير"
+    }
+  },
+  "materials": {
+    "defaultUnit": "وحدات",
+    "title": "المواد والمخزون",
+    "lowBadge": "مخزون منخفض",
+    "supplier": "المورّد: {{name}}",
+    "price": "السعر: ₪{{price}} لكل {{unit}}",
+    "empty": "لا توجد مواد بعد. اضغط + إضافة.",
+    "newMaterial": "مادة جديدة",
+    "addMaterial": "إضافة مادة",
+    "assignProject": "إسناد إلى مشروع",
+    "assignProjectPlaceholder": "إسناد إلى مشروع (اختياري)",
+    "assignApartment": "إسناد إلى شقة",
+    "assignApartmentPlaceholder": "إسناد إلى شقة (اختياري)",
+    "noProject": "بدون مشروع",
+    "noApartment": "بدون شقة",
+    "noProjectsYet": "لا توجد مشاريع بعد",
+    "noApartmentsForProject": "لا توجد شقق لهذا المشروع",
+    "confirmDelete": "حذف هذه المادة؟",
+    "fields": {
+      "name": "اسم المادة *",
+      "unit": "الوحدة (أكياس، أمتار…)",
+      "quantity": "الكمية في المخزون",
+      "minQuantity": "الحد الأدنى للتنبيه",
+      "unitPrice": "السعر لكل وحدة ₪",
+      "supplier": "المورّد"
+    },
+    "errors": {
+      "nameRequired": "أدخل اسم المادة",
+      "serverError": "خطأ في الخادم — حاول مرة أخرى",
+      "stockUpdateFailed": "تعذّر تحديث المخزون",
+      "deleteFailed": "خطأ في حذف المادة"
+    }
   }
 }
