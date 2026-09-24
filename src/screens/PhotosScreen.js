@@ -16,8 +16,8 @@ import {
 } from 'react-native';
 import PdfViewer from '../components/PdfViewer';
 import { useLanguage } from '../i18n/LanguageContext';
+import { BASE_URL } from '../services/api';
 
-const BASE_URL = 'https://contractor-backend-production.up.railway.app/api/v1';
 const isWeb = Platform.OS === 'web';
 
 export default function PhotosScreen() {

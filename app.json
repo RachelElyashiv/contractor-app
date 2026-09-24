@@ -25,6 +25,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "pan",
       "package": "com.rachelelyashiv.contractorapp",
       "versionCode": 1,
       "permissions": [
