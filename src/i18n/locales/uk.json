@@ -1,0 +1,44 @@
+{
+  "common": {
+    "appName": "Bonim",
+    "pressAgainToExit": "Натисніть ще раз, щоб вийти",
+    "close": "Закрити",
+    "share": "Поділитися",
+    "print": "Друк",
+    "open": "Відкрити"
+  },
+  "nav": {
+    "dashboard": "Панель",
+    "projects": "Проєкти",
+    "workers": "Робітники",
+    "materials": "Матеріали",
+    "invoices": "Рахунки",
+    "photos": "Фото"
+  },
+  "auth": {
+    "signInSubtitle": "Увійдіть у свій акаунт",
+    "signUpSubtitle": "Створити новий акаунт",
+    "email": "Ел. пошта",
+    "password": "Пароль",
+    "signIn": "Увійти",
+    "signUp": "Зареєструватися",
+    "noAccount": "Немає акаунта? Зареєструйтеся",
+    "haveAccount": "Вже маєте акаунт? Увійдіть",
+    "fullNameRequired": "Повне ім'я *",
+    "emailRequired": "Ел. пошта *",
+    "passwordRequired": "Пароль * (щонайменше 6 символів)",
+    "companyName": "Назва компанії",
+    "phone": "Телефон",
+    "errors": {
+      "missingCredentials": "Введіть ел. пошту та пароль",
+      "invalidCredentials": "Невірна ел. пошта або пароль",
+      "missingSignUpFields": "Введіть ім'я, ел. пошту та пароль",
+      "passwordTooShort": "Пароль має містити щонайменше 6 символів",
+      "signUpFailed": "Не вдалося створити акаунт"
+    }
+  },
+  "document": {
+    "title": "Документ",
+    "loading": "Завантаження документа…"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "common": {
+    "appName": "Bonim",
+    "pressAgainToExit": "Çıkmak için tekrar basın",
+    "close": "Kapat",
+    "share": "Paylaş",
+    "print": "Yazdır",
+    "open": "Aç"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "projects": "Projeler",
+    "workers": "İşçiler",
+    "materials": "Malzemeler",
+    "invoices": "Faturalar",
+    "photos": "Fotoğraflar"
+  },
+  "auth": {
+    "signInSubtitle": "Hesabınıza giriş yapın",
+    "signUpSubtitle": "Yeni hesap oluşturun",
+    "email": "E-posta",
+    "password": "Şifre",
+    "signIn": "Giriş yap",
+    "signUp": "Kayıt ol",
+    "noAccount": "Hesabınız yok mu? Kayıt olun",
+    "haveAccount": "Zaten hesabınız var mı? Giriş yapın",
+    "fullNameRequired": "Ad soyad *",
+    "emailRequired": "E-posta *",
+    "passwordRequired": "Şifre * (en az 6 karakter)",
+    "companyName": "Şirket adı",
+    "phone": "Telefon",
+    "errors": {
+      "missingCredentials": "E-posta ve şifrenizi girin",
+      "invalidCredentials": "E-posta veya şifre hatalı",
+      "missingSignUpFields": "Ad, e-posta ve şifrenizi girin",
+      "passwordTooShort": "Şifre en az 6 karakter olmalıdır",
+      "signUpFailed": "Kayıt başarısız oldu"
+    }
+  },
+  "document": {
+    "title": "Belge",
+    "loading": "Belge yükleniyor…"
+  }
+}

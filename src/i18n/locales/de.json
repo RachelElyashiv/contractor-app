@@ -1,0 +1,44 @@
+{
+  "common": {
+    "appName": "Bonim",
+    "pressAgainToExit": "Zum Beenden erneut drücken",
+    "close": "Schließen",
+    "share": "Teilen",
+    "print": "Drucken",
+    "open": "Öffnen"
+  },
+  "nav": {
+    "dashboard": "Übersicht",
+    "projects": "Projekte",
+    "workers": "Arbeiter",
+    "materials": "Material",
+    "invoices": "Rechnungen",
+    "photos": "Fotos"
+  },
+  "auth": {
+    "signInSubtitle": "Melden Sie sich bei Ihrem Konto an",
+    "signUpSubtitle": "Neues Konto erstellen",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "noAccount": "Noch kein Konto? Jetzt registrieren",
+    "haveAccount": "Schon ein Konto? Anmelden",
+    "fullNameRequired": "Vollständiger Name *",
+    "emailRequired": "E-Mail *",
+    "passwordRequired": "Passwort * (mindestens 6 Zeichen)",
+    "companyName": "Firmenname",
+    "phone": "Telefon",
+    "errors": {
+      "missingCredentials": "Geben Sie E-Mail und Passwort ein",
+      "invalidCredentials": "E-Mail oder Passwort falsch",
+      "missingSignUpFields": "Geben Sie Name, E-Mail und Passwort ein",
+      "passwordTooShort": "Das Passwort muss mindestens 6 Zeichen haben",
+      "signUpFailed": "Registrierung fehlgeschlagen"
+    }
+  },
+  "document": {
+    "title": "Dokument",
+    "loading": "Dokument wird geladen…"
+  }
+}

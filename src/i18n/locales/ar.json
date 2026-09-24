@@ -1,0 +1,44 @@
+{
+  "common": {
+    "appName": "Bonim",
+    "pressAgainToExit": "اضغط مرة أخرى للخروج",
+    "close": "إغلاق",
+    "share": "مشاركة",
+    "print": "طباعة",
+    "open": "فتح"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "projects": "المشاريع",
+    "workers": "العمال",
+    "materials": "المواد",
+    "invoices": "الفواتير",
+    "photos": "الصور"
+  },
+  "auth": {
+    "signInSubtitle": "سجّل الدخول إلى حسابك",
+    "signUpSubtitle": "إنشاء حساب جديد",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "noAccount": "ليس لديك حساب؟ سجّل الآن",
+    "haveAccount": "لديك حساب بالفعل؟ سجّل الدخول",
+    "fullNameRequired": "الاسم الكامل *",
+    "emailRequired": "البريد الإلكتروني *",
+    "passwordRequired": "كلمة المرور * (6 أحرف على الأقل)",
+    "companyName": "اسم الشركة",
+    "phone": "الهاتف",
+    "errors": {
+      "missingCredentials": "أدخل بريدك الإلكتروني وكلمة المرور",
+      "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+      "missingSignUpFields": "أدخل الاسم والبريد الإلكتروني وكلمة المرور",
+      "passwordTooShort": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
+      "signUpFailed": "فشل إنشاء الحساب"
+    }
+  },
+  "document": {
+    "title": "عرض المستند",
+    "loading": "جارٍ تحميل المستند…"
+  }
+}

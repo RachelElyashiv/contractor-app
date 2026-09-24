@@ -1,0 +1,44 @@
+{
+  "common": {
+    "appName": "בונים",
+    "pressAgainToExit": "לחצי שוב ליציאה",
+    "close": "סגור",
+    "share": "שתף",
+    "print": "הדפס",
+    "open": "פתח"
+  },
+  "nav": {
+    "dashboard": "דשבורד",
+    "projects": "פרויקטים",
+    "workers": "עובדים",
+    "materials": "חומרים",
+    "invoices": "חשבוניות",
+    "photos": "תמונות"
+  },
+  "auth": {
+    "signInSubtitle": "התחבר לחשבון שלך",
+    "signUpSubtitle": "צור חשבון חדש",
+    "email": "אימייל",
+    "password": "סיסמה",
+    "signIn": "התחבר",
+    "signUp": "הירשם",
+    "noAccount": "אין לך חשבון? הירשם כאן",
+    "haveAccount": "כבר יש לך חשבון? התחבר",
+    "fullNameRequired": "שם מלא *",
+    "emailRequired": "אימייל *",
+    "passwordRequired": "סיסמה * (לפחות 6 תווים)",
+    "companyName": "שם חברה",
+    "phone": "טלפון",
+    "errors": {
+      "missingCredentials": "חובה למלא אימייל וסיסמה",
+      "invalidCredentials": "אימייל או סיסמה שגויים",
+      "missingSignUpFields": "חובה למלא שם, אימייל וסיסמה",
+      "passwordTooShort": "הסיסמה חייבת להיות לפחות 6 תווים",
+      "signUpFailed": "שגיאה בהרשמה"
+    }
+  },
+  "document": {
+    "title": "תצוגת מסמך",
+    "loading": "טוען מסמך…"
+  }
+}

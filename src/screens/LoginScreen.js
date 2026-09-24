@@ -7,8 +7,10 @@ import {
     View
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function LoginScreen({ onSwitch }) {
+  const { t } = useLanguage();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,12 +19,12 @@ export default function LoginScreen({ onSwitch }) {
 
   async function handleLogin() {
     setError('');
-    if (!email || !password) { setError('חובה למלא אימייל וסיסמה'); return; }
+    if (!email || !password) { setError(t('auth.errors.missingCredentials')); return; }
     setLoading(true);
     try {
       await login(email, password);
     } catch (e) {
-      const msg = e?.response?.data?.message || 'אימייל או סיסמה שגויים';
+      const msg = e?.response?.data?.message || t('auth.errors.invalidCredentials');
       setError(Array.isArray(msg) ? msg.join(', ') : String(msg));
     } finally {
       setLoading(false);
@@ -32,13 +34,13 @@ export default function LoginScreen({ onSwitch }) {
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={styles.card}>
-        <Text style={styles.title}>🏗️ בניית על</Text>
-        <Text style={styles.subtitle}>התחבר לחשבון שלך</Text>
+        <Text style={styles.title}>🏗️ {t('common.appName')}</Text>
+        <Text style={styles.subtitle}>{t('auth.signInSubtitle')}</Text>
 
         <TextInput
           style={styles.input}
           placeholderTextColor="#9a9a9a"
-          placeholder="אימייל"
+          placeholder={t('auth.email')}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -48,7 +50,7 @@ export default function LoginScreen({ onSwitch }) {
         <TextInput
           style={styles.input}
           placeholderTextColor="#9a9a9a"
-          placeholder="סיסמה"
+          placeholder={t('auth.password')}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -62,11 +64,11 @@ export default function LoginScreen({ onSwitch }) {
         )}
 
         <TouchableOpacity style={styles.btn} onPress={handleLogin} disabled={loading}>
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>התחבר</Text>}
+          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>{t('auth.signIn')}</Text>}
         </TouchableOpacity>
 
         <TouchableOpacity onPress={onSwitch}>
-          <Text style={styles.switchText}>אין לך חשבון? הירשם כאן</Text>
+          <Text style={styles.switchText}>{t('auth.noAccount')}</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

@@ -1,0 +1,44 @@
+{
+  "common": {
+    "appName": "Bonim",
+    "pressAgainToExit": "Apasă din nou pentru a ieși",
+    "close": "Închide",
+    "share": "Distribuie",
+    "print": "Printează",
+    "open": "Deschide"
+  },
+  "nav": {
+    "dashboard": "Panou",
+    "projects": "Proiecte",
+    "workers": "Muncitori",
+    "materials": "Materiale",
+    "invoices": "Facturi",
+    "photos": "Fotografii"
+  },
+  "auth": {
+    "signInSubtitle": "Conectează-te la contul tău",
+    "signUpSubtitle": "Creează un cont nou",
+    "email": "E-mail",
+    "password": "Parolă",
+    "signIn": "Conectare",
+    "signUp": "Înregistrare",
+    "noAccount": "Nu ai cont? Înregistrează-te",
+    "haveAccount": "Ai deja cont? Conectează-te",
+    "fullNameRequired": "Nume complet *",
+    "emailRequired": "E-mail *",
+    "passwordRequired": "Parolă * (minimum 6 caractere)",
+    "companyName": "Numele firmei",
+    "phone": "Telefon",
+    "errors": {
+      "missingCredentials": "Introdu e-mailul și parola",
+      "invalidCredentials": "E-mail sau parolă incorecte",
+      "missingSignUpFields": "Introdu numele, e-mailul și parola",
+      "passwordTooShort": "Parola trebuie să aibă cel puțin 6 caractere",
+      "signUpFailed": "Înregistrarea a eșuat"
+    }
+  },
+  "document": {
+    "title": "Document",
+    "loading": "Se încarcă documentul…"
+  }
+}

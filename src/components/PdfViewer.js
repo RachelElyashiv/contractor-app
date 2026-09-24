@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { useLanguage } from '../i18n/LanguageContext';
 
 // In-app document viewer (native). Shows an invoice built from `html`, or a
 // remote file at `uri`. Remote PDFs are rendered through Google's viewer so
 // they display inside the app instead of being downloaded. Images load directly.
 export default function PdfViewer({ visible, onClose, html, uri, title, onShare }) {
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
 
   const cleanUri = (uri || '').split('?')[0].toLowerCase();
@@ -19,12 +21,12 @@ export default function PdfViewer({ visible, onClose, html, uri, title, onShare 
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={onClose} style={styles.btn}>
-            <Text style={styles.btnText}>✕ סגור</Text>
+            <Text style={styles.btnText}>✕ {t('common.close')}</Text>
           </TouchableOpacity>
-          <Text style={styles.title} numberOfLines={1}>{title || 'תצוגת מסמך'}</Text>
+          <Text style={styles.title} numberOfLines={1}>{title || t('document.title')}</Text>
           {onShare ? (
             <TouchableOpacity onPress={onShare} style={styles.btn}>
-              <Text style={styles.btnText}>📤 שתף</Text>
+              <Text style={styles.btnText}>📤 {t('common.share')}</Text>
             </TouchableOpacity>
           ) : (
             <View style={styles.btn} />

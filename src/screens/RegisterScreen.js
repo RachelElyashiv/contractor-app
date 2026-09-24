@@ -4,8 +4,10 @@ import {
   StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function RegisterScreen({ onSwitch }) {
+  const { t } = useLanguage();
   const [form, setForm] = useState({ fullName: '', email: '', password: '', companyName: '', phone: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -14,18 +16,18 @@ export default function RegisterScreen({ onSwitch }) {
   async function handleRegister() {
     setError('');
     if (!form.fullName || !form.email || !form.password) {
-      setError('חובה למלא שם, אימייל וסיסמה');
+      setError(t('auth.errors.missingSignUpFields'));
       return;
     }
     if (form.password.length < 6) {
-      setError('הסיסמה חייבת להיות לפחות 6 תווים');
+      setError(t('auth.errors.passwordTooShort'));
       return;
     }
     setLoading(true);
     try {
       await register(form);
     } catch (e) {
-      const msg = e?.response?.data?.message || e?.message || 'שגיאה בהרשמה';
+      const msg = e?.response?.data?.message || e?.message || t('auth.errors.signUpFailed');
       setError(Array.isArray(msg) ? msg.join(', ') : String(msg));
     } finally {
       setLoading(false);
@@ -36,15 +38,15 @@ export default function RegisterScreen({ onSwitch }) {
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.card}>
-          <Text style={styles.title}>🏗️ בניית על</Text>
-          <Text style={styles.subtitle}>צור חשבון חדש</Text>
+          <Text style={styles.title}>🏗️ {t('common.appName')}</Text>
+          <Text style={styles.subtitle}>{t('auth.signUpSubtitle')}</Text>
 
           {[
-            { key: 'fullName', placeholder: 'שם מלא *' },
-            { key: 'email', placeholder: 'אימייל *', keyboardType: 'email-address' },
-            { key: 'password', placeholder: 'סיסמה * (לפחות 6 תווים)', secure: true },
-            { key: 'companyName', placeholder: 'שם חברה' },
-            { key: 'phone', placeholder: 'טלפון', keyboardType: 'phone-pad' },
+            { key: 'fullName', placeholder: t('auth.fullNameRequired') },
+            { key: 'email', placeholder: t('auth.emailRequired'), keyboardType: 'email-address' },
+            { key: 'password', placeholder: t('auth.passwordRequired'), secure: true },
+            { key: 'companyName', placeholder: t('auth.companyName') },
+            { key: 'phone', placeholder: t('auth.phone'), keyboardType: 'phone-pad' },
           ].map((field) => (
             <TextInput
               key={field.key}
@@ -67,11 +69,11 @@ export default function RegisterScreen({ onSwitch }) {
           )}
 
           <TouchableOpacity style={styles.btn} onPress={handleRegister} disabled={loading}>
-            {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>הירשם</Text>}
+            {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnText}>{t('auth.signUp')}</Text>}
           </TouchableOpacity>
 
           <TouchableOpacity onPress={onSwitch}>
-            <Text style={styles.switchText}>כבר יש לך חשבון? התחבר</Text>
+            <Text style={styles.switchText}>{t('auth.haveAccount')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

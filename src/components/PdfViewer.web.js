@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useLanguage } from '../i18n/LanguageContext';
 
 // In-app document viewer (web). Invoices (html) render in an iframe via srcDoc.
 // For remote files we fetch the bytes and re-serve them as an in-memory PDF blob
@@ -8,6 +9,7 @@ import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } fr
 // disposition that makes the browser download them instead of displaying them.
 // If the fetch is blocked (CORS), we fall back to Google's embedded viewer.
 export default function PdfViewer({ visible, onClose, html, uri, title }) {
+  const { t } = useLanguage();
   const [blobUrl, setBlobUrl] = useState(null);
   const [failed, setFailed] = useState(false);
 
@@ -68,11 +70,11 @@ export default function PdfViewer({ visible, onClose, html, uri, title }) {
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={onClose} style={styles.btn}>
-            <Text style={styles.btnText}>✕ סגור</Text>
+            <Text style={styles.btnText}>✕ {t('common.close')}</Text>
           </TouchableOpacity>
-          <Text style={styles.title} numberOfLines={1}>{title || 'תצוגת מסמך'}</Text>
+          <Text style={styles.title} numberOfLines={1}>{title || t('document.title')}</Text>
           <TouchableOpacity onPress={openExternal} style={styles.btn}>
-            <Text style={styles.btnText}>{html ? '🖨 הדפס' : '↗ פתח'}</Text>
+            <Text style={styles.btnText}>{html ? `🖨 ${t('common.print')}` : `↗ ${t('common.open')}`}</Text>
           </TouchableOpacity>
         </View>
         {visible && (html || frameSrc) ? (
@@ -85,7 +87,7 @@ export default function PdfViewer({ visible, onClose, html, uri, title }) {
         ) : loading ? (
           <View style={styles.loader}>
             <ActivityIndicator size="large" color="#1a6b4a" />
-            <Text style={styles.loaderText}>טוען מסמך…</Text>
+            <Text style={styles.loaderText}>{t('document.loading')}</Text>
           </View>
         ) : null}
       </View>

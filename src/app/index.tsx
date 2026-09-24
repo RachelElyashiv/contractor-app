@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { ComponentType, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, BackHandler, StyleSheet, Text, TouchableOpacity, ToastAndroid, Platform, View } from 'react-native';
 import { AuthProvider, useAuth } from '../context/AuthContext';
+import { LanguageProvider, useLanguage } from '../i18n/LanguageContext';
 import DashboardScreen from '../screens/DashboardScreen';
 import InvoicesScreen from '../screens/InvoicesScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -12,17 +13,18 @@ import RegisterScreen from '../screens/RegisterScreen';
 import WorkersScreen from '../screens/WorkersScreen';
 
 const tabs = [
-  { name: 'דשבורד', icon: 'grid-outline', activeIcon: 'grid', component: DashboardScreen },
-  { name: 'פרויקטים', icon: 'business-outline', activeIcon: 'business', component: ProjectsScreen },
-  { name: 'עובדים', icon: 'people-outline', activeIcon: 'people', component: WorkersScreen },
-  { name: 'חומרים', icon: 'cube-outline', activeIcon: 'cube', component: MaterialsScreen },
-  { name: 'חשבוניות', icon: 'document-text-outline', activeIcon: 'document-text', component: InvoicesScreen },
-  { name: 'תמונות', icon: 'camera-outline', activeIcon: 'camera', component: PhotosScreen },
+  { key: 'nav.dashboard', icon: 'grid-outline', activeIcon: 'grid', component: DashboardScreen },
+  { key: 'nav.projects', icon: 'business-outline', activeIcon: 'business', component: ProjectsScreen },
+  { key: 'nav.workers', icon: 'people-outline', activeIcon: 'people', component: WorkersScreen },
+  { key: 'nav.materials', icon: 'cube-outline', activeIcon: 'cube', component: MaterialsScreen },
+  { key: 'nav.invoices', icon: 'document-text-outline', activeIcon: 'document-text', component: InvoicesScreen },
+  { key: 'nav.photos', icon: 'camera-outline', activeIcon: 'camera', component: PhotosScreen },
 ];
 
 function MainApp() {
   const auth = useAuth() as any;
   const { user, loading } = auth;
+  const { t } = useLanguage();
   const [showRegister, setShowRegister] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [pendingCreate, setPendingCreate] = useState(false);
@@ -48,12 +50,12 @@ function MainApp() {
         return false; // let the OS close the app
       }
       lastBackRef.current = now;
-      if (Platform.OS === 'android') ToastAndroid.show('לחצי שוב ליציאה', ToastAndroid.SHORT);
+      if (Platform.OS === 'android') ToastAndroid.show(t('common.pressAgainToExit'), ToastAndroid.SHORT);
       return true;
     };
     const sub = BackHandler.addEventListener('hardwareBackPress', onBack);
     return () => sub.remove();
-  }, [activeTab]);
+  }, [activeTab, t]);
 
   if (loading) return (
     <View style={{ flex: 1, justifyContent: 'center' }}>
@@ -83,7 +85,7 @@ function MainApp() {
           const active = idx === activeTab;
           return (
             <TouchableOpacity
-              key={tab.name}
+              key={tab.key}
               style={styles.tabItem}
               onPress={() => setActiveTab(idx)}
             >
@@ -93,7 +95,7 @@ function MainApp() {
                 color={active ? '#1a6b4a' : '#888'}
               />
               <Text style={[styles.tabLabel, active && styles.tabLabelActive]}>
-                {tab.name}
+                {t(tab.key)}
               </Text>
             </TouchableOpacity>
           );
@@ -126,8 +128,10 @@ const styles = StyleSheet.create({
 
 export default function Index() {
   return (
-    <AuthProvider>
-      <MainApp />
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <MainApp />
+      </AuthProvider>
+    </LanguageProvider>
   );
 }

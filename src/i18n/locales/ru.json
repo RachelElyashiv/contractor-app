@@ -1,0 +1,44 @@
+{
+  "common": {
+    "appName": "Bonim",
+    "pressAgainToExit": "Нажмите ещё раз для выхода",
+    "close": "Закрыть",
+    "share": "Поделиться",
+    "print": "Печать",
+    "open": "Открыть"
+  },
+  "nav": {
+    "dashboard": "Панель",
+    "projects": "Проекты",
+    "workers": "Рабочие",
+    "materials": "Материалы",
+    "invoices": "Счета",
+    "photos": "Фото"
+  },
+  "auth": {
+    "signInSubtitle": "Войдите в свой аккаунт",
+    "signUpSubtitle": "Создать новый аккаунт",
+    "email": "Эл. почта",
+    "password": "Пароль",
+    "signIn": "Войти",
+    "signUp": "Зарегистрироваться",
+    "noAccount": "Нет аккаунта? Зарегистрируйтесь",
+    "haveAccount": "Уже есть аккаунт? Войдите",
+    "fullNameRequired": "Полное имя *",
+    "emailRequired": "Эл. почта *",
+    "passwordRequired": "Пароль * (не менее 6 символов)",
+    "companyName": "Название компании",
+    "phone": "Телефон",
+    "errors": {
+      "missingCredentials": "Введите эл. почту и пароль",
+      "invalidCredentials": "Неверная эл. почта или пароль",
+      "missingSignUpFields": "Введите имя, эл. почту и пароль",
+      "passwordTooShort": "Пароль должен содержать не менее 6 символов",
+      "signUpFailed": "Не удалось создать аккаунт"
+    }
+  },
+  "document": {
+    "title": "Документ",
+    "loading": "Загрузка документа…"
+  }
+}

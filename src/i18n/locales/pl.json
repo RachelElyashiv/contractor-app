@@ -1,0 +1,44 @@
+{
+  "common": {
+    "appName": "Bonim",
+    "pressAgainToExit": "Naciśnij ponownie, aby wyjść",
+    "close": "Zamknij",
+    "share": "Udostępnij",
+    "print": "Drukuj",
+    "open": "Otwórz"
+  },
+  "nav": {
+    "dashboard": "Pulpit",
+    "projects": "Projekty",
+    "workers": "Pracownicy",
+    "materials": "Materiały",
+    "invoices": "Faktury",
+    "photos": "Zdjęcia"
+  },
+  "auth": {
+    "signInSubtitle": "Zaloguj się na swoje konto",
+    "signUpSubtitle": "Utwórz nowe konto",
+    "email": "E-mail",
+    "password": "Hasło",
+    "signIn": "Zaloguj się",
+    "signUp": "Zarejestruj się",
+    "noAccount": "Nie masz konta? Zarejestruj się",
+    "haveAccount": "Masz już konto? Zaloguj się",
+    "fullNameRequired": "Imię i nazwisko *",
+    "emailRequired": "E-mail *",
+    "passwordRequired": "Hasło * (co najmniej 6 znaków)",
+    "companyName": "Nazwa firmy",
+    "phone": "Telefon",
+    "errors": {
+      "missingCredentials": "Podaj e-mail i hasło",
+      "invalidCredentials": "Nieprawidłowy e-mail lub hasło",
+      "missingSignUpFields": "Podaj imię, e-mail i hasło",
+      "passwordTooShort": "Hasło musi mieć co najmniej 6 znaków",
+      "signUpFailed": "Nie udało się utworzyć konta"
+    }
+  },
+  "document": {
+    "title": "Dokument",
+    "loading": "Wczytywanie dokumentu…"
+  }
+}
