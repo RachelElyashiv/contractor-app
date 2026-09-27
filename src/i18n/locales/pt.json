@@ -98,7 +98,8 @@
       "deleteError": "Erro ao excluir",
       "needGalleryPermission": "Permita o acesso às suas fotos para enviar",
       "needCameraPermission": "Permita o acesso à câmera para tirar fotos"
-    }
+    },
+    "file": "Arquivo"
   },
   "materials": {
     "defaultUnit": "unidades",

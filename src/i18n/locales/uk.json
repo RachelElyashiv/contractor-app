@@ -98,7 +98,8 @@
       "deleteError": "Помилка під час видалення",
       "needGalleryPermission": "Дозвольте доступ до фото для завантаження",
       "needCameraPermission": "Дозвольте доступ до камери для зйомки"
-    }
+    },
+    "file": "Файл"
   },
   "materials": {
     "defaultUnit": "шт.",

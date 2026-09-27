@@ -98,7 +98,8 @@
       "deleteError": "Błąd podczas usuwania",
       "needGalleryPermission": "Zezwól na dostęp do zdjęć, aby je przesłać",
       "needCameraPermission": "Zezwól na dostęp do aparatu, aby robić zdjęcia"
-    }
+    },
+    "file": "Plik"
   },
   "materials": {
     "defaultUnit": "szt.",

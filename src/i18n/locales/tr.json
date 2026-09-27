@@ -98,7 +98,8 @@
       "deleteError": "Silme sırasında hata",
       "needGalleryPermission": "Yüklemek için fotoğraflara erişime izin verin",
       "needCameraPermission": "Fotoğraf çekmek için kameraya erişime izin verin"
-    }
+    },
+    "file": "Dosya"
   },
   "materials": {
     "defaultUnit": "adet",

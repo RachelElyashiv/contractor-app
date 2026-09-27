@@ -98,7 +98,8 @@
       "deleteError": "Erreur lors de la suppression",
       "needGalleryPermission": "Autorisez l'accès à vos photos pour les importer",
       "needCameraPermission": "Autorisez l'accès à l'appareil photo pour prendre des photos"
-    }
+    },
+    "file": "Fichier"
   },
   "materials": {
     "defaultUnit": "unités",

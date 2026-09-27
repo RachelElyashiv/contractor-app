@@ -98,7 +98,8 @@
       "deleteError": "Fehler beim Löschen",
       "needGalleryPermission": "Erlauben Sie den Zugriff auf Ihre Fotos zum Hochladen",
       "needCameraPermission": "Erlauben Sie den Kamerazugriff zum Fotografieren"
-    }
+    },
+    "file": "Datei"
   },
   "materials": {
     "defaultUnit": "Stück",

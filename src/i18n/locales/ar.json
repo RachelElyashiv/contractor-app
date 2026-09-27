@@ -98,7 +98,8 @@
       "deleteError": "خطأ أثناء الحذف",
       "needGalleryPermission": "يرجى السماح بالوصول إلى الصور للرفع",
       "needCameraPermission": "يرجى السماح بالوصول إلى الكاميرا للتصوير"
-    }
+    },
+    "file": "ملف"
   },
   "materials": {
     "defaultUnit": "وحدات",

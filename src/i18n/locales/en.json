@@ -98,7 +98,8 @@
       "deleteError": "Error while deleting",
       "needGalleryPermission": "Allow access to your photos to upload",
       "needCameraPermission": "Allow camera access to take photos"
-    }
+    },
+    "file": "File"
   },
   "materials": {
     "defaultUnit": "units",

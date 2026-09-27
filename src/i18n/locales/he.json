@@ -98,7 +98,8 @@
       "deleteError": "שגיאה במחיקה",
       "needGalleryPermission": "יש לאשר גישה לתמונות כדי להעלות",
       "needCameraPermission": "יש לאשר גישה למצלמה כדי לצלם"
-    }
+    },
+    "file": "קובץ"
   },
   "materials": {
     "defaultUnit": "יחידות",

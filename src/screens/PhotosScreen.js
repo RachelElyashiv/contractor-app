@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -116,6 +117,36 @@ export default function PhotosScreen() {
     }
   }
 
+  // --- צירוף קובץ כלשהו: תוכניות, תעודות משלוח, מסמכים (mobile) ---
+  async function pickAndUploadDocument() {
+    const result = await DocumentPicker.getDocumentAsync({ type: '*/*', multiple: true, copyToCacheDirectory: true });
+    if (result.canceled) return;
+
+    setUploading(true);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const formData = new FormData();
+      for (const asset of result.assets || []) {
+        formData.append('files', {
+          uri: asset.uri,
+          name: asset.name || 'file',
+          type: asset.mimeType || 'application/octet-stream',
+        });
+      }
+      const res = await fetch(`${BASE_URL}/photos/upload`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      if (res.ok) loadPhotos();
+      else Alert.alert(t('common.error'), t('photos.errors.uploadFailed'));
+    } catch {
+      Alert.alert(t('common.error'), t('photos.errors.uploadError'));
+    } finally {
+      setUploading(false);
+    }
+  }
+
   // --- צילום במצלמה (mobile) ---
   async function takePhotoMobile() {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
@@ -163,6 +194,7 @@ export default function PhotosScreen() {
       Alert.alert(t('photos.addPhoto'), t('photos.chooseSource'), [
         { text: t('photos.gallery'), onPress: pickAndUploadMobile },
         { text: t('photos.camera'), onPress: takePhotoMobile },
+        { text: t('photos.file'), onPress: pickAndUploadDocument },
         { text: t('common.cancel'), style: 'cancel' },
       ]);
     }
