@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import PdfViewer from '../components/PdfViewer';
 import { BASE_URL, apartments as apartmentsApi, materials as materialsApi, projects as projectsApi, workers as workersApi } from '../services/api';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const isWeb = Platform.OS === 'web';
 
@@ -88,6 +89,7 @@ async function apiFetch(path, opts = {}) {
 }
 
 export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } = {}) {
+  const insets = useSafeAreaInsets();
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -681,7 +683,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   if (selectedApartment) {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
+        <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
           <TouchableOpacity onPress={() => setSelectedApartment(null)} style={styles.backBtn}>
             <Text style={styles.backBtnText}>→ חזור</Text>
           </TouchableOpacity>
@@ -690,6 +692,11 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
             <Text style={styles.progressEditText}>{selectedApartment.progressPercent || 0}%</Text>
           </TouchableOpacity>
         </View>
+      <View style={styles.fabWrap} pointerEvents="box-none">
+        <TouchableOpacity style={styles.fab} onPress={() => setModalVisible(true)}>
+          <Text style={styles.fabText}>+</Text>
+        </TouchableOpacity>
+      </View>
 
         <View style={styles.progressBarHeader}>
           <View style={[styles.progressFillHeader, { width: `${selectedApartment.progressPercent || 0}%` }]} />
@@ -864,7 +871,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   if (selectedProject) {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
+        <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
           <TouchableOpacity onPress={() => setSelectedProject(null)} style={styles.backBtn}>
             <Text style={styles.backBtnText}>→ חזור</Text>
           </TouchableOpacity>
@@ -1011,11 +1018,8 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   // ── PROJECTS LIST ───────────────────────────────────────────────────────
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Text style={styles.headerTitle}>פרויקטים</Text>
-        <TouchableOpacity style={styles.addBtn} onPress={() => setModalVisible(true)}>
-          <Text style={styles.addBtnText}>+ חדש</Text>
-        </TouchableOpacity>
       </View>
 
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadProjects(); }} />}>
@@ -1103,9 +1107,12 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f0f4f0' },
-  header: { backgroundColor: '#1a6b4a', padding: 20, paddingTop: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  header: { backgroundColor: '#1a6b4a', padding: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#fff', flex: 1, textAlign: 'right' },
   addBtn: { backgroundColor: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 8 },
+  fabWrap: { position: 'absolute', left: 0, right: 0, bottom: 24, alignItems: 'center', zIndex: 10 },
+  fab: { width: 60, height: 60, borderRadius: 30, backgroundColor: '#1a6b4a', alignItems: 'center', justifyContent: 'center', elevation: 6, shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 6, shadowOffset: { width: 0, height: 3 } },
+  fabText: { color: '#fff', fontSize: 34, lineHeight: 38, fontWeight: '300' },
   addBtnText: { color: '#fff', fontSize: 14 },
   backBtn: { backgroundColor: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 8, marginLeft: 8 },
   backBtnText: { color: '#fff', fontSize: 14 },

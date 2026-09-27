@@ -10,8 +10,10 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { expenses, invoices, materials, projects, workers } from '../services/api';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function DashboardScreen({ onNavigate }) {
+  const insets = useSafeAreaInsets();
   const { t, lang } = useLanguage();
   const { user, logout } = useAuth();
   const [stats, setStats] = useState(null);
@@ -63,7 +65,7 @@ export default function DashboardScreen({ onNavigate }) {
       style={styles.container}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }} />}
     >
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <View>
           <Text style={styles.headerTitle}>{t('dashboard.greeting', { name: user?.fullName?.split(' ')[0] })} 👋</Text>
           <Text style={styles.headerSub}>{user?.companyName || t('dashboard.subtitle')}</Text>
@@ -193,7 +195,7 @@ export default function DashboardScreen({ onNavigate }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f0f4f0' },
-  header: { backgroundColor: '#1a6b4a', padding: 20, paddingTop: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  header: { backgroundColor: '#1a6b4a', padding: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#fff' },
   headerSub: { fontSize: 13, color: '#a8d5be', marginTop: 2 },
   logoutBtn: { backgroundColor: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 8 },

@@ -17,10 +17,12 @@ import {
 import PdfViewer from '../components/PdfViewer';
 import { useLanguage } from '../i18n/LanguageContext';
 import { BASE_URL } from '../services/api';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const isWeb = Platform.OS === 'web';
 
 export default function PhotosScreen() {
+  const insets = useSafeAreaInsets();
   const { t } = useLanguage();
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -214,7 +216,7 @@ export default function PhotosScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Text style={styles.headerTitle}>{t('photos.title')}</Text>
         <TouchableOpacity style={styles.addBtn} onPress={handleUploadPress} disabled={uploading}>
           <Text style={styles.addBtnText}>{uploading ? t('photos.uploading') : t('photos.upload')}</Text>
@@ -306,7 +308,7 @@ export default function PhotosScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f0f4f0' },
-  header: { backgroundColor: '#1a6b4a', padding: 20, paddingTop: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  header: { backgroundColor: '#1a6b4a', padding: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#fff' },
   addBtn: { backgroundColor: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 8 },
   addBtnText: { color: '#fff', fontSize: 14 },

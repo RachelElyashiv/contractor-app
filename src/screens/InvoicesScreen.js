@@ -18,10 +18,12 @@ import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import PdfViewer from '../components/PdfViewer';
 import { apartments as apartmentsApi, invoices, materials as materialsApi, projects as projectsApi } from '../services/api';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const isWeb = Platform.OS === 'web';
 
 export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } = {}) {
+  const insets = useSafeAreaInsets();
   const [list, setList] = useState([]);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -316,7 +318,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Text style={styles.headerTitle}>חשבוניות</Text>
         <View style={{ flexDirection: 'row', gap: 8 }}>
           <TouchableOpacity style={styles.addBtn} onPress={() => { setCreateType('quote'); setModalVisible(true); }}>
@@ -608,7 +610,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f0f4f0' },
-  header: { backgroundColor: '#1a6b4a', padding: 20, paddingTop: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  header: { backgroundColor: '#1a6b4a', padding: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#fff' },
   addBtn: { backgroundColor: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 8 },
   addBtnText: { color: '#fff', fontSize: 13 },

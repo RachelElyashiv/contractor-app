@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { ComponentType, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, BackHandler, StyleSheet, Text, TouchableOpacity, ToastAndroid, Platform, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { LanguageProvider, useLanguage } from '../i18n/LanguageContext';
 import DashboardScreen from '../screens/DashboardScreen';
@@ -25,6 +26,7 @@ function MainApp() {
   const auth = useAuth() as any;
   const { user, loading } = auth;
   const { t } = useLanguage();
+  const insets = useSafeAreaInsets();
   const [showRegister, setShowRegister] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [pendingCreate, setPendingCreate] = useState(false);
@@ -80,7 +82,7 @@ function MainApp() {
           onClearPendingCreate={() => setPendingCreate(false)}
         />
       </View>
-      <View style={styles.tabBar}>
+      <View style={[styles.tabBar, { paddingBottom: insets.bottom + 8 }]}>
         {tabs.map((tab, idx) => {
           const active = idx === activeTab;
           return (
