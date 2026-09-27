@@ -18,6 +18,7 @@ import {
 import PdfViewer from '../components/PdfViewer';
 import { useLanguage } from '../i18n/LanguageContext';
 import { BASE_URL } from '../services/api';
+import { toUploadFile, uploadFiles } from '../services/uploadFiles';
 import { useTopInset } from '../hooks/useTopInset';
 
 const isWeb = Platform.OS === 'web';
@@ -50,30 +51,28 @@ export default function PhotosScreen() {
     }
   }
 
+  function reportUploadError(e) {
+    Alert.alert(t('common.error'), `${t('photos.errors.uploadFailed')}\n\n${e?.message || e}`);
+  }
+
+  async function send(files) {
+    setUploading(true);
+    try {
+      await uploadFiles(files);
+      await loadPhotos();
+    } catch (e) {
+      reportUploadError(e);
+    } finally {
+      setUploading(false);
+    }
+  }
+
   // --- העלאה במחשב (web) ---
   async function handleFileChange(e) {
     const files = e.target.files;
     if (!files || files.length === 0) return;
-    setUploading(true);
-    try {
-      const token = await AsyncStorage.getItem('token');
-      const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
-      }
-      const res = await fetch(`${BASE_URL}/photos/upload`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-      if (res.ok) loadPhotos();
-      else Alert.alert(t('common.error'), t('photos.errors.uploadFailed'));
-    } catch (e) {
-      Alert.alert(t('common.error'), t('photos.errors.uploadError'));
-    } finally {
-      setUploading(false);
-      e.target.value = '';
-    }
+    await send(Array.from(files));
+    e.target.value = '';
   }
 
   // --- העלאה בטלפון (mobile) ---
@@ -84,37 +83,13 @@ export default function PhotosScreen() {
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       allowsMultipleSelection: true,
       quality: 0.7,
     });
     if (result.canceled) return;
 
-    setUploading(true);
-    try {
-      const token = await AsyncStorage.getItem('token');
-      const formData = new FormData();
-      for (const asset of result.assets) {
-        const uriParts = asset.uri.split('.');
-        const fileType = uriParts[uriParts.length - 1];
-        formData.append('files', {
-          uri: asset.uri,
-          name: `photo.${fileType}`,
-          type: `image/${fileType}`,
-        });
-      }
-      const res = await fetch(`${BASE_URL}/photos/upload`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-      if (res.ok) loadPhotos();
-      else Alert.alert(t('common.error'), t('photos.errors.uploadFailed'));
-    } catch (e) {
-      Alert.alert(t('common.error'), t('photos.errors.uploadError'));
-    } finally {
-      setUploading(false);
-    }
+    await send(result.assets.map((asset) => toUploadFile(asset, 'image/jpeg')));
   }
 
   // --- צירוף קובץ כלשהו: תוכניות, תעודות משלוח, מסמכים (mobile) ---
@@ -122,29 +97,7 @@ export default function PhotosScreen() {
     const result = await DocumentPicker.getDocumentAsync({ type: '*/*', multiple: true, copyToCacheDirectory: true });
     if (result.canceled) return;
 
-    setUploading(true);
-    try {
-      const token = await AsyncStorage.getItem('token');
-      const formData = new FormData();
-      for (const asset of result.assets || []) {
-        formData.append('files', {
-          uri: asset.uri,
-          name: asset.name || 'file',
-          type: asset.mimeType || 'application/octet-stream',
-        });
-      }
-      const res = await fetch(`${BASE_URL}/photos/upload`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-      if (res.ok) loadPhotos();
-      else Alert.alert(t('common.error'), t('photos.errors.uploadFailed'));
-    } catch {
-      Alert.alert(t('common.error'), t('photos.errors.uploadError'));
-    } finally {
-      setUploading(false);
-    }
+    await send((result.assets || []).map((asset) => toUploadFile(asset, 'application/octet-stream')));
   }
 
   // --- צילום במצלמה (mobile) ---
@@ -159,30 +112,7 @@ export default function PhotosScreen() {
     });
     if (result.canceled) return;
 
-    setUploading(true);
-    try {
-      const token = await AsyncStorage.getItem('token');
-      const formData = new FormData();
-      const asset = result.assets[0];
-      const uriParts = asset.uri.split('.');
-      const fileType = uriParts[uriParts.length - 1];
-      formData.append('files', {
-        uri: asset.uri,
-        name: `photo.${fileType}`,
-        type: `image/${fileType}`,
-      });
-      const res = await fetch(`${BASE_URL}/photos/upload`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-      if (res.ok) loadPhotos();
-      else Alert.alert(t('common.error'), t('photos.errors.uploadFailed'));
-    } catch (e) {
-      Alert.alert(t('common.error'), t('photos.errors.uploadError'));
-    } finally {
-      setUploading(false);
-    }
+    await send([toUploadFile(result.assets[0], 'image/jpeg')]);
   }
 
   // --- בחירה לפי פלטפורמה ---

@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import PdfViewer from '../components/PdfViewer';
 import { BASE_URL, apartments as apartmentsApi, materials as materialsApi, projects as projectsApi, workers as workersApi } from '../services/api';
+import { toUploadFile, uploadFiles } from '../services/uploadFiles';
 import { useTopInset } from '../hooks/useTopInset';
 import { useKeyboardHeight } from '../hooks/useKeyboardHeight';
 
@@ -36,21 +37,18 @@ async function pickImagesNative(multiple = true) {
   const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!perm.granted) { Alert.alert('הרשאה נדרשת', 'יש לאשר גישה לתמונות'); return null; }
   const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    mediaTypes: ['images'],
     allowsMultipleSelection: multiple,
     quality: 0.7,
   });
   if (result.canceled) return null;
-  return result.assets.map(a => {
-    const ext = (a.uri.split('.').pop() || 'jpg').split('?')[0];
-    return { uri: a.uri, name: a.fileName || `photo.${ext}`, type: a.mimeType || `image/${ext}` };
-  });
+  return result.assets.map(a => toUploadFile(a, 'image/jpeg'));
 }
 
 async function pickDocsNative(mime = '*/*') {
   const result = await DocumentPicker.getDocumentAsync({ type: mime, multiple: false, copyToCacheDirectory: true });
   if (result.canceled) return null;
-  return (result.assets || []).map(a => ({ uri: a.uri, name: a.name || 'file', type: a.mimeType || 'application/octet-stream' }));
+  return (result.assets || []).map(a => toUploadFile(a, 'application/octet-stream'));
 }
 
 // Web file picker — returns a Promise resolving to a FileList
@@ -440,21 +438,10 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
     setUploading(true);
     setUploadError('');
     try {
-      const token = await getToken();
-      const formData = new FormData();
-      for (let i = 0; i < files.length; i++) formData.append('files', files[i]);
-      if (projectId) formData.append('projectId', projectId);
-      if (apartmentId) formData.append('apartmentId', apartmentId);
-      formData.append('caption', caption || '');
-      const res = await fetch(`${BASE_URL}/photos/upload`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-      if (!res.ok) setUploadError(`שגיאה בהעלאה (${res.status})`);
-      return res.ok;
+      await uploadFiles(Array.from(files), { projectId, apartmentId, caption });
+      return true;
     } catch (err) {
-      setUploadError('שגיאה בהעלאה — בדקי חיבור');
+      setUploadError(err?.message || 'שגיאה בהעלאה');
       return false;
     } finally {
       setUploading(false);
@@ -463,8 +450,8 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
 
   async function uploadToProject(projectId, type) {
     const files = isWeb
-      ? await pickFilesWeb(type === 'pdf' ? '.pdf' : 'image/*', type !== 'pdf')
-      : type === 'pdf' ? await pickDocsNative('application/pdf') : await pickImagesNative(true);
+      ? await pickFilesWeb(type === 'pdf' ? '' : 'image/*', type !== 'pdf')
+      : type === 'pdf' ? await pickDocsNative('*/*') : await pickImagesNative(true);
     if (!files || files.length === 0) return;
     const ok = await doUpload(files, projectId, null, type === 'pdf' ? 'PDF' : '');
     if (ok) loadProjectFiles(projectId);
@@ -472,8 +459,8 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
 
   async function uploadToApartment(apartmentId, type) {
     const files = isWeb
-      ? await pickFilesWeb(type === 'pdf' ? '.pdf' : 'image/*', type !== 'pdf')
-      : type === 'pdf' ? await pickDocsNative('application/pdf') : await pickImagesNative(true);
+      ? await pickFilesWeb(type === 'pdf' ? '' : 'image/*', type !== 'pdf')
+      : type === 'pdf' ? await pickDocsNative('*/*') : await pickImagesNative(true);
     if (!files || files.length === 0) return;
     const ok = await doUpload(files, selectedProject.id, apartmentId, type === 'pdf' ? 'תוכנית PDF' : 'תוכנית דירה');
     if (ok) loadApartmentFiles(apartmentId);
@@ -487,18 +474,10 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
     setUploading(true);
     setUploadError('');
     try {
-      const token = await getToken();
-      const formData = new FormData();
-      formData.append('files', files[0]);
-      if (selectedProject?.id) formData.append('projectId', selectedProject.id);
-      formData.append('caption', type === 'image' ? 'תמונת משלוח' : 'תעודת משלוח');
-      const uploadRes = await fetch(`${BASE_URL}/photos/upload`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
+      const uploaded = await uploadFiles([files[0]], {
+        projectId: selectedProject?.id,
+        caption: type === 'image' ? 'תמונת משלוח' : 'תעודת משלוח',
       });
-      if (!uploadRes.ok) { setUploadError(`שגיאה ${uploadRes.status}`); return; }
-      const uploaded = await uploadRes.json();
       const url = uploaded[0]?.url;
       if (url) {
         const field = type === 'image' ? 'deliveryImageUrl' : 'imageUrl';
@@ -512,7 +491,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         setUploadError('שגיאה: לא התקבל קישור מהשרת');
       }
     } catch (err) {
-      setUploadError('שגיאה בהעלאה — בדקי חיבור');
+      setUploadError(err?.message || 'שגיאה בהעלאה');
     } finally {
       setUploading(false);
     }
