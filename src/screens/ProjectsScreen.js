@@ -20,7 +20,8 @@ import {
 } from 'react-native';
 import PdfViewer from '../components/PdfViewer';
 import { BASE_URL, apartments as apartmentsApi, materials as materialsApi, projects as projectsApi, workers as workersApi } from '../services/api';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTopInset } from '../hooks/useTopInset';
+import { useKeyboardHeight } from '../hooks/useKeyboardHeight';
 
 const isWeb = Platform.OS === 'web';
 
@@ -89,7 +90,8 @@ async function apiFetch(path, opts = {}) {
 }
 
 export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } = {}) {
-  const insets = useSafeAreaInsets();
+  const topInset = useTopInset();
+  const keyboardHeight = useKeyboardHeight();
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -683,7 +685,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   if (selectedApartment) {
     return (
       <View style={styles.container}>
-        <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
+        <View style={[styles.header, { paddingTop: topInset + 12 }]}>
           <TouchableOpacity onPress={() => setSelectedApartment(null)} style={styles.backBtn}>
             <Text style={styles.backBtnText}>→ חזור</Text>
           </TouchableOpacity>
@@ -742,7 +744,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
               )}
             </ScrollView>
             <Modal visible={addAptMaterialModal} animationType="slide" transparent>
-              <View style={styles.overlay}>
+              <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
                 <View style={styles.modal}>
                   <Text style={styles.modalTitle}>הוסף חומר לדירה</Text>
                   {[
@@ -814,7 +816,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
             </ScrollView>
 
             <Modal visible={addWorkerModal} animationType="slide" transparent>
-              <View style={styles.overlay}>
+              <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
                 <View style={styles.modal}>
                   <Text style={styles.modalTitle}>הוסף עובד לדירה</Text>
                   {[
@@ -845,7 +847,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
 
         {/* Progress modal */}
         <Modal visible={progressModal} animationType="slide" transparent>
-          <View style={styles.overlay}>
+          <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
             <View style={[styles.modal, { paddingBottom: 30 }]}>
               <Text style={styles.modalTitle}>עדכן אחוז התקדמות</Text>
               <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder="0-100" value={progressValue}
@@ -871,7 +873,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   if (selectedProject) {
     return (
       <View style={styles.container}>
-        <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
+        <View style={[styles.header, { paddingTop: topInset + 12 }]}>
           <TouchableOpacity onPress={() => setSelectedProject(null)} style={styles.backBtn}>
             <Text style={styles.backBtnText}>→ חזור</Text>
           </TouchableOpacity>
@@ -921,7 +923,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
               )}
             </ScrollView>
             <Modal visible={addMaterialModal} animationType="slide" transparent>
-              <View style={styles.overlay}>
+              <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
                 <View style={styles.modal}>
                   <Text style={styles.modalTitle}>הוסף חומר לפרויקט</Text>
                   {[
@@ -985,7 +987,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
               </ScrollView>
             )}
             <Modal visible={addApartmentModal} animationType="slide" transparent>
-              <View style={styles.overlay}>
+              <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
                 <View style={styles.modal}>
                   <Text style={styles.modalTitle}>דירה חדשה</Text>
                   {[
@@ -1018,7 +1020,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   // ── PROJECTS LIST ───────────────────────────────────────────────────────
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
+      <View style={[styles.header, { paddingTop: topInset + 12 }]}>
         <Text style={styles.headerTitle}>פרויקטים</Text>
       </View>
 
@@ -1069,7 +1071,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
       </ScrollView>
 
       <Modal visible={modalVisible} animationType="slide" transparent>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>פרויקט חדש</Text>
             <ScrollView>

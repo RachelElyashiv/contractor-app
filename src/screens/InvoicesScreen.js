@@ -18,12 +18,14 @@ import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import PdfViewer from '../components/PdfViewer';
 import { apartments as apartmentsApi, invoices, materials as materialsApi, projects as projectsApi } from '../services/api';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTopInset } from '../hooks/useTopInset';
+import { useKeyboardHeight } from '../hooks/useKeyboardHeight';
 
 const isWeb = Platform.OS === 'web';
 
 export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } = {}) {
-  const insets = useSafeAreaInsets();
+  const topInset = useTopInset();
+  const keyboardHeight = useKeyboardHeight();
   const [list, setList] = useState([]);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -318,7 +320,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
 
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
+      <View style={[styles.header, { paddingTop: topInset + 12 }]}>
         <Text style={styles.headerTitle}>חשבוניות</Text>
         <View style={{ flexDirection: 'row', gap: 8 }}>
           <TouchableOpacity style={styles.addBtn} onPress={() => { setCreateType('quote'); setModalVisible(true); }}>
@@ -411,7 +413,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
       </ScrollView>
 
       <Modal visible={modalVisible} animationType="slide" transparent>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>
               {createType === 'quote' ? '📋 הצעת מחיר חדשה' : '🧾 חשבונית חדשה'}
@@ -509,7 +511,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
 
       {/* Pick source project */}
       <Modal visible={showSrcProject} animationType="slide" transparent>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>בחרי פרויקט</Text>
             <ScrollView>
@@ -530,7 +532,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
 
       {/* Pick source apartment */}
       <Modal visible={showSrcApartment} animationType="slide" transparent>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>בחרי דירה</Text>
             <ScrollView>
@@ -556,7 +558,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
 
       {/* Pick a single material from inventory */}
       <Modal visible={showMaterialPicker} animationType="slide" transparent>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>📦 משוך חומר מהמלאי</Text>
             <Text style={{ textAlign: 'center', color: '#888', fontSize: 12, marginBottom: 10 }}>המחיר יטען לפי מחיר הקנייה — תוכלי לערוך אותו ולהוסיף רווח</Text>

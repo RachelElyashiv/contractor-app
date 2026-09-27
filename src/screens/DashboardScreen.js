@@ -10,10 +10,10 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { expenses, invoices, materials, projects, workers } from '../services/api';
 import { useLanguage } from '../i18n/LanguageContext';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTopInset } from '../hooks/useTopInset';
 
 export default function DashboardScreen({ onNavigate }) {
-  const insets = useSafeAreaInsets();
+  const topInset = useTopInset();
   const { t, lang } = useLanguage();
   const { user, logout } = useAuth();
   const [stats, setStats] = useState(null);
@@ -65,7 +65,7 @@ export default function DashboardScreen({ onNavigate }) {
       style={styles.container}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }} />}
     >
-      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
+      <View style={[styles.header, { paddingTop: topInset + 12 }]}>
         <View>
           <Text style={styles.headerTitle}>{t('dashboard.greeting', { name: user?.fullName?.split(' ')[0] })} 👋</Text>
           <Text style={styles.headerSub}>{user?.companyName || t('dashboard.subtitle')}</Text>

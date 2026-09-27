@@ -14,10 +14,12 @@ import {
 } from 'react-native';
 import { apartments as apartmentsApi, materials, projects as projectsApi } from '../services/api';
 import { useLanguage } from '../i18n/LanguageContext';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTopInset } from '../hooks/useTopInset';
+import { useKeyboardHeight } from '../hooks/useKeyboardHeight';
 
 export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } = {}) {
-  const insets = useSafeAreaInsets();
+  const topInset = useTopInset();
+  const keyboardHeight = useKeyboardHeight();
   const { t } = useLanguage();
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -140,7 +142,7 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
 
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
+      <View style={[styles.header, { paddingTop: topInset + 12 }]}>
         <Text style={styles.headerTitle}>{t('materials.title')}</Text>
       </View>
       <View style={styles.fabWrap} pointerEvents="box-none">
@@ -185,7 +187,7 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
       </ScrollView>
 
       <Modal visible={modalVisible} animationType="slide" transparent>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('materials.newMaterial')}</Text>
             <ScrollView>
@@ -234,7 +236,7 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
 
       {/* Pick project for material */}
       <Modal visible={showMatProject} animationType="slide" transparent>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('materials.assignProject')}</Text>
             <ScrollView>
@@ -258,7 +260,7 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
 
       {/* Pick apartment for material */}
       <Modal visible={showMatApartment} animationType="slide" transparent>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('materials.assignApartment')}</Text>
             <ScrollView>

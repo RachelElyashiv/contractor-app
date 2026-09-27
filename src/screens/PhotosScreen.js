@@ -18,12 +18,12 @@ import {
 import PdfViewer from '../components/PdfViewer';
 import { useLanguage } from '../i18n/LanguageContext';
 import { BASE_URL } from '../services/api';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTopInset } from '../hooks/useTopInset';
 
 const isWeb = Platform.OS === 'web';
 
 export default function PhotosScreen() {
-  const insets = useSafeAreaInsets();
+  const topInset = useTopInset();
   const { t } = useLanguage();
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -248,7 +248,7 @@ export default function PhotosScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
+      <View style={[styles.header, { paddingTop: topInset + 12 }]}>
         <Text style={styles.headerTitle}>{t('photos.title')}</Text>
         <TouchableOpacity style={styles.addBtn} onPress={handleUploadPress} disabled={uploading}>
           <Text style={styles.addBtnText}>{uploading ? t('photos.uploading') : t('photos.upload')}</Text>

@@ -13,12 +13,14 @@ import {
   View
 } from 'react-native';
 import { apartments as apartmentsApi, projects as projectsApi, workers } from '../services/api';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTopInset } from '../hooks/useTopInset';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useKeyboardHeight } from '../hooks/useKeyboardHeight';
 
 export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = {}) {
   const { t } = useLanguage();
-  const insets = useSafeAreaInsets();
+  const topInset = useTopInset();
+  const keyboardHeight = useKeyboardHeight();
   const [list, setList] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -220,7 +222,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
 
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
+      <View style={[styles.header, { paddingTop: topInset + 12 }]}>
         <Text style={styles.headerTitle}>{t('workers.title')}</Text>
       </View>
       <View style={styles.fabWrap} pointerEvents="box-none">
@@ -363,7 +365,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
 
       {/* Project filter modal */}
       <Modal visible={showProjectFilter} animationType="slide" transparent>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('workers.chooseProject')}</Text>
             <ScrollView>
@@ -386,7 +388,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
 
       {/* Apartment filter modal */}
       <Modal visible={showApartmentFilter} animationType="slide" transparent>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('workers.chooseApartment')}</Text>
             <ScrollView>
@@ -412,7 +414,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
 
       {/* Add worker modal */}
       <Modal visible={modalVisible} animationType="slide" transparent>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('workers.newWorker')}</Text>
             {[
@@ -451,7 +453,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
 
       {/* Form: pick project for new worker */}
       <Modal visible={showFormProject} animationType="slide" transparent>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('workers.assignProject')}</Text>
             <ScrollView>
@@ -475,7 +477,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
 
       {/* Form: pick apartment for new worker */}
       <Modal visible={showFormApartment} animationType="slide" transparent>
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('workers.assignApartment')}</Text>
             <ScrollView>
