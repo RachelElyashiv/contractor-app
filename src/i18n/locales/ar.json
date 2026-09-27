@@ -133,5 +133,57 @@
       "stockUpdateFailed": "تعذّر تحديث المخزون",
       "deleteFailed": "خطأ في حذف المادة"
     }
+  },
+  "workers": {
+    "title": "العمال",
+    "tabs": {
+      "attendance": "الحضور",
+      "salary": "الأجر الشهري"
+    },
+    "allProjects": "كل المشاريع",
+    "allApartments": "كل الشقق",
+    "showingAttendance": "عرض الحضور",
+    "inApartment": "في الشقة: {{name}}",
+    "inProject": "في المشروع: {{name}}",
+    "totalMonthlySalary": "إجمالي الأجر للشهر",
+    "daysRate": "{{days}} أيام × ₪{{rate}}",
+    "defaultRole": "عامل",
+    "hours": "{{hours}} ساعات",
+    "noSalaryData": "لا توجد بيانات حضور لهذا الشهر",
+    "attendanceToday": "حضور اليوم",
+    "perDay": "₪{{rate}} يومياً",
+    "present": "حاضر",
+    "removeAttendance": "إزالة الحضور",
+    "markPresent": "تسجيل الحضور",
+    "empty": "لا يوجد عمال بعد. اضغط + إضافة.",
+    "chooseProject": "اختر مشروعاً",
+    "chooseApartment": "اختر شقة",
+    "newWorker": "عامل جديد",
+    "adding": "جارٍ الإضافة…",
+    "addWorker": "إضافة عامل",
+    "assignProject": "إسناد إلى مشروع",
+    "assignProjectPlaceholder": "إسناد إلى مشروع (اختياري)",
+    "assignApartment": "إسناد إلى شقة",
+    "assignApartmentPlaceholder": "إسناد إلى شقة (اختياري)",
+    "noProject": "بدون مشروع",
+    "noApartment": "بدون شقة",
+    "noProjectsYet": "لا توجد مشاريع بعد",
+    "noApartmentsForProject": "لا توجد شقق لهذا المشروع",
+    "confirmDelete": "حذف هذا العامل نهائياً؟",
+    "fields": {
+      "firstName": "الاسم الأول *",
+      "lastName": "اسم العائلة *",
+      "phone": "الهاتف",
+      "role": "الوظيفة (بنّاء، كهربائي…)",
+      "dailyRate": "الأجر اليومي ₪"
+    },
+    "errors": {
+      "nameRequired": "أدخل الاسم الأول واسم العائلة",
+      "sessionExpired": "انتهت الجلسة — سجّل الخروج ثم الدخول",
+      "serverError": "خطأ في الخادم — حاول مرة أخرى",
+      "attendanceFailed": "تعذّر تسجيل الحضور",
+      "updateFailed": "تعذّر التحديث",
+      "deleteFailed": "خطأ في حذف العامل"
+    }
   }
 }

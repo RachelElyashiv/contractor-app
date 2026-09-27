@@ -133,5 +133,57 @@
       "stockUpdateFailed": "No se pudo actualizar el stock",
       "deleteFailed": "Error al eliminar el material"
     }
+  },
+  "workers": {
+    "title": "Trabajadores",
+    "tabs": {
+      "attendance": "Asistencia",
+      "salary": "Salario mensual"
+    },
+    "allProjects": "Todos los proyectos",
+    "allApartments": "Todas las viviendas",
+    "showingAttendance": "Mostrando asistencia",
+    "inApartment": "en la vivienda: {{name}}",
+    "inProject": "en el proyecto: {{name}}",
+    "totalMonthlySalary": "Salario total del mes",
+    "daysRate": "{{days}} días × ₪{{rate}}",
+    "defaultRole": "Peón",
+    "hours": "{{hours}} horas",
+    "noSalaryData": "No hay datos de asistencia para este mes",
+    "attendanceToday": "Asistencia de hoy",
+    "perDay": "₪{{rate}} al día",
+    "present": "Presente",
+    "removeAttendance": "Quitar asistencia",
+    "markPresent": "Marcar presente",
+    "empty": "Aún no hay trabajadores. Pulsa + Añadir.",
+    "chooseProject": "Elige un proyecto",
+    "chooseApartment": "Elige una vivienda",
+    "newWorker": "Trabajador nuevo",
+    "adding": "Añadiendo…",
+    "addWorker": "Añadir trabajador",
+    "assignProject": "Asignar a proyecto",
+    "assignProjectPlaceholder": "Asignar a un proyecto (opcional)",
+    "assignApartment": "Asignar a vivienda",
+    "assignApartmentPlaceholder": "Asignar a una vivienda (opcional)",
+    "noProject": "Sin proyecto",
+    "noApartment": "Sin vivienda",
+    "noProjectsYet": "Aún no hay proyectos",
+    "noApartmentsForProject": "No hay viviendas para este proyecto",
+    "confirmDelete": "¿Eliminar este trabajador permanentemente?",
+    "fields": {
+      "firstName": "Nombre *",
+      "lastName": "Apellidos *",
+      "phone": "Teléfono",
+      "role": "Puesto (albañil, electricista…)",
+      "dailyRate": "Salario diario ₪"
+    },
+    "errors": {
+      "nameRequired": "Introduce nombre y apellidos",
+      "sessionExpired": "Tu sesión ha caducado — cierra sesión y vuelve a entrar",
+      "serverError": "Error del servidor — inténtalo de nuevo",
+      "attendanceFailed": "No se pudo registrar la asistencia",
+      "updateFailed": "No se pudo actualizar",
+      "deleteFailed": "Error al eliminar el trabajador"
+    }
   }
 }

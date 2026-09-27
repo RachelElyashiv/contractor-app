@@ -133,5 +133,57 @@
       "stockUpdateFailed": "Stok güncellenemedi",
       "deleteFailed": "Malzeme silinirken hata"
     }
+  },
+  "workers": {
+    "title": "İşçiler",
+    "tabs": {
+      "attendance": "Devam",
+      "salary": "Aylık ücret"
+    },
+    "allProjects": "Tüm projeler",
+    "allApartments": "Tüm daireler",
+    "showingAttendance": "Devam gösteriliyor",
+    "inApartment": "dairede: {{name}}",
+    "inProject": "projede: {{name}}",
+    "totalMonthlySalary": "Ayın toplam ücreti",
+    "daysRate": "{{days}} gün × ₪{{rate}}",
+    "defaultRole": "İşçi",
+    "hours": "{{hours}} saat",
+    "noSalaryData": "Bu ay için devam verisi yok",
+    "attendanceToday": "Bugünkü devam",
+    "perDay": "Günlük ₪{{rate}}",
+    "present": "Mevcut",
+    "removeAttendance": "Devamı kaldır",
+    "markPresent": "Mevcut işaretle",
+    "empty": "Henüz işçi yok. + Ekle'ye dokunun.",
+    "chooseProject": "Bir proje seçin",
+    "chooseApartment": "Bir daire seçin",
+    "newWorker": "Yeni işçi",
+    "adding": "Ekleniyor…",
+    "addWorker": "İşçi ekle",
+    "assignProject": "Projeye ata",
+    "assignProjectPlaceholder": "Bir projeye ata (isteğe bağlı)",
+    "assignApartment": "Daireye ata",
+    "assignApartmentPlaceholder": "Bir daireye ata (isteğe bağlı)",
+    "noProject": "Proje yok",
+    "noApartment": "Daire yok",
+    "noProjectsYet": "Henüz proje yok",
+    "noApartmentsForProject": "Bu proje için daire yok",
+    "confirmDelete": "Bu işçi kalıcı olarak silinsin mi?",
+    "fields": {
+      "firstName": "Ad *",
+      "lastName": "Soyad *",
+      "phone": "Telefon",
+      "role": "Görev (duvarcı, elektrikçi…)",
+      "dailyRate": "Günlük ücret ₪"
+    },
+    "errors": {
+      "nameRequired": "Ad ve soyad girin",
+      "sessionExpired": "Oturumunuz sona erdi — çıkıp tekrar girin",
+      "serverError": "Sunucu hatası — tekrar deneyin",
+      "attendanceFailed": "Devam kaydedilemedi",
+      "updateFailed": "Güncellenemedi",
+      "deleteFailed": "İşçi silinirken hata"
+    }
   }
 }

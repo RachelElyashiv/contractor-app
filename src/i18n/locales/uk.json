@@ -133,5 +133,57 @@
       "stockUpdateFailed": "Не вдалося оновити запас",
       "deleteFailed": "Помилка під час видалення матеріалу"
     }
+  },
+  "workers": {
+    "title": "Робітники",
+    "tabs": {
+      "attendance": "Відвідуваність",
+      "salary": "Місячна зарплата"
+    },
+    "allProjects": "Усі проєкти",
+    "allApartments": "Усі квартири",
+    "showingAttendance": "Показано відвідуваність",
+    "inApartment": "у квартирі: {{name}}",
+    "inProject": "у проєкті: {{name}}",
+    "totalMonthlySalary": "Усього зарплати за місяць",
+    "daysRate": "{{days}} днів × ₪{{rate}}",
+    "defaultRole": "Різноробочий",
+    "hours": "{{hours}} годин",
+    "noSalaryData": "Немає даних про відвідуваність за цей місяць",
+    "attendanceToday": "Відвідуваність сьогодні",
+    "perDay": "₪{{rate}} на день",
+    "present": "Присутній",
+    "removeAttendance": "Зняти відмітку",
+    "markPresent": "Відмітити присутність",
+    "empty": "Робітників ще немає. Натисніть + Додати.",
+    "chooseProject": "Оберіть проєкт",
+    "chooseApartment": "Оберіть квартиру",
+    "newWorker": "Новий робітник",
+    "adding": "Додавання…",
+    "addWorker": "Додати робітника",
+    "assignProject": "Прив'язати до проєкту",
+    "assignProjectPlaceholder": "Прив'язати до проєкту (необов'язково)",
+    "assignApartment": "Прив'язати до квартири",
+    "assignApartmentPlaceholder": "Прив'язати до квартири (необов'язково)",
+    "noProject": "Без проєкту",
+    "noApartment": "Без квартири",
+    "noProjectsYet": "Проєктів ще немає",
+    "noApartmentsForProject": "Для цього проєкту немає квартир",
+    "confirmDelete": "Видалити цього робітника назавжди?",
+    "fields": {
+      "firstName": "Ім'я *",
+      "lastName": "Прізвище *",
+      "phone": "Телефон",
+      "role": "Посада (будівельник, електрик…)",
+      "dailyRate": "Денна ставка ₪"
+    },
+    "errors": {
+      "nameRequired": "Введіть ім'я та прізвище",
+      "sessionExpired": "Сесія завершилася — вийдіть і увійдіть знову",
+      "serverError": "Помилка сервера — спробуйте ще раз",
+      "attendanceFailed": "Не вдалося відмітити відвідуваність",
+      "updateFailed": "Не вдалося оновити",
+      "deleteFailed": "Помилка під час видалення робітника"
+    }
   }
 }

@@ -133,5 +133,57 @@
       "stockUpdateFailed": "Could not update stock",
       "deleteFailed": "Error deleting material"
     }
+  },
+  "workers": {
+    "title": "Workers",
+    "tabs": {
+      "attendance": "Attendance",
+      "salary": "Monthly pay"
+    },
+    "allProjects": "All projects",
+    "allApartments": "All apartments",
+    "showingAttendance": "Showing attendance",
+    "inApartment": "in apartment: {{name}}",
+    "inProject": "in project: {{name}}",
+    "totalMonthlySalary": "Total pay for the month",
+    "daysRate": "{{days}} days × ₪{{rate}}",
+    "defaultRole": "Labourer",
+    "hours": "{{hours}} hours",
+    "noSalaryData": "No attendance data for this month",
+    "attendanceToday": "Attendance today",
+    "perDay": "₪{{rate}} per day",
+    "present": "Present",
+    "removeAttendance": "Remove attendance",
+    "markPresent": "Mark present",
+    "empty": "No workers yet. Tap + Add.",
+    "chooseProject": "Choose a project",
+    "chooseApartment": "Choose an apartment",
+    "newWorker": "New worker",
+    "adding": "Adding…",
+    "addWorker": "Add worker",
+    "assignProject": "Assign to project",
+    "assignProjectPlaceholder": "Assign to a project (optional)",
+    "assignApartment": "Assign to apartment",
+    "assignApartmentPlaceholder": "Assign to an apartment (optional)",
+    "noProject": "No project",
+    "noApartment": "No apartment",
+    "noProjectsYet": "No projects yet",
+    "noApartmentsForProject": "No apartments for this project",
+    "confirmDelete": "Delete this worker permanently?",
+    "fields": {
+      "firstName": "First name *",
+      "lastName": "Last name *",
+      "phone": "Phone",
+      "role": "Role (builder, electrician…)",
+      "dailyRate": "Daily rate ₪"
+    },
+    "errors": {
+      "nameRequired": "Enter a first and last name",
+      "sessionExpired": "Your session expired — sign out and back in",
+      "serverError": "Server error — please try again",
+      "attendanceFailed": "Could not record attendance",
+      "updateFailed": "Could not update",
+      "deleteFailed": "Error deleting worker"
+    }
   }
 }

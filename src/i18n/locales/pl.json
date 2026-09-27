@@ -133,5 +133,57 @@
       "stockUpdateFailed": "Nie udało się zaktualizować stanu",
       "deleteFailed": "Błąd podczas usuwania materiału"
     }
+  },
+  "workers": {
+    "title": "Pracownicy",
+    "tabs": {
+      "attendance": "Obecność",
+      "salary": "Wynagrodzenie miesięczne"
+    },
+    "allProjects": "Wszystkie projekty",
+    "allApartments": "Wszystkie mieszkania",
+    "showingAttendance": "Pokazana obecność",
+    "inApartment": "w mieszkaniu: {{name}}",
+    "inProject": "w projekcie: {{name}}",
+    "totalMonthlySalary": "Łączne wynagrodzenie za miesiąc",
+    "daysRate": "{{days}} dni × ₪{{rate}}",
+    "defaultRole": "Robotnik",
+    "hours": "{{hours}} godzin",
+    "noSalaryData": "Brak danych o obecności w tym miesiącu",
+    "attendanceToday": "Obecność dzisiaj",
+    "perDay": "₪{{rate}} dziennie",
+    "present": "Obecny",
+    "removeAttendance": "Usuń obecność",
+    "markPresent": "Oznacz obecność",
+    "empty": "Brak pracowników. Naciśnij + Dodaj.",
+    "chooseProject": "Wybierz projekt",
+    "chooseApartment": "Wybierz mieszkanie",
+    "newWorker": "Nowy pracownik",
+    "adding": "Dodawanie…",
+    "addWorker": "Dodaj pracownika",
+    "assignProject": "Przypisz do projektu",
+    "assignProjectPlaceholder": "Przypisz do projektu (opcjonalnie)",
+    "assignApartment": "Przypisz do mieszkania",
+    "assignApartmentPlaceholder": "Przypisz do mieszkania (opcjonalnie)",
+    "noProject": "Bez projektu",
+    "noApartment": "Bez mieszkania",
+    "noProjectsYet": "Brak projektów",
+    "noApartmentsForProject": "Brak mieszkań w tym projekcie",
+    "confirmDelete": "Trwale usunąć tego pracownika?",
+    "fields": {
+      "firstName": "Imię *",
+      "lastName": "Nazwisko *",
+      "phone": "Telefon",
+      "role": "Stanowisko (murarz, elektryk…)",
+      "dailyRate": "Stawka dzienna ₪"
+    },
+    "errors": {
+      "nameRequired": "Podaj imię i nazwisko",
+      "sessionExpired": "Sesja wygasła — wyloguj się i zaloguj ponownie",
+      "serverError": "Błąd serwera — spróbuj ponownie",
+      "attendanceFailed": "Nie udało się zapisać obecności",
+      "updateFailed": "Nie udało się zaktualizować",
+      "deleteFailed": "Błąd podczas usuwania pracownika"
+    }
   }
 }

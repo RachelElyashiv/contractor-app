@@ -133,5 +133,57 @@
       "stockUpdateFailed": "Impossible de mettre à jour le stock",
       "deleteFailed": "Erreur lors de la suppression du matériau"
     }
+  },
+  "workers": {
+    "title": "Ouvriers",
+    "tabs": {
+      "attendance": "Présence",
+      "salary": "Salaire mensuel"
+    },
+    "allProjects": "Tous les projets",
+    "allApartments": "Tous les logements",
+    "showingAttendance": "Présence affichée",
+    "inApartment": "dans le logement : {{name}}",
+    "inProject": "dans le projet : {{name}}",
+    "totalMonthlySalary": "Salaire total du mois",
+    "daysRate": "{{days}} jours × ₪{{rate}}",
+    "defaultRole": "Manœuvre",
+    "hours": "{{hours}} heures",
+    "noSalaryData": "Aucune donnée de présence pour ce mois",
+    "attendanceToday": "Présence du jour",
+    "perDay": "₪{{rate}} par jour",
+    "present": "Présent",
+    "removeAttendance": "Retirer la présence",
+    "markPresent": "Marquer présent",
+    "empty": "Aucun ouvrier pour l'instant. Appuyez sur + Ajouter.",
+    "chooseProject": "Choisir un projet",
+    "chooseApartment": "Choisir un logement",
+    "newWorker": "Nouvel ouvrier",
+    "adding": "Ajout…",
+    "addWorker": "Ajouter un ouvrier",
+    "assignProject": "Affecter à un projet",
+    "assignProjectPlaceholder": "Affecter à un projet (facultatif)",
+    "assignApartment": "Affecter à un logement",
+    "assignApartmentPlaceholder": "Affecter à un logement (facultatif)",
+    "noProject": "Aucun projet",
+    "noApartment": "Aucun logement",
+    "noProjectsYet": "Aucun projet pour l'instant",
+    "noApartmentsForProject": "Aucun logement pour ce projet",
+    "confirmDelete": "Supprimer définitivement cet ouvrier ?",
+    "fields": {
+      "firstName": "Prénom *",
+      "lastName": "Nom *",
+      "phone": "Téléphone",
+      "role": "Poste (maçon, électricien…)",
+      "dailyRate": "Tarif journalier ₪"
+    },
+    "errors": {
+      "nameRequired": "Saisissez le prénom et le nom",
+      "sessionExpired": "Votre session a expiré — reconnectez-vous",
+      "serverError": "Erreur du serveur — réessayez",
+      "attendanceFailed": "Impossible d'enregistrer la présence",
+      "updateFailed": "Impossible de mettre à jour",
+      "deleteFailed": "Erreur lors de la suppression de l'ouvrier"
+    }
   }
 }

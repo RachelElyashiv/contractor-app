@@ -14,8 +14,10 @@ import {
 } from 'react-native';
 import { apartments as apartmentsApi, projects as projectsApi, workers } from '../services/api';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useLanguage } from '../i18n/LanguageContext';
 
 export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = {}) {
+  const { t } = useLanguage();
   const insets = useSafeAreaInsets();
   const [list, setList] = useState([]);
   const [attendance, setAttendance] = useState([]);
@@ -137,7 +139,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
   }
 
   async function createWorker() {
-    if (!form.firstName || !form.lastName) { setWorkerError('חובה למלא שם פרטי ושם משפחה'); return; }
+    if (!form.firstName || !form.lastName) { setWorkerError(t('workers.errors.nameRequired')); return; }
     setWorkerError('');
     setWorkerSubmitting(true);
     try {
@@ -164,8 +166,8 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
     } catch (e) {
       const status = e?.response?.status;
       const msg = e?.response?.data?.message;
-      if (status === 401) setWorkerError('החיבור פג — התנתקי והתחברי מחדש');
-      else setWorkerError(msg ? String(msg) : 'שגיאה בשרת — נסי שוב');
+      if (status === 401) setWorkerError(t('workers.errors.sessionExpired'));
+      else setWorkerError(msg ? String(msg) : t('workers.errors.serverError'));
     } finally {
       setWorkerSubmitting(false);
     }
@@ -183,7 +185,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
         apartmentId: selectedApartmentId || undefined,
       });
       loadAttendance();
-    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו לרשום נוכחות'); }
+    } catch (e) { Alert.alert(t('common.error'), t('workers.errors.attendanceFailed')); }
   }
 
   async function removeAttendance(workerId) {
@@ -198,15 +200,15 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
         apartmentId: selectedApartmentId || undefined,
       });
       loadAttendance();
-    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו לעדכן'); }
+    } catch (e) { Alert.alert(t('common.error'), t('workers.errors.updateFailed')); }
   }
 
   function deleteWorker(workerId) {
     pendingDeleteFn.current = async () => {
       try { await workers.delete(workerId); loadData(); }
-      catch (e) { Alert.alert('שגיאה', 'שגיאה במחיקת עובד'); }
+      catch (e) { Alert.alert(t('common.error'), t('workers.errors.deleteFailed')); }
     };
-    setConfirmDelete({ message: 'האם למחוק עובד זה לצמיתות?' });
+    setConfirmDelete({ message: t('workers.confirmDelete') });
   }
 
   const selectedProject = projectsList.find(p => p.id === selectedProjectId);
@@ -219,7 +221,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
-        <Text style={styles.headerTitle}>עובדים</Text>
+        <Text style={styles.headerTitle}>{t('workers.title')}</Text>
       </View>
       <View style={styles.fabWrap} pointerEvents="box-none">
         <TouchableOpacity style={styles.fab} onPress={() => setModalVisible(true)}>
@@ -230,10 +232,10 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       {/* Tabs */}
       <View style={{ flexDirection: 'row', backgroundColor: '#fff', borderBottomWidth: 0.5, borderBottomColor: '#e0e0e0' }}>
         <TouchableOpacity style={[styles.tab, activeTab === 'attendance' && styles.tabActive]} onPress={() => setActiveTab('attendance')}>
-          <Text style={[styles.tabText, activeTab === 'attendance' && styles.tabTextActive]}>✅ נוכחות</Text>
+          <Text style={[styles.tabText, activeTab === 'attendance' && styles.tabTextActive]}>✅ {t('workers.tabs.attendance')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.tab, activeTab === 'salary' && styles.tabActive]} onPress={() => setActiveTab('salary')}>
-          <Text style={[styles.tabText, activeTab === 'salary' && styles.tabTextActive]}>💰 שכר חודשי</Text>
+          <Text style={[styles.tabText, activeTab === 'salary' && styles.tabTextActive]}>💰 {t('workers.tabs.salary')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -241,13 +243,13 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       <View style={styles.filterRow}>
         <TouchableOpacity style={[styles.filterBtn, selectedProjectId && styles.filterBtnActive]} onPress={() => setShowProjectFilter(true)}>
           <Text style={[styles.filterBtnText, selectedProjectId && styles.filterBtnTextActive]} numberOfLines={1}>
-            {selectedProject ? `📁 ${selectedProject.name}` : '📁 כל הפרויקטים'}
+            {selectedProject ? `📁 ${selectedProject.name}` : `📁 ${t('workers.allProjects')}`}
           </Text>
         </TouchableOpacity>
         {selectedProjectId && (
           <TouchableOpacity style={[styles.filterBtn, selectedApartmentId && styles.filterBtnActive]} onPress={() => setShowApartmentFilter(true)}>
             <Text style={[styles.filterBtnText, selectedApartmentId && styles.filterBtnTextActive]} numberOfLines={1}>
-              {selectedApartment ? `🏠 ${selectedApartment.name}` : '🏠 כל הדירות'}
+              {selectedApartment ? `🏠 ${selectedApartment.name}` : `🏠 ${t('workers.allApartments')}`}
             </Text>
           </TouchableOpacity>
         )}
@@ -261,7 +263,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       {(selectedProjectId || selectedApartmentId) && (
         <View style={styles.filterInfo}>
           <Text style={styles.filterInfoText}>
-            מציג נוכחות {selectedApartment ? `בדירה: ${selectedApartment.name}` : selectedProject ? `בפרויקט: ${selectedProject.name}` : ''}
+            {t('workers.showingAttendance')} {selectedApartment ? t('workers.inApartment', { name: selectedApartment.name }) : selectedProject ? t('workers.inProject', { name: selectedProject.name }) : ''}
           </Text>
         </View>
       )}
@@ -286,7 +288,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
           {/* Total */}
           {salaryReport.length > 0 && (
             <View style={{ marginHorizontal: 12, marginBottom: 8, backgroundColor: '#1a6b4a', borderRadius: 12, padding: 16 }}>
-              <Text style={{ color: '#fff', fontSize: 13, textAlign: 'right' }}>סה"כ שכר לחודש</Text>
+              <Text style={{ color: '#fff', fontSize: 13, textAlign: 'right' }}>{t('workers.totalMonthlySalary')}</Text>
               <Text style={{ color: '#fff', fontSize: 26, fontWeight: 'bold', textAlign: 'right' }}>
                 ₪{salaryReport.reduce((s, r) => s + Number(r.totalPay), 0).toLocaleString()}
               </Text>
@@ -297,22 +299,22 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
             <View key={r.worker.id} style={[styles.card, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
               <View style={{ alignItems: 'flex-start' }}>
                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#1a6b4a' }}>₪{Number(r.totalPay).toLocaleString()}</Text>
-                <Text style={{ fontSize: 12, color: '#888' }}>{r.daysPresent} ימים × ₪{Number(r.worker.dailyRate).toLocaleString()}</Text>
+                <Text style={{ fontSize: 12, color: '#888' }}>{t('workers.daysRate', { days: r.daysPresent, rate: Number(r.worker.dailyRate).toLocaleString() })}</Text>
               </View>
               <View style={{ alignItems: 'flex-end' }}>
                 <Text style={styles.workerName}>{r.worker.firstName} {r.worker.lastName}</Text>
-                <Text style={styles.workerRole}>{r.worker.role || 'פועל'}</Text>
-                <Text style={{ fontSize: 11, color: '#aaa' }}>{r.totalHours} שעות</Text>
+                <Text style={styles.workerRole}>{r.worker.role || t('workers.defaultRole')}</Text>
+                <Text style={{ fontSize: 11, color: '#aaa' }}>{t('workers.hours', { hours: r.totalHours })}</Text>
               </View>
             </View>
           ))}
-          {salaryReport.length === 0 && <Text style={styles.empty}>אין נתוני נוכחות לחודש זה</Text>}
+          {salaryReport.length === 0 && <Text style={styles.empty}>{t('workers.noSalaryData')}</Text>}
         </ScrollView>
       )}
 
       {activeTab === 'attendance' && (
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }} />}>
-        <Text style={styles.sectionTitle}>נוכחות היום</Text>
+        <Text style={styles.sectionTitle}>{t('workers.attendanceToday')}</Text>
         {attendance.map(w => {
           const present = w.todayAttendance?.status === 'present';
           return (
@@ -325,8 +327,8 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
                 </View>
                 <View style={{ flex: 1, marginRight: 12 }}>
                   <Text style={styles.workerName}>{w.firstName} {w.lastName}</Text>
-                  <Text style={styles.workerRole}>{w.role || 'פועל'}</Text>
-                  {w.dailyRate > 0 && <Text style={styles.workerRate}>₪{w.dailyRate} ליום</Text>}
+                  <Text style={styles.workerRole}>{w.role || t('workers.defaultRole')}</Text>
+                  {w.dailyRate > 0 && <Text style={styles.workerRate}>{t('workers.perDay', { rate: w.dailyRate })}</Text>}
                   {present && w.todayAttendance?.projectId && (
                     <Text style={styles.attendanceDetail}>
                       📁 {projectsList.find(p => p.id === w.todayAttendance.projectId)?.name || ''}
@@ -336,18 +338,18 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
                 </View>
                 {present ? (
                   <View style={{ alignItems: 'center', gap: 6 }}>
-                    <View style={styles.presentBadge}><Text style={styles.presentText}>נוכח ✓</Text></View>
+                    <View style={styles.presentBadge}><Text style={styles.presentText}>{t('workers.present')} ✓</Text></View>
                     <TouchableOpacity style={styles.removeBtn} onPress={() => removeAttendance(w.id)}>
-                      <Text style={styles.removeBtnText}>הסר נוכחות</Text>
+                      <Text style={styles.removeBtnText}>{t('workers.removeAttendance')}</Text>
                     </TouchableOpacity>
                   </View>
                 ) : (
                   <View style={{ alignItems: 'center', gap: 6 }}>
                     <TouchableOpacity style={styles.markBtn} onPress={() => markPresent(w.id)}>
-                      <Text style={styles.markBtnText}>סמן נוכח</Text>
+                      <Text style={styles.markBtnText}>{t('workers.markPresent')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.deleteWorkerBtn} onPress={() => deleteWorker(w.id)}>
-                      <Text style={styles.deleteWorkerText}>🗑 מחק</Text>
+                      <Text style={styles.deleteWorkerText}>🗑 {t('common.delete')}</Text>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -355,7 +357,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
             </View>
           );
         })}
-        {attendance.length === 0 && <Text style={styles.empty}>אין עובדים עדיין. לחץ + הוסף.</Text>}
+        {attendance.length === 0 && <Text style={styles.empty}>{t('workers.empty')}</Text>}
       </ScrollView>
       )}
 
@@ -363,10 +365,10 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       <Modal visible={showProjectFilter} animationType="slide" transparent>
         <View style={styles.overlay}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>בחר פרויקט</Text>
+            <Text style={styles.modalTitle}>{t('workers.chooseProject')}</Text>
             <ScrollView>
               <TouchableOpacity style={styles.filterOption} onPress={() => { setSelectedProjectId(null); setShowProjectFilter(false); }}>
-                <Text style={styles.filterOptionText}>כל הפרויקטים</Text>
+                <Text style={styles.filterOptionText}>{t('workers.allProjects')}</Text>
               </TouchableOpacity>
               {projectsList.map(p => (
                 <TouchableOpacity key={p.id} style={[styles.filterOption, selectedProjectId === p.id && styles.filterOptionActive]}
@@ -376,7 +378,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
               ))}
             </ScrollView>
             <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowProjectFilter(false)}>
-              <Text style={styles.btnSecondaryText}>סגור</Text>
+              <Text style={styles.btnSecondaryText}>{t('common.close')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -386,10 +388,10 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       <Modal visible={showApartmentFilter} animationType="slide" transparent>
         <View style={styles.overlay}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>בחר דירה</Text>
+            <Text style={styles.modalTitle}>{t('workers.chooseApartment')}</Text>
             <ScrollView>
               <TouchableOpacity style={styles.filterOption} onPress={() => { setSelectedApartmentId(null); setShowApartmentFilter(false); }}>
-                <Text style={styles.filterOptionText}>כל הדירות</Text>
+                <Text style={styles.filterOptionText}>{t('workers.allApartments')}</Text>
               </TouchableOpacity>
               {apartmentsList.map(a => (
                 <TouchableOpacity key={a.id} style={[styles.filterOption, selectedApartmentId === a.id && styles.filterOptionActive]}
@@ -399,10 +401,10 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
                   </Text>
                 </TouchableOpacity>
               ))}
-              {apartmentsList.length === 0 && <Text style={styles.empty}>אין דירות לפרויקט זה</Text>}
+              {apartmentsList.length === 0 && <Text style={styles.empty}>{t('workers.noApartmentsForProject')}</Text>}
             </ScrollView>
             <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowApartmentFilter(false)}>
-              <Text style={styles.btnSecondaryText}>סגור</Text>
+              <Text style={styles.btnSecondaryText}>{t('common.close')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -412,13 +414,13 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.overlay}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>עובד חדש</Text>
+            <Text style={styles.modalTitle}>{t('workers.newWorker')}</Text>
             {[
-              { key: 'firstName', placeholder: 'שם פרטי *' },
-              { key: 'lastName', placeholder: 'שם משפחה *' },
-              { key: 'phone', placeholder: 'טלפון', keyboardType: 'phone-pad' },
-              { key: 'role', placeholder: 'תפקיד (בנאי, חשמלאי...)' },
-              { key: 'dailyRate', placeholder: 'שכר יומי ₪', keyboardType: 'numeric' },
+              { key: 'firstName', placeholder: t('workers.fields.firstName') },
+              { key: 'lastName', placeholder: t('workers.fields.lastName') },
+              { key: 'phone', placeholder: t('workers.fields.phone'), keyboardType: 'phone-pad' },
+              { key: 'role', placeholder: t('workers.fields.role') },
+              { key: 'dailyRate', placeholder: t('workers.fields.dailyRate'), keyboardType: 'numeric' },
             ].map(f => (
               <TextInput key={f.key} style={styles.input} placeholderTextColor="#9a9a9a" placeholder={f.placeholder} value={form[f.key]}
                 onChangeText={v => setForm({ ...form, [f.key]: v })} keyboardType={f.keyboardType || 'default'} textAlign="right" />
@@ -426,21 +428,21 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
 
             {/* Assign to project + apartment (optional) */}
             <TouchableOpacity style={styles.selectorBtn} onPress={() => setShowFormProject(true)}>
-              <Text style={styles.selectorText}>{formProject ? `📁 ${formProject.name}` : '📁 שייך לפרויקט (לא חובה)'}</Text>
+              <Text style={styles.selectorText}>{formProject ? `📁 ${formProject.name}` : `📁 ${t('workers.assignProjectPlaceholder')}`}</Text>
             </TouchableOpacity>
             {formProjectId ? (
               <TouchableOpacity style={styles.selectorBtn} onPress={() => setShowFormApartment(true)}>
-                <Text style={styles.selectorText}>{formApartment ? `🏠 ${formApartment.name}` : '🏠 שייך לדירה (לא חובה)'}</Text>
+                <Text style={styles.selectorText}>{formApartment ? `🏠 ${formApartment.name}` : `🏠 ${t('workers.assignApartmentPlaceholder')}`}</Text>
               </TouchableOpacity>
             ) : null}
 
             {workerError ? <Text style={{ color: '#a32d2d', textAlign: 'center', marginBottom: 8 }}>{workerError}</Text> : null}
             <View style={styles.modalActions}>
               <TouchableOpacity style={[styles.btnPrimary, workerSubmitting && { opacity: 0.6 }]} onPress={createWorker} disabled={workerSubmitting}>
-                <Text style={styles.btnPrimaryText}>{workerSubmitting ? 'מוסיף...' : 'הוסף עובד'}</Text>
+                <Text style={styles.btnPrimaryText}>{workerSubmitting ? t('workers.adding') : t('workers.addWorker')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btnSecondary} onPress={() => { setModalVisible(false); setWorkerError(''); }}>
-                <Text style={styles.btnSecondaryText}>ביטול</Text>
+                <Text style={styles.btnSecondaryText}>{t('common.cancel')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -451,10 +453,10 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       <Modal visible={showFormProject} animationType="slide" transparent>
         <View style={styles.overlay}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>שייך לפרויקט</Text>
+            <Text style={styles.modalTitle}>{t('workers.assignProject')}</Text>
             <ScrollView>
               <TouchableOpacity style={styles.filterOption} onPress={() => { setFormProjectId(null); setShowFormProject(false); }}>
-                <Text style={styles.filterOptionText}>ללא פרויקט</Text>
+                <Text style={styles.filterOptionText}>{t('workers.noProject')}</Text>
               </TouchableOpacity>
               {projectsList.map(p => (
                 <TouchableOpacity key={p.id} style={[styles.filterOption, formProjectId === p.id && styles.filterOptionActive]}
@@ -462,10 +464,10 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
                   <Text style={[styles.filterOptionText, formProjectId === p.id && { color: '#1a6b4a', fontWeight: '600' }]}>{p.name}</Text>
                 </TouchableOpacity>
               ))}
-              {projectsList.length === 0 && <Text style={styles.empty}>אין פרויקטים עדיין</Text>}
+              {projectsList.length === 0 && <Text style={styles.empty}>{t('workers.noProjectsYet')}</Text>}
             </ScrollView>
             <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowFormProject(false)}>
-              <Text style={styles.btnSecondaryText}>סגור</Text>
+              <Text style={styles.btnSecondaryText}>{t('common.close')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -475,10 +477,10 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       <Modal visible={showFormApartment} animationType="slide" transparent>
         <View style={styles.overlay}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>שייך לדירה</Text>
+            <Text style={styles.modalTitle}>{t('workers.assignApartment')}</Text>
             <ScrollView>
               <TouchableOpacity style={styles.filterOption} onPress={() => { setFormApartmentId(null); setShowFormApartment(false); }}>
-                <Text style={styles.filterOptionText}>ללא דירה</Text>
+                <Text style={styles.filterOptionText}>{t('workers.noApartment')}</Text>
               </TouchableOpacity>
               {formApartments.map(a => (
                 <TouchableOpacity key={a.id} style={[styles.filterOption, formApartmentId === a.id && styles.filterOptionActive]}
@@ -488,10 +490,10 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
                   </Text>
                 </TouchableOpacity>
               ))}
-              {formApartments.length === 0 && <Text style={styles.empty}>אין דירות לפרויקט זה</Text>}
+              {formApartments.length === 0 && <Text style={styles.empty}>{t('workers.noApartmentsForProject')}</Text>}
             </ScrollView>
             <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowFormApartment(false)}>
-              <Text style={styles.btnSecondaryText}>סגור</Text>
+              <Text style={styles.btnSecondaryText}>{t('common.close')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -505,11 +507,11 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
             <View style={{ flexDirection: 'row', gap: 10 }}>
               <TouchableOpacity style={{ flex: 1, backgroundColor: '#fcebeb', padding: 14, borderRadius: 10, alignItems: 'center' }}
                 onPress={() => { const fn = pendingDeleteFn.current; pendingDeleteFn.current = null; setConfirmDelete(null); fn?.(); }}>
-                <Text style={{ color: '#a32d2d', fontWeight: '600', fontSize: 15 }}>מחק</Text>
+                <Text style={{ color: '#a32d2d', fontWeight: '600', fontSize: 15 }}>{t('common.delete')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={{ flex: 1, backgroundColor: '#f0f0f0', padding: 14, borderRadius: 10, alignItems: 'center' }}
                 onPress={() => { pendingDeleteFn.current = null; setConfirmDelete(null); }}>
-                <Text style={{ color: '#555', fontSize: 15 }}>ביטול</Text>
+                <Text style={{ color: '#555', fontSize: 15 }}>{t('common.cancel')}</Text>
               </TouchableOpacity>
             </View>
           </View>

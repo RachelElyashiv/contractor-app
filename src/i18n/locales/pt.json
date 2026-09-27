@@ -133,5 +133,57 @@
       "stockUpdateFailed": "Não foi possível atualizar o estoque",
       "deleteFailed": "Erro ao excluir o material"
     }
+  },
+  "workers": {
+    "title": "Trabalhadores",
+    "tabs": {
+      "attendance": "Presença",
+      "salary": "Salário mensal"
+    },
+    "allProjects": "Todos os projetos",
+    "allApartments": "Todos os apartamentos",
+    "showingAttendance": "Mostrando presença",
+    "inApartment": "no apartamento: {{name}}",
+    "inProject": "no projeto: {{name}}",
+    "totalMonthlySalary": "Salário total do mês",
+    "daysRate": "{{days}} dias × ₪{{rate}}",
+    "defaultRole": "Servente",
+    "hours": "{{hours}} horas",
+    "noSalaryData": "Não há dados de presença para este mês",
+    "attendanceToday": "Presença de hoje",
+    "perDay": "₪{{rate}} por dia",
+    "present": "Presente",
+    "removeAttendance": "Remover presença",
+    "markPresent": "Marcar presente",
+    "empty": "Ainda não há trabalhadores. Toque em + Adicionar.",
+    "chooseProject": "Escolha um projeto",
+    "chooseApartment": "Escolha um apartamento",
+    "newWorker": "Novo trabalhador",
+    "adding": "Adicionando…",
+    "addWorker": "Adicionar trabalhador",
+    "assignProject": "Atribuir a projeto",
+    "assignProjectPlaceholder": "Atribuir a um projeto (opcional)",
+    "assignApartment": "Atribuir a apartamento",
+    "assignApartmentPlaceholder": "Atribuir a um apartamento (opcional)",
+    "noProject": "Sem projeto",
+    "noApartment": "Sem apartamento",
+    "noProjectsYet": "Ainda não há projetos",
+    "noApartmentsForProject": "Não há apartamentos para este projeto",
+    "confirmDelete": "Excluir este trabalhador permanentemente?",
+    "fields": {
+      "firstName": "Nome *",
+      "lastName": "Sobrenome *",
+      "phone": "Telefone",
+      "role": "Função (pedreiro, eletricista…)",
+      "dailyRate": "Diária ₪"
+    },
+    "errors": {
+      "nameRequired": "Informe nome e sobrenome",
+      "sessionExpired": "Sua sessão expirou — saia e entre novamente",
+      "serverError": "Erro no servidor — tente novamente",
+      "attendanceFailed": "Não foi possível registrar a presença",
+      "updateFailed": "Não foi possível atualizar",
+      "deleteFailed": "Erro ao excluir o trabalhador"
+    }
   }
 }

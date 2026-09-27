@@ -133,5 +133,57 @@
       "stockUpdateFailed": "Bestand konnte nicht aktualisiert werden",
       "deleteFailed": "Fehler beim Löschen des Materials"
     }
+  },
+  "workers": {
+    "title": "Arbeiter",
+    "tabs": {
+      "attendance": "Anwesenheit",
+      "salary": "Monatslohn"
+    },
+    "allProjects": "Alle Projekte",
+    "allApartments": "Alle Wohnungen",
+    "showingAttendance": "Anwesenheit angezeigt",
+    "inApartment": "in Wohnung: {{name}}",
+    "inProject": "in Projekt: {{name}}",
+    "totalMonthlySalary": "Gesamtlohn für den Monat",
+    "daysRate": "{{days}} Tage × ₪{{rate}}",
+    "defaultRole": "Bauhelfer",
+    "hours": "{{hours}} Stunden",
+    "noSalaryData": "Keine Anwesenheitsdaten für diesen Monat",
+    "attendanceToday": "Anwesenheit heute",
+    "perDay": "₪{{rate}} pro Tag",
+    "present": "Anwesend",
+    "removeAttendance": "Anwesenheit entfernen",
+    "markPresent": "Als anwesend markieren",
+    "empty": "Noch keine Arbeiter. Auf + Hinzufügen tippen.",
+    "chooseProject": "Projekt wählen",
+    "chooseApartment": "Wohnung wählen",
+    "newWorker": "Neuer Arbeiter",
+    "adding": "Wird hinzugefügt…",
+    "addWorker": "Arbeiter hinzufügen",
+    "assignProject": "Projekt zuordnen",
+    "assignProjectPlaceholder": "Einem Projekt zuordnen (optional)",
+    "assignApartment": "Wohnung zuordnen",
+    "assignApartmentPlaceholder": "Einer Wohnung zuordnen (optional)",
+    "noProject": "Kein Projekt",
+    "noApartment": "Keine Wohnung",
+    "noProjectsYet": "Noch keine Projekte",
+    "noApartmentsForProject": "Keine Wohnungen für dieses Projekt",
+    "confirmDelete": "Diesen Arbeiter endgültig löschen?",
+    "fields": {
+      "firstName": "Vorname *",
+      "lastName": "Nachname *",
+      "phone": "Telefon",
+      "role": "Funktion (Maurer, Elektriker…)",
+      "dailyRate": "Tagessatz ₪"
+    },
+    "errors": {
+      "nameRequired": "Geben Sie Vor- und Nachnamen ein",
+      "sessionExpired": "Ihre Sitzung ist abgelaufen — melden Sie sich neu an",
+      "serverError": "Serverfehler — bitte erneut versuchen",
+      "attendanceFailed": "Anwesenheit konnte nicht erfasst werden",
+      "updateFailed": "Konnte nicht aktualisiert werden",
+      "deleteFailed": "Fehler beim Löschen des Arbeiters"
+    }
   }
 }

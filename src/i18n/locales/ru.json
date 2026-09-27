@@ -133,5 +133,57 @@
       "stockUpdateFailed": "Не удалось обновить запас",
       "deleteFailed": "Ошибка при удалении материала"
     }
+  },
+  "workers": {
+    "title": "Рабочие",
+    "tabs": {
+      "attendance": "Посещаемость",
+      "salary": "Месячная зарплата"
+    },
+    "allProjects": "Все проекты",
+    "allApartments": "Все квартиры",
+    "showingAttendance": "Показана посещаемость",
+    "inApartment": "в квартире: {{name}}",
+    "inProject": "в проекте: {{name}}",
+    "totalMonthlySalary": "Всего зарплаты за месяц",
+    "daysRate": "{{days}} дней × ₪{{rate}}",
+    "defaultRole": "Разнорабочий",
+    "hours": "{{hours}} часов",
+    "noSalaryData": "Нет данных о посещаемости за этот месяц",
+    "attendanceToday": "Посещаемость сегодня",
+    "perDay": "₪{{rate}} в день",
+    "present": "Присутствует",
+    "removeAttendance": "Убрать отметку",
+    "markPresent": "Отметить присутствие",
+    "empty": "Рабочих пока нет. Нажмите + Добавить.",
+    "chooseProject": "Выберите проект",
+    "chooseApartment": "Выберите квартиру",
+    "newWorker": "Новый рабочий",
+    "adding": "Добавление…",
+    "addWorker": "Добавить рабочего",
+    "assignProject": "Привязать к проекту",
+    "assignProjectPlaceholder": "Привязать к проекту (необязательно)",
+    "assignApartment": "Привязать к квартире",
+    "assignApartmentPlaceholder": "Привязать к квартире (необязательно)",
+    "noProject": "Без проекта",
+    "noApartment": "Без квартиры",
+    "noProjectsYet": "Проектов пока нет",
+    "noApartmentsForProject": "Для этого проекта нет квартир",
+    "confirmDelete": "Удалить этого рабочего навсегда?",
+    "fields": {
+      "firstName": "Имя *",
+      "lastName": "Фамилия *",
+      "phone": "Телефон",
+      "role": "Должность (строитель, электрик…)",
+      "dailyRate": "Дневная ставка ₪"
+    },
+    "errors": {
+      "nameRequired": "Введите имя и фамилию",
+      "sessionExpired": "Сессия истекла — выйдите и войдите снова",
+      "serverError": "Ошибка сервера — попробуйте снова",
+      "attendanceFailed": "Не удалось отметить посещаемость",
+      "updateFailed": "Не удалось обновить",
+      "deleteFailed": "Ошибка при удалении рабочего"
+    }
   }
 }

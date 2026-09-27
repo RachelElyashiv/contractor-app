@@ -133,5 +133,57 @@
       "stockUpdateFailed": "Nu s-a putut actualiza stocul",
       "deleteFailed": "Eroare la ștergerea materialului"
     }
+  },
+  "workers": {
+    "title": "Muncitori",
+    "tabs": {
+      "attendance": "Prezență",
+      "salary": "Salariu lunar"
+    },
+    "allProjects": "Toate proiectele",
+    "allApartments": "Toate apartamentele",
+    "showingAttendance": "Se afișează prezența",
+    "inApartment": "în apartamentul: {{name}}",
+    "inProject": "în proiectul: {{name}}",
+    "totalMonthlySalary": "Salariu total pe lună",
+    "daysRate": "{{days}} zile × ₪{{rate}}",
+    "defaultRole": "Muncitor",
+    "hours": "{{hours}} ore",
+    "noSalaryData": "Nu există date de prezență pentru această lună",
+    "attendanceToday": "Prezența de azi",
+    "perDay": "₪{{rate}} pe zi",
+    "present": "Prezent",
+    "removeAttendance": "Elimină prezența",
+    "markPresent": "Marchează prezent",
+    "empty": "Încă nu există muncitori. Apasă + Adaugă.",
+    "chooseProject": "Alege un proiect",
+    "chooseApartment": "Alege un apartament",
+    "newWorker": "Muncitor nou",
+    "adding": "Se adaugă…",
+    "addWorker": "Adaugă muncitor",
+    "assignProject": "Atribuie unui proiect",
+    "assignProjectPlaceholder": "Atribuie unui proiect (opțional)",
+    "assignApartment": "Atribuie unui apartament",
+    "assignApartmentPlaceholder": "Atribuie unui apartament (opțional)",
+    "noProject": "Fără proiect",
+    "noApartment": "Fără apartament",
+    "noProjectsYet": "Încă nu există proiecte",
+    "noApartmentsForProject": "Nu există apartamente pentru acest proiect",
+    "confirmDelete": "Ștergi definitiv acest muncitor?",
+    "fields": {
+      "firstName": "Prenume *",
+      "lastName": "Nume *",
+      "phone": "Telefon",
+      "role": "Funcție (zidar, electrician…)",
+      "dailyRate": "Tarif zilnic ₪"
+    },
+    "errors": {
+      "nameRequired": "Introdu prenumele și numele",
+      "sessionExpired": "Sesiunea a expirat — deconectează-te și conectează-te din nou",
+      "serverError": "Eroare de server — încearcă din nou",
+      "attendanceFailed": "Nu s-a putut înregistra prezența",
+      "updateFailed": "Nu s-a putut actualiza",
+      "deleteFailed": "Eroare la ștergerea muncitorului"
+    }
   }
 }

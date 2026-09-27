@@ -133,5 +133,57 @@
       "stockUpdateFailed": "לא הצלחנו לעדכן מלאי",
       "deleteFailed": "שגיאה במחיקת חומר"
     }
+  },
+  "workers": {
+    "title": "עובדים",
+    "tabs": {
+      "attendance": "נוכחות",
+      "salary": "שכר חודשי"
+    },
+    "allProjects": "כל הפרויקטים",
+    "allApartments": "כל הדירות",
+    "showingAttendance": "מציג נוכחות",
+    "inApartment": "בדירה: {{name}}",
+    "inProject": "בפרויקט: {{name}}",
+    "totalMonthlySalary": "סה\"כ שכר לחודש",
+    "daysRate": "{{days}} ימים × ₪{{rate}}",
+    "defaultRole": "פועל",
+    "hours": "{{hours}} שעות",
+    "noSalaryData": "אין נתוני נוכחות לחודש זה",
+    "attendanceToday": "נוכחות היום",
+    "perDay": "₪{{rate}} ליום",
+    "present": "נוכח",
+    "removeAttendance": "הסר נוכחות",
+    "markPresent": "סמן נוכח",
+    "empty": "אין עובדים עדיין. לחץ + הוסף.",
+    "chooseProject": "בחר פרויקט",
+    "chooseApartment": "בחר דירה",
+    "newWorker": "עובד חדש",
+    "adding": "מוסיף...",
+    "addWorker": "הוסף עובד",
+    "assignProject": "שייך לפרויקט",
+    "assignProjectPlaceholder": "שייך לפרויקט (לא חובה)",
+    "assignApartment": "שייך לדירה",
+    "assignApartmentPlaceholder": "שייך לדירה (לא חובה)",
+    "noProject": "ללא פרויקט",
+    "noApartment": "ללא דירה",
+    "noProjectsYet": "אין פרויקטים עדיין",
+    "noApartmentsForProject": "אין דירות לפרויקט זה",
+    "confirmDelete": "האם למחוק עובד זה לצמיתות?",
+    "fields": {
+      "firstName": "שם פרטי *",
+      "lastName": "שם משפחה *",
+      "phone": "טלפון",
+      "role": "תפקיד (בנאי, חשמלאי...)",
+      "dailyRate": "שכר יומי ₪"
+    },
+    "errors": {
+      "nameRequired": "חובה למלא שם פרטי ושם משפחה",
+      "sessionExpired": "החיבור פג — התנתקי והתחברי מחדש",
+      "serverError": "שגיאה בשרת — נסי שוב",
+      "attendanceFailed": "לא הצלחנו לרשום נוכחות",
+      "updateFailed": "לא הצלחנו לעדכן",
+      "deleteFailed": "שגיאה במחיקת עובד"
+    }
   }
 }
