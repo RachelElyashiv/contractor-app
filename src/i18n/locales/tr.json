@@ -81,7 +81,7 @@
     "upload": "+ Yükle",
     "uploading": "Yükleniyor…",
     "siteImages": "Şantiye fotoğrafları ({{count}})",
-    "pdfFiles": "PDF dosyaları ({{count}})",
+    "pdfFiles": "Belgeler ve planlar ({{count}})",
     "openFile": "Dosyayı aç",
     "empty": "Henüz dosya yok",
     "emptyHint": "Fotoğraf eklemek için \"+ Yükle\"ye dokunun",

@@ -8,15 +8,30 @@ import { BASE_URL } from './api';
  */
 export function toUploadFile(asset, fallbackMime) {
   const uri = asset.uri;
-  const uriExt = (uri.split('?')[0].split('.').pop() || '').toLowerCase();
-  const ext = uriExt.length <= 5 ? uriExt : '';
-  const name = asset.fileName || asset.name || `file${ext ? '.' + ext : ''}`;
-  let type = asset.mimeType || asset.type || fallbackMime;
+  const basename = decodeURIComponent((uri.split('?')[0].split('#')[0].split('/').pop() || ''));
+  const dot = basename.lastIndexOf('.');
+  const uriExt = dot > 0 ? basename.slice(dot + 1).toLowerCase() : '';
+  const ext = /^[a-z0-9]{1,5}$/.test(uriExt) ? uriExt : '';
+
+  let type = asset.mimeType || asset.type || '';
   // A picker sometimes reports the bare kind ("image") instead of a mime type.
-  if (!type || !type.includes('/')) {
-    type = ext ? `${fallbackMime.split('/')[0]}/${ext === 'jpg' ? 'jpeg' : ext}` : fallbackMime;
+  // For a photo the extension is the subtype, so it can be rebuilt. For a
+  // document it cannot be guessed, and the generic type is the honest answer —
+  // the server only needs to know it is not an image.
+  if (!type.includes('/')) {
+    type = ext && fallbackMime.startsWith('image/') ? `image/${ext}` : fallbackMime;
   }
   if (type === 'image/jpg') type = 'image/jpeg';
+
+  // Prefer the name the picker gave, then the one in the URI, and only then a
+  // generic one. The extension matters: the server routes on it.
+  const subtype = type.split('/')[1] || '';
+  const typeExt = /^[a-z0-9]{1,5}$/.test(subtype) ? subtype : '';
+  const name =
+    asset.fileName ||
+    asset.name ||
+    (ext ? basename : `file${typeExt ? '.' + typeExt : ''}`);
+
   return { uri, name, type };
 }
 

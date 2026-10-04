@@ -81,7 +81,7 @@
     "upload": "+ Hochladen",
     "uploading": "Wird hochgeladen…",
     "siteImages": "Baustellenfotos ({{count}})",
-    "pdfFiles": "PDF-Dateien ({{count}})",
+    "pdfFiles": "Dokumente und Pläne ({{count}})",
     "openFile": "Datei öffnen",
     "empty": "Noch keine Dateien",
     "emptyHint": "Tippen Sie auf \"+ Hochladen\", um Fotos hinzuzufügen",

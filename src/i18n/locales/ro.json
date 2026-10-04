@@ -81,7 +81,7 @@
     "upload": "+ Încarcă",
     "uploading": "Se încarcă…",
     "siteImages": "Fotografii de șantier ({{count}})",
-    "pdfFiles": "Fișiere PDF ({{count}})",
+    "pdfFiles": "Documente și planuri ({{count}})",
     "openFile": "Deschide fișierul",
     "empty": "Încă nu există fișiere",
     "emptyHint": "Apasă \"+ Încarcă\" pentru a adăuga fotografii",

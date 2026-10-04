@@ -81,7 +81,7 @@
     "upload": "+ Enviar",
     "uploading": "Enviando…",
     "siteImages": "Fotos da obra ({{count}})",
-    "pdfFiles": "Arquivos PDF ({{count}})",
+    "pdfFiles": "Documentos e plantas ({{count}})",
     "openFile": "Abrir arquivo",
     "empty": "Ainda não há arquivos",
     "emptyHint": "Toque em \"+ Enviar\" para adicionar fotos",

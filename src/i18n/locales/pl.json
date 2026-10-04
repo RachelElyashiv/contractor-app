@@ -81,7 +81,7 @@
     "upload": "+ Prześlij",
     "uploading": "Przesyłanie…",
     "siteImages": "Zdjęcia z budowy ({{count}})",
-    "pdfFiles": "Pliki PDF ({{count}})",
+    "pdfFiles": "Dokumenty i plany ({{count}})",
     "openFile": "Otwórz plik",
     "empty": "Brak plików",
     "emptyHint": "Naciśnij \"+ Prześlij\", aby dodać zdjęcia",

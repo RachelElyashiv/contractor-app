@@ -81,7 +81,7 @@
     "upload": "+ העלה",
     "uploading": "מעלה...",
     "siteImages": "תמונות שטח ({{count}})",
-    "pdfFiles": "קבצי PDF ({{count}})",
+    "pdfFiles": "מסמכים ותוכניות ({{count}})",
     "openFile": "פתח קובץ",
     "empty": "אין קבצים עדיין",
     "emptyHint": "לחץ \"+ העלה\" להוסיף תמונות",

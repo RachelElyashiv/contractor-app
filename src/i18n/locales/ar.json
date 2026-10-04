@@ -81,7 +81,7 @@
     "upload": "+ رفع",
     "uploading": "جارٍ الرفع…",
     "siteImages": "صور الموقع ({{count}})",
-    "pdfFiles": "ملفات PDF ({{count}})",
+    "pdfFiles": "المستندات والمخططات ({{count}})",
     "openFile": "فتح الملف",
     "empty": "لا توجد ملفات بعد",
     "emptyHint": "اضغط \"+ رفع\" لإضافة صور",

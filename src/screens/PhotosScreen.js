@@ -22,6 +22,7 @@ import { toUploadFile, uploadFiles } from '../services/uploadFiles';
 import { useTopInset } from '../hooks/useTopInset';
 
 const isWeb = Platform.OS === 'web';
+const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif', 'bmp'];
 
 export default function PhotosScreen() {
   const topInset = useTopInset();
@@ -166,15 +167,33 @@ export default function PhotosScreen() {
     else Linking.openURL(url);
   }
 
-  function isPdf(photo) {
-    return photo.filename?.toLowerCase().endsWith('.pdf') ||
-      photo.caption?.toLowerCase().includes('pdf');
+  // Anything that is not a picture is a document. Checking for .pdf alone meant
+  // a DWG or Word plan was treated as an image and drawn as an empty tile.
+  function fileExt(photo) {
+    const name = (photo.filename || '').toLowerCase();
+    const dot = name.lastIndexOf('.');
+    const ext = dot > 0 ? name.slice(dot + 1) : '';
+    return /^[a-z0-9]{1,5}$/.test(ext) ? ext : '';
+  }
+
+  function isImage(photo) {
+    const ext = fileExt(photo);
+    if (ext) return IMAGE_EXTENSIONS.includes(ext);
+    // Cloudinary keeps everything that is not a picture under /raw/
+    return !(photo.url || '').includes('/raw/');
+  }
+
+  function openDocument(photo) {
+    const label = photo.caption || photo.filename;
+    // Only a PDF can be shown in the in-app viewer; hand the rest to the phone.
+    if (fileExt(photo) === 'pdf') openFile(photo.url, label);
+    else openExternally(photo.url);
   }
 
   if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#1a6b4a" />;
 
-  const images = photos.filter(p => !isPdf(p));
-  const pdfs = photos.filter(p => isPdf(p));
+  const images = photos.filter(isImage);
+  const pdfs = photos.filter(p => !isImage(p));
 
   return (
     <View style={styles.container}>
@@ -189,7 +208,6 @@ export default function PhotosScreen() {
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*"
           multiple
           style={{ display: 'none' }}
           onChange={handleFileChange}
@@ -229,11 +247,11 @@ export default function PhotosScreen() {
             {pdfs.map(pdf => (
               <View key={pdf.id} style={styles.pdfCard}>
                 <View style={styles.pdfIcon}>
-                  <Text style={styles.pdfIconText}>PDF</Text>
+                  <Text style={styles.pdfIconText}>{(fileExt(pdf) || 'קובץ').toUpperCase()}</Text>
                 </View>
                 <View style={styles.pdfInfo}>
                   <Text style={styles.pdfName}>{pdf.caption || pdf.filename}</Text>
-                  <TouchableOpacity onPress={() => openFile(pdf.url, pdf.caption || pdf.filename)}>
+                  <TouchableOpacity onPress={() => openDocument(pdf)}>
                     <Text style={styles.pdfOpen}>{t('photos.openFile')}</Text>
                   </TouchableOpacity>
                 </View>

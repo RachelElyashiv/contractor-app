@@ -25,6 +25,7 @@ import { useTopInset } from '../hooks/useTopInset';
 import { useKeyboardHeight } from '../hooks/useKeyboardHeight';
 
 const isWeb = Platform.OS === 'web';
+const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif', 'bmp'];
 
 // Open a URL (web opens a new tab, native uses the OS handler)
 function openUrl(url) {
@@ -519,8 +520,27 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
     openUrl(url);
   }
 
-  function isPdf(photo) {
-    return photo.filename?.toLowerCase().endsWith('.pdf') || photo.caption?.toLowerCase().includes('pdf');
+  // Anything that is not a picture is a document. Checking for .pdf alone meant
+  // a DWG or Word plan was treated as an image and drawn as an empty tile.
+  function fileExt(photo) {
+    const name = (photo.filename || '').toLowerCase();
+    const dot = name.lastIndexOf('.');
+    const ext = dot > 0 ? name.slice(dot + 1) : '';
+    return /^[a-z0-9]{1,5}$/.test(ext) ? ext : '';
+  }
+
+  function isImage(photo) {
+    const ext = fileExt(photo);
+    if (ext) return IMAGE_EXTENSIONS.includes(ext);
+    // Cloudinary keeps everything that is not a picture under /raw/
+    return !(photo.url || '').includes('/raw/');
+  }
+
+  function openDocument(photo) {
+    const label = photo.caption || photo.filename;
+    // Only a PDF can be shown in the in-app viewer; hand the rest to the phone.
+    if (fileExt(photo) === 'pdf') setDocViewer({ visible: true, uri: photo.url, title: label });
+    else openUrl(photo.url);
   }
 
   function renderMaterialCard(m, isApt = false) {
@@ -580,8 +600,8 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   }
 
   function renderFileGallery(files, isApt = false) {
-    const images = files.filter(p => !isPdf(p));
-    const pdfs = files.filter(p => isPdf(p));
+    const images = files.filter(isImage);
+    const pdfs = files.filter(p => !isImage(p));
     return (
       <ScrollView>
         {images.length > 0 && (
@@ -601,13 +621,13 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         )}
         {pdfs.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>📄 קבצי PDF ({pdfs.length})</Text>
+            <Text style={styles.sectionTitle}>📄 מסמכים ותוכניות ({pdfs.length})</Text>
             {pdfs.map(pdf => (
               <View key={pdf.id} style={styles.pdfCard}>
-                <View style={styles.pdfIcon}><Text style={styles.pdfIconText}>PDF</Text></View>
+                <View style={styles.pdfIcon}><Text style={styles.pdfIconText}>{(fileExt(pdf) || 'קובץ').toUpperCase()}</Text></View>
                 <View style={styles.pdfInfo}>
                   <Text style={styles.pdfName}>{pdf.caption || pdf.filename}</Text>
-                  <TouchableOpacity onPress={() => setDocViewer({ visible: true, uri: pdf.url, title: pdf.caption || pdf.filename })}>
+                  <TouchableOpacity onPress={() => openDocument(pdf)}>
                     <Text style={styles.pdfOpen}>פתח קובץ</Text>
                   </TouchableOpacity>
                 </View>

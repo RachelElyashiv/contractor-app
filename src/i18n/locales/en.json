@@ -81,7 +81,7 @@
     "upload": "+ Upload",
     "uploading": "Uploading…",
     "siteImages": "Site photos ({{count}})",
-    "pdfFiles": "PDF files ({{count}})",
+    "pdfFiles": "Documents and plans ({{count}})",
     "openFile": "Open file",
     "empty": "No files yet",
     "emptyHint": "Tap \"+ Upload\" to add photos",

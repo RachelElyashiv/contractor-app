@@ -81,7 +81,7 @@
     "upload": "+ Importer",
     "uploading": "Import en cours…",
     "siteImages": "Photos de chantier ({{count}})",
-    "pdfFiles": "Fichiers PDF ({{count}})",
+    "pdfFiles": "Documents et plans ({{count}})",
     "openFile": "Ouvrir le fichier",
     "empty": "Aucun fichier pour l'instant",
     "emptyHint": "Appuyez sur « + Importer » pour ajouter des photos",

@@ -81,7 +81,7 @@
     "upload": "+ Subir",
     "uploading": "Subiendo…",
     "siteImages": "Fotos de obra ({{count}})",
-    "pdfFiles": "Archivos PDF ({{count}})",
+    "pdfFiles": "Documentos y planos ({{count}})",
     "openFile": "Abrir archivo",
     "empty": "Aún no hay archivos",
     "emptyHint": "Pulsa \"+ Subir\" para añadir fotos",
