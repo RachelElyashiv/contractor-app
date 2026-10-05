@@ -10,7 +10,8 @@
     "cancel": "ביטול",
     "delete": "מחק",
     "permissionRequired": "הרשאה נדרשת",
-    "submitting": "שולח..."
+    "submitting": "שולח...",
+    "createNew": "הוספה"
   },
   "nav": {
     "dashboard": "דשבורד",
@@ -281,7 +282,7 @@
     "update": "עדכן",
     "done": "הושלם",
     "creating": "יוצר...",
-    "empty": "אין פרויקטים עדיין. לחץ + חדש להוסיף.",
+    "empty": "אין פרויקטים עדיין. לחצי על + להוסיף.",
     "newProject": "פרויקט חדש",
     "createProject": "צור פרויקט",
     "newApartment": "דירה חדשה",

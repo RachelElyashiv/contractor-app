@@ -24,7 +24,7 @@ import { useTopInset } from '../hooks/useTopInset';
 const isWeb = Platform.OS === 'web';
 const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif', 'bmp'];
 
-export default function PhotosScreen() {
+export default function PhotosScreen({ pendingCreate, onClearPendingCreate } = {}) {
   const topInset = useTopInset();
   const { t } = useLanguage();
   const [photos, setPhotos] = useState([]);
@@ -35,6 +35,10 @@ export default function PhotosScreen() {
   const fileInputRef = useRef(null);
 
   useEffect(() => { loadPhotos(); }, []);
+
+  useEffect(() => {
+    if (pendingCreate) { handleUploadPress(); onClearPendingCreate?.(); }
+  }, [pendingCreate]);
 
   async function loadPhotos() {
     try {
@@ -215,6 +219,7 @@ export default function PhotosScreen() {
       )}
 
       <ScrollView
+        contentContainerStyle={{ paddingBottom: 44 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadPhotos(); }} />}
       >
         {images.length > 0 && (

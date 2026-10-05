@@ -353,7 +353,7 @@ ${inv.notes ? `<div class="notes">${t('invoices.doc.notes')}: ${inv.notes}</div>
         </TouchableOpacity>
       </View>
 
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }} />}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 44 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }} />}>
         {activeTab === 'invoices' && summary && (
           <View style={styles.summaryRow}>
             <View style={styles.summaryCard}>

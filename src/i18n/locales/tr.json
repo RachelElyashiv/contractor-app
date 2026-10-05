@@ -10,7 +10,8 @@
     "cancel": "İptal",
     "delete": "Sil",
     "permissionRequired": "İzin gerekli",
-    "submitting": "Gönderiliyor…"
+    "submitting": "Gönderiliyor…",
+    "createNew": "Ekle"
   },
   "nav": {
     "dashboard": "Panel",
@@ -281,7 +282,7 @@
     "update": "Güncelle",
     "done": "tamamlandı",
     "creating": "Oluşturuluyor…",
-    "empty": "Henüz proje yok. Eklemek için + Yeni'ye dokunun.",
+    "empty": "Henüz proje yok. Eklemek için + düğmesine dokunun.",
     "newProject": "Yeni proje",
     "createProject": "Proje oluştur",
     "newApartment": "Yeni daire",

@@ -10,7 +10,8 @@
     "cancel": "Cancelar",
     "delete": "Excluir",
     "permissionRequired": "Permissão necessária",
-    "submitting": "Enviando…"
+    "submitting": "Enviando…",
+    "createNew": "Adicionar"
   },
   "nav": {
     "dashboard": "Painel",
@@ -281,7 +282,7 @@
     "update": "Atualizar",
     "done": "concluído",
     "creating": "A criar…",
-    "empty": "Ainda não há obras. Toque em + Nova para adicionar.",
+    "empty": "Ainda não há obras. Toque em + para adicionar.",
     "newProject": "Nova obra",
     "createProject": "Criar obra",
     "newApartment": "Novo apartamento",

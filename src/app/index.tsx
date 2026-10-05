@@ -13,6 +13,8 @@ import ProjectsScreen from '../screens/ProjectsScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import WorkersScreen from '../screens/WorkersScreen';
 
+const CREATE_SIZE = 56;
+
 const tabs = [
   { key: 'nav.dashboard', icon: 'grid-outline', activeIcon: 'grid', component: DashboardScreen },
   { key: 'nav.projects', icon: 'business-outline', activeIcon: 'business', component: ProjectsScreen },
@@ -30,10 +32,20 @@ function MainApp() {
   const [showRegister, setShowRegister] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [pendingCreate, setPendingCreate] = useState(false);
+  const [tabBarHeight, setTabBarHeight] = useState(0);
 
   function handleNavigate(tab: number, action?: string) {
     setActiveTab(tab);
     if (action === 'create') setPendingCreate(true);
+  }
+
+  // The round button in the middle of the tab bar. It creates whatever the
+  // current tab holds; the dashboard creates nothing of its own, so from there
+  // it opens a new project, which is where work starts.
+  function handleCreatePress() {
+    const target = activeTab === 0 ? 1 : activeTab;
+    setActiveTab(target);
+    setPendingCreate(true);
   }
 
   // Android hardware/gesture back button.
@@ -82,14 +94,20 @@ function MainApp() {
           onClearPendingCreate={() => setPendingCreate(false)}
         />
       </View>
-      <View style={[styles.tabBar, { paddingBottom: insets.bottom + 8 }]}>
+      <View
+        style={[styles.tabBar, { paddingBottom: insets.bottom + 8 }]}
+        onLayout={(e) => setTabBarHeight(e.nativeEvent.layout.height)}
+      >
         {tabs.map((tab, idx) => {
           const active = idx === activeTab;
-          return (
+          // the middle slot is left empty for the create button
+          const item = (
             <TouchableOpacity
               key={tab.key}
               style={styles.tabItem}
               onPress={() => setActiveTab(idx)}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: active }}
             >
               <Ionicons
                 name={(active ? tab.activeIcon : tab.icon) as any}
@@ -101,8 +119,21 @@ function MainApp() {
               </Text>
             </TouchableOpacity>
           );
+          return idx === tabs.length / 2
+            ? [<View key="create-slot" style={styles.tabItem} />, item]
+            : item;
         })}
       </View>
+
+      <TouchableOpacity
+        style={[styles.createBtn, { bottom: Math.max(tabBarHeight - CREATE_SIZE / 2, insets.bottom + 8) }]}
+        onPress={handleCreatePress}
+        accessibilityRole="button"
+        accessibilityLabel={t('common.createNew')}
+        activeOpacity={0.85}
+      >
+        <Ionicons name="add" size={32} color="#fff" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -117,6 +148,24 @@ const styles = StyleSheet.create({
     borderTopColor: '#e0e0e0',
     paddingBottom: 8,
     paddingTop: 8,
+  },
+  createBtn: {
+    position: 'absolute',
+    alignSelf: 'center',
+    width: CREATE_SIZE,
+    height: CREATE_SIZE,
+    borderRadius: CREATE_SIZE / 2,
+    backgroundColor: '#1a6b4a',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // lifted off the bar so it reads as a button, not a tab
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 3 },
+    borderWidth: 3,
+    borderColor: '#fff',
   },
   tabItem: {
     flex: 1,

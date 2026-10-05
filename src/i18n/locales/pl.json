@@ -10,7 +10,8 @@
     "cancel": "Anuluj",
     "delete": "Usuń",
     "permissionRequired": "Wymagane uprawnienie",
-    "submitting": "Wysyłanie…"
+    "submitting": "Wysyłanie…",
+    "createNew": "Dodaj"
   },
   "nav": {
     "dashboard": "Pulpit",
@@ -281,7 +282,7 @@
     "update": "Aktualizuj",
     "done": "ukończono",
     "creating": "Tworzenie…",
-    "empty": "Nie ma jeszcze budów. Naciśnij + Nowa, aby dodać.",
+    "empty": "Nie ma jeszcze budów. Naciśnij +, aby dodać.",
     "newProject": "Nowa budowa",
     "createProject": "Utwórz budowę",
     "newApartment": "Nowe mieszkanie",

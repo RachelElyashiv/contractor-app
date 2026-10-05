@@ -195,13 +195,9 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
       <View style={[styles.header, { paddingTop: topInset + 12 }]}>
         <Text style={styles.headerTitle}>{t('materials.title')}</Text>
       </View>
-      <View style={styles.fabWrap} pointerEvents="box-none">
-        <TouchableOpacity style={styles.fab} onPress={() => setModalVisible(true)}>
-          <Text style={styles.fabText}>+</Text>
-        </TouchableOpacity>
-      </View>
 
       <ScrollView
+        contentContainerStyle={{ paddingBottom: 44 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }} />}
       >
         {list.map(m => {
@@ -408,9 +404,6 @@ const styles = StyleSheet.create({
   header: { backgroundColor: '#1a6b4a', padding: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#fff' },
   addBtn: { backgroundColor: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 8 },
-  fabWrap: { position: 'absolute', left: 0, right: 0, bottom: 24, alignItems: 'center', zIndex: 10 },
-  fab: { width: 60, height: 60, borderRadius: 30, backgroundColor: '#1a6b4a', alignItems: 'center', justifyContent: 'center', elevation: 6, shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 6, shadowOffset: { width: 0, height: 3 } },
-  fabText: { color: '#fff', fontSize: 34, lineHeight: 38, fontWeight: '300' },
   addBtnText: { color: '#fff', fontSize: 14 },
   card: { margin: 12, marginBottom: 0, backgroundColor: '#fff', borderRadius: 12, padding: 16 },
   cardLow: { borderRightWidth: 4, borderRightColor: '#a32d2d' },

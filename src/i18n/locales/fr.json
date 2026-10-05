@@ -10,7 +10,8 @@
     "cancel": "Annuler",
     "delete": "Supprimer",
     "permissionRequired": "Autorisation requise",
-    "submitting": "Envoi…"
+    "submitting": "Envoi…",
+    "createNew": "Ajouter"
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -281,7 +282,7 @@
     "update": "Mettre à jour",
     "done": "terminé",
     "creating": "Création…",
-    "empty": "Aucun chantier pour le moment. Appuyez sur + Nouveau pour en ajouter un.",
+    "empty": "Aucun chantier pour le moment. Appuyez sur + pour en ajouter un.",
     "newProject": "Nouveau chantier",
     "createProject": "Créer le chantier",
     "newApartment": "Nouveau logement",

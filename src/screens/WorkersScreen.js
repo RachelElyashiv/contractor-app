@@ -225,11 +225,6 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       <View style={[styles.header, { paddingTop: topInset + 12 }]}>
         <Text style={styles.headerTitle}>{t('workers.title')}</Text>
       </View>
-      <View style={styles.fabWrap} pointerEvents="box-none">
-        <TouchableOpacity style={styles.fab} onPress={() => setModalVisible(true)}>
-          <Text style={styles.fabText}>+</Text>
-        </TouchableOpacity>
-      </View>
 
       {/* Tabs */}
       <View style={{ flexDirection: 'row', backgroundColor: '#fff', borderBottomWidth: 0.5, borderBottomColor: '#e0e0e0' }}>
@@ -271,7 +266,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       )}
 
       {activeTab === 'salary' && (
-        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={loadSalaryReport} />}>
+        <ScrollView contentContainerStyle={{ paddingBottom: 44 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={loadSalaryReport} />}>
           {/* Month picker */}
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 12, gap: 12 }}>
             <TouchableOpacity onPress={() => { const d = new Date(salaryYear, salaryMonth - 2); setSalaryMonth(d.getMonth() + 1); setSalaryYear(d.getFullYear()); }}
@@ -315,7 +310,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       )}
 
       {activeTab === 'attendance' && (
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }} />}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 44 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }} />}>
         <Text style={styles.sectionTitle}>{t('workers.attendanceToday')}</Text>
         {attendance.map(w => {
           const present = w.todayAttendance?.status === 'present';
@@ -528,9 +523,6 @@ const styles = StyleSheet.create({
   header: { backgroundColor: '#1a6b4a', padding: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#fff' },
   addBtn: { backgroundColor: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 8 },
-  fabWrap: { position: 'absolute', left: 0, right: 0, bottom: 24, alignItems: 'center', zIndex: 10 },
-  fab: { width: 60, height: 60, borderRadius: 30, backgroundColor: '#1a6b4a', alignItems: 'center', justifyContent: 'center', elevation: 6, shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 6, shadowOffset: { width: 0, height: 3 } },
-  fabText: { color: '#fff', fontSize: 34, lineHeight: 38, fontWeight: '300' },
   addBtnText: { color: '#fff', fontSize: 14 },
   filterRow: { flexDirection: 'row', padding: 10, gap: 8, backgroundColor: '#fff', borderBottomWidth: 0.5, borderBottomColor: '#e0e0e0' },
   filterBtn: { flex: 1, backgroundColor: '#f0f4f0', paddingHorizontal: 10, paddingVertical: 8, borderRadius: 8, borderWidth: 0.5, borderColor: '#ddd' },

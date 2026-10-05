@@ -10,7 +10,8 @@
     "cancel": "Abbrechen",
     "delete": "Löschen",
     "permissionRequired": "Berechtigung erforderlich",
-    "submitting": "Wird gesendet…"
+    "submitting": "Wird gesendet…",
+    "createNew": "Hinzufügen"
   },
   "nav": {
     "dashboard": "Übersicht",
@@ -281,7 +282,7 @@
     "update": "Aktualisieren",
     "done": "fertig",
     "creating": "Wird angelegt…",
-    "empty": "Noch keine Bauvorhaben. Auf + Neu tippen, um eines anzulegen.",
+    "empty": "Noch keine Bauvorhaben. Auf + tippen, um eines anzulegen.",
     "newProject": "Neues Bauvorhaben",
     "createProject": "Bauvorhaben anlegen",
     "newApartment": "Neue Wohnung",

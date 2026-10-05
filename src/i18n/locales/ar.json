@@ -10,7 +10,8 @@
     "cancel": "إلغاء",
     "delete": "حذف",
     "permissionRequired": "إذن مطلوب",
-    "submitting": "جارٍ الإرسال…"
+    "submitting": "جارٍ الإرسال…",
+    "createNew": "إضافة"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -281,7 +282,7 @@
     "update": "تحديث",
     "done": "مكتمل",
     "creating": "جارٍ الإنشاء…",
-    "empty": "لا توجد مشاريع بعد. اضغط + جديد للإضافة.",
+    "empty": "لا توجد مشاريع بعد. اضغط على + للإضافة.",
     "newProject": "مشروع جديد",
     "createProject": "إنشاء مشروع",
     "newApartment": "شقة جديدة",

@@ -10,7 +10,8 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "permissionRequired": "Permission required",
-    "submitting": "Sending…"
+    "submitting": "Sending…",
+    "createNew": "Add new"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -281,7 +282,7 @@
     "update": "Update",
     "done": "done",
     "creating": "Creating…",
-    "empty": "No projects yet. Tap + New to add one.",
+    "empty": "No projects yet. Tap + to add one.",
     "newProject": "New project",
     "createProject": "Create project",
     "newApartment": "New apartment",

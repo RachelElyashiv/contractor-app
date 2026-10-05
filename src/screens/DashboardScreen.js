@@ -63,6 +63,7 @@ export default function DashboardScreen({ onNavigate }) {
   return (
     <ScrollView
       style={styles.container}
+      contentContainerStyle={{ paddingBottom: 44 }}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadData(); }} />}
     >
       <View style={[styles.header, { paddingTop: topInset + 12 }]}>

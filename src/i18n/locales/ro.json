@@ -10,7 +10,8 @@
     "cancel": "Anulează",
     "delete": "Șterge",
     "permissionRequired": "Permisiune necesară",
-    "submitting": "Se trimite…"
+    "submitting": "Se trimite…",
+    "createNew": "Adaugă"
   },
   "nav": {
     "dashboard": "Panou",
@@ -281,7 +282,7 @@
     "update": "Actualizează",
     "done": "finalizat",
     "creating": "Se creează…",
-    "empty": "Încă nu există proiecte. Apasă + Nou pentru a adăuga.",
+    "empty": "Încă nu există proiecte. Apasă + pentru a adăuga.",
     "newProject": "Proiect nou",
     "createProject": "Creează proiectul",
     "newApartment": "Apartament nou",

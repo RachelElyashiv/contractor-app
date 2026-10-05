@@ -99,6 +99,17 @@ for (const f of screenFiles) {
 check('no modal sheet is left sitting under the keyboard', bareOverlays.length === 0,
   bareOverlays.length ? `${bareOverlays.length} overlays without keyboard padding` : 'all overlays lifted');
 
+// --- exactly one create button ---
+// Three screens used to carry their own floating +, which sat on top of the
+// one in the tab bar.
+const strayFabs = screenFiles.filter(f => /styles\.fab\b|fabWrap/.test(fs.readFileSync(f, 'utf8')));
+check('the create button exists once, in the tab bar', strayFabs.length === 0,
+  strayFabs.length ? strayFabs.join(', ') : 'no screen carries its own floating button');
+const layout = fs.readFileSync(path.join('src', 'app', 'index.tsx'), 'utf8');
+check('the tab bar leaves a gap in the middle for it',
+  /createBtn/.test(layout) && /tabs\.length \/ 2/.test(layout),
+  'button is docked into the centre slot');
+
 // --- the app ships its own icon, not the Expo template one ---
 const appJson = JSON.parse(fs.readFileSync('app.json', 'utf8')).expo;
 const iconBytes = fs.statSync(appJson.icon).size;
