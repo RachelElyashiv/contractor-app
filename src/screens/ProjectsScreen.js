@@ -649,7 +649,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   }
 
   const confirmModalJsx = (
-    <Modal visible={!!confirmDelete} transparent animationType="fade">
+    <Modal visible={!!confirmDelete} transparent animationType="fade" onRequestClose={() => setConfirmDelete(null)}>
       <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 30 }}>
         <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 24 }}>
           <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 24, color: '#1a1a1a' }}>{confirmDelete?.message}</Text>
@@ -742,7 +742,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                 </View>
               )}
             </ScrollView>
-            <Modal visible={addAptMaterialModal} animationType="slide" transparent>
+            <Modal visible={addAptMaterialModal} animationType="slide" transparent onRequestClose={() => setAddAptMaterialModal(false)}>
               <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
                 <View style={styles.modal}>
                   <Text style={styles.modalTitle}>הוסף חומר לדירה</Text>
@@ -814,7 +814,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
             )}
             </ScrollView>
 
-            <Modal visible={addWorkerModal} animationType="slide" transparent>
+            <Modal visible={addWorkerModal} animationType="slide" transparent onRequestClose={() => setAddWorkerModal(false)}>
               <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
                 <View style={styles.modal}>
                   <Text style={styles.modalTitle}>הוסף עובד לדירה</Text>
@@ -845,7 +845,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         )}
 
         {/* Progress modal */}
-        <Modal visible={progressModal} animationType="slide" transparent>
+        <Modal visible={progressModal} animationType="slide" transparent onRequestClose={() => setProgressModal(false)}>
           <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
             <View style={[styles.modal, { paddingBottom: 30 }]}>
               <Text style={styles.modalTitle}>עדכן אחוז התקדמות</Text>
@@ -921,7 +921,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                 </View>
               )}
             </ScrollView>
-            <Modal visible={addMaterialModal} animationType="slide" transparent>
+            <Modal visible={addMaterialModal} animationType="slide" transparent onRequestClose={() => setAddMaterialModal(false)}>
               <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
                 <View style={styles.modal}>
                   <Text style={styles.modalTitle}>הוסף חומר לפרויקט</Text>
@@ -985,7 +985,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                 )}
               </ScrollView>
             )}
-            <Modal visible={addApartmentModal} animationType="slide" transparent>
+            <Modal visible={addApartmentModal} animationType="slide" transparent onRequestClose={() => setAddApartmentModal(false)}>
               <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
                 <View style={styles.modal}>
                   <Text style={styles.modalTitle}>דירה חדשה</Text>
@@ -1069,7 +1069,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         {list.length === 0 && <Text style={styles.emptyList}>אין פרויקטים עדיין. לחץ + חדש להוסיף.</Text>}
       </ScrollView>
 
-      <Modal visible={modalVisible} animationType="slide" transparent>
+      <Modal visible={modalVisible} animationType="slide" transparent onRequestClose={() => setModalVisible(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>פרויקט חדש</Text>

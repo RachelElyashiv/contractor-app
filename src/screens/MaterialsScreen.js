@@ -1,8 +1,12 @@
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useRef, useState } from 'react';
 import {
     ActivityIndicator,
     Alert,
     BackHandler,
+    Image,
+    Linking,
     Modal,
     RefreshControl,
     ScrollView,
@@ -12,7 +16,9 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
+import PdfViewer from '../components/PdfViewer';
 import { apartments as apartmentsApi, materials, projects as projectsApi } from '../services/api';
+import { toUploadFile, uploadFiles } from '../services/uploadFiles';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTopInset } from '../hooks/useTopInset';
 import { useKeyboardHeight } from '../hooks/useKeyboardHeight';
@@ -25,6 +31,8 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [uploadingFor, setUploadingFor] = useState(null);
+  const [docViewer, setDocViewer] = useState({ visible: false, uri: '', title: '' });
 
   useEffect(() => {
     if (pendingCreate) { setModalVisible(true); onClearPendingCreate?.(); }
@@ -140,6 +148,48 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
 
   if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#1a6b4a" />;
 
+  // A delivery photo and a delivery note per material. The backend keeps the
+  // photo in deliveryImageUrl and the note in imageUrl.
+  async function pickDeliveryFile(materialId, kind) {
+    let asset;
+    if (kind === 'photo') {
+      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permission.granted) {
+        Alert.alert(t('common.permissionRequired'), t('photos.errors.needGalleryPermission'));
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.7 });
+      if (result.canceled) return;
+      asset = toUploadFile(result.assets[0], 'image/jpeg');
+    } else {
+      const result = await DocumentPicker.getDocumentAsync({ type: '*/*', copyToCacheDirectory: true });
+      if (result.canceled || !result.assets?.length) return;
+      asset = toUploadFile(result.assets[0], 'application/octet-stream');
+    }
+
+    setUploadingFor(materialId);
+    try {
+      const caption = kind === 'photo' ? t('materials.deliveryPhoto') : t('materials.deliveryNote');
+      const uploaded = await uploadFiles([asset], { caption });
+      const url = uploaded[0]?.url;
+      if (!url) throw new Error(t('materials.errors.noUrlFromServer'));
+      await materials.update(materialId, {
+        [kind === 'photo' ? 'deliveryImageUrl' : 'imageUrl']: url,
+      });
+      loadData();
+    } catch (e) {
+      Alert.alert(t('common.error'), `${t('photos.errors.uploadFailed')}\n\n${e?.message || e}`);
+    } finally {
+      setUploadingFor(null);
+    }
+  }
+
+  function openDeliveryNote(url) {
+    const clean = (url || '').split('?')[0].toLowerCase();
+    if (clean.endsWith('.pdf')) setDocViewer({ visible: true, uri: url, title: t('materials.deliveryNote') });
+    else Linking.openURL(url);
+  }
+
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: topInset + 12 }]}>
@@ -180,13 +230,53 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
                   <Text style={[styles.stockBtnText, { color: '#1a6b4a' }]}>+</Text>
                 </TouchableOpacity>
               </View>
+
+              <View style={styles.deliveryRow}>
+                <TouchableOpacity
+                  style={[styles.deliveryBtn, { backgroundColor: '#e6f1fb' }]}
+                  disabled={uploadingFor === m.id}
+                  onPress={() => pickDeliveryFile(m.id, 'photo')}
+                >
+                  <Text style={[styles.deliveryBtnText, { color: '#185fa5' }]}>
+                    📸 {t('materials.deliveryPhoto')}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.deliveryBtn, { backgroundColor: '#f5f0ff' }]}
+                  disabled={uploadingFor === m.id}
+                  onPress={() => pickDeliveryFile(m.id, 'note')}
+                >
+                  <Text style={[styles.deliveryBtnText, { color: '#6b35a0' }]}>
+                    📄 {t('materials.deliveryNote')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              {uploadingFor === m.id && (
+                <Text style={styles.deliveryHint}>{t('photos.uploading')}</Text>
+              )}
+
+              {!!m.deliveryImageUrl && (
+                <View style={{ marginTop: 8 }}>
+                  <Text style={styles.deliveryHint}>📸 {t('materials.deliveryPhoto')}</Text>
+                  <Image source={{ uri: m.deliveryImageUrl }} style={styles.deliveryImage} resizeMode="cover" />
+                </View>
+              )}
+
+              {!!m.imageUrl && (
+                <TouchableOpacity style={styles.deliveryNoteLink} onPress={() => openDeliveryNote(m.imageUrl)}>
+                  <Text style={{ color: '#6b35a0', fontSize: 13, textAlign: 'right' }}>
+                    📄 {t('materials.openDeliveryNote')}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
           );
         })}
         {list.length === 0 && <Text style={styles.empty}>{t('materials.empty')}</Text>}
       </ScrollView>
 
-      <Modal visible={modalVisible} animationType="slide" transparent>
+      <Modal visible={modalVisible} animationType="slide" transparent onRequestClose={() => setModalVisible(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('materials.newMaterial')}</Text>
@@ -235,7 +325,7 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
       </Modal>
 
       {/* Pick project for material */}
-      <Modal visible={showMatProject} animationType="slide" transparent>
+      <Modal visible={showMatProject} animationType="slide" transparent onRequestClose={() => setShowMatProject(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('materials.assignProject')}</Text>
@@ -259,7 +349,7 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
       </Modal>
 
       {/* Pick apartment for material */}
-      <Modal visible={showMatApartment} animationType="slide" transparent>
+      <Modal visible={showMatApartment} animationType="slide" transparent onRequestClose={() => setShowMatApartment(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('materials.assignApartment')}</Text>
@@ -284,7 +374,7 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
         </View>
       </Modal>
 
-      <Modal visible={!!confirmDelete} transparent animationType="fade">
+      <Modal visible={!!confirmDelete} transparent animationType="fade" onRequestClose={() => setConfirmDelete(null)}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 30 }}>
           <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 24 }}>
             <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 24, color: '#1a1a1a' }}>{confirmDelete?.message}</Text>
@@ -301,6 +391,14 @@ export default function MaterialsScreen({ pendingCreate, onClearPendingCreate } 
           </View>
         </View>
       </Modal>
+
+      <PdfViewer
+        visible={docViewer.visible}
+        uri={docViewer.uri}
+        title={docViewer.title}
+        onShare={() => Linking.openURL(docViewer.uri)}
+        onClose={() => setDocViewer({ visible: false, uri: '', title: '' })}
+      />
     </View>
   );
 }
@@ -324,6 +422,12 @@ const styles = StyleSheet.create({
   stockBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#fcebeb', justifyContent: 'center', alignItems: 'center' },
   stockBtnText: { fontSize: 20, color: '#a32d2d', fontWeight: '600' },
   stockVal: { fontSize: 16, fontWeight: '600', color: '#1a1a1a', minWidth: 80, textAlign: 'center' },
+  deliveryRow: { flexDirection: 'row', gap: 8, marginTop: 10 },
+  deliveryBtn: { flex: 1, paddingVertical: 8, paddingHorizontal: 6, borderRadius: 8 },
+  deliveryBtnText: { fontSize: 12, textAlign: 'center' },
+  deliveryHint: { fontSize: 11, color: '#888', textAlign: 'right', marginBottom: 4, marginTop: 6 },
+  deliveryImage: { width: '100%', height: 160, borderRadius: 8 },
+  deliveryNoteLink: { marginTop: 8, padding: 10, backgroundColor: '#f5f0ff', borderRadius: 8 },
   empty: { textAlign: 'center', color: '#888', marginTop: 40, fontSize: 15 },
   overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modal: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 24, maxHeight: '85%' },

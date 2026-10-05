@@ -10,7 +10,6 @@
     "cancel": "Anuluj",
     "delete": "Usuń",
     "permissionRequired": "Wymagane uprawnienie",
-    "add": "+ Dodaj",
     "submitting": "Wysyłanie…"
   },
   "nav": {
@@ -93,7 +92,6 @@
     "confirmDelete": "Usunąć \"{{name}}\"?",
     "errors": {
       "uploadFailed": "Nie udało się przesłać",
-      "uploadError": "Błąd podczas przesyłania",
       "deleteFailed": "Nie udało się usunąć",
       "deleteError": "Błąd podczas usuwania",
       "needGalleryPermission": "Zezwól na dostęp do zdjęć, aby je przesłać",
@@ -131,8 +129,12 @@
       "nameRequired": "Podaj nazwę materiału",
       "serverError": "Błąd serwera — spróbuj ponownie",
       "stockUpdateFailed": "Nie udało się zaktualizować stanu",
-      "deleteFailed": "Błąd podczas usuwania materiału"
-    }
+      "deleteFailed": "Błąd podczas usuwania materiału",
+      "noUrlFromServer": "Serwer nie zwrócił linku do pliku"
+    },
+    "deliveryPhoto": "Zdjęcie dostawy",
+    "deliveryNote": "Dowód dostawy",
+    "openDeliveryNote": "Otwórz dowód dostawy →"
   },
   "workers": {
     "title": "Pracownicy",

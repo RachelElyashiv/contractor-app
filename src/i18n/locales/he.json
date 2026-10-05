@@ -10,7 +10,6 @@
     "cancel": "ביטול",
     "delete": "מחק",
     "permissionRequired": "הרשאה נדרשת",
-    "add": "+ הוסף",
     "submitting": "שולח..."
   },
   "nav": {
@@ -93,7 +92,6 @@
     "confirmDelete": "האם למחוק את \"{{name}}\"?",
     "errors": {
       "uploadFailed": "לא הצלחנו להעלות",
-      "uploadError": "שגיאה בהעלאה",
       "deleteFailed": "לא הצלחנו למחוק",
       "deleteError": "שגיאה במחיקה",
       "needGalleryPermission": "יש לאשר גישה לתמונות כדי להעלות",
@@ -131,8 +129,12 @@
       "nameRequired": "חובה למלא שם חומר",
       "serverError": "שגיאה בשרת — נסי שוב",
       "stockUpdateFailed": "לא הצלחנו לעדכן מלאי",
-      "deleteFailed": "שגיאה במחיקת חומר"
-    }
+      "deleteFailed": "שגיאה במחיקת חומר",
+      "noUrlFromServer": "השרת לא החזיר קישור לקובץ"
+    },
+    "deliveryPhoto": "תמונת משלוח",
+    "deliveryNote": "תעודת משלוח",
+    "openDeliveryNote": "פתח תעודת משלוח ←"
   },
   "workers": {
     "title": "עובדים",

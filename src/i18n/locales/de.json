@@ -10,7 +10,6 @@
     "cancel": "Abbrechen",
     "delete": "Löschen",
     "permissionRequired": "Berechtigung erforderlich",
-    "add": "+ Hinzufügen",
     "submitting": "Wird gesendet…"
   },
   "nav": {
@@ -93,7 +92,6 @@
     "confirmDelete": "\"{{name}}\" löschen?",
     "errors": {
       "uploadFailed": "Hochladen fehlgeschlagen",
-      "uploadError": "Fehler beim Hochladen",
       "deleteFailed": "Löschen fehlgeschlagen",
       "deleteError": "Fehler beim Löschen",
       "needGalleryPermission": "Erlauben Sie den Zugriff auf Ihre Fotos zum Hochladen",
@@ -131,8 +129,12 @@
       "nameRequired": "Geben Sie einen Materialnamen ein",
       "serverError": "Serverfehler — bitte erneut versuchen",
       "stockUpdateFailed": "Bestand konnte nicht aktualisiert werden",
-      "deleteFailed": "Fehler beim Löschen des Materials"
-    }
+      "deleteFailed": "Fehler beim Löschen des Materials",
+      "noUrlFromServer": "Der Server hat keinen Dateilink zurückgegeben"
+    },
+    "deliveryPhoto": "Lieferfoto",
+    "deliveryNote": "Lieferschein",
+    "openDeliveryNote": "Lieferschein öffnen →"
   },
   "workers": {
     "title": "Arbeiter",

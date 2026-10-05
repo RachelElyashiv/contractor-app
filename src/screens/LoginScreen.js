@@ -1,16 +1,20 @@
 import { useState } from 'react';
 import {
     ActivityIndicator,
-    KeyboardAvoidingView, Platform,
+    ScrollView,
     StyleSheet,
     Text, TextInput, TouchableOpacity,
     View
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useKeyboardHeight } from '../hooks/useKeyboardHeight';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTopInset } from '../hooks/useTopInset';
 
 export default function LoginScreen({ onSwitch }) {
   const { t } = useLanguage();
+  const keyboardHeight = useKeyboardHeight();
+  const topInset = useTopInset();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -32,7 +36,14 @@ export default function LoginScreen({ onSwitch }) {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={[
+        styles.content,
+        { paddingTop: topInset + 20, paddingBottom: keyboardHeight + 20 },
+      ]}
+      keyboardShouldPersistTaps="handled"
+    >
       <View style={styles.card}>
         <Text style={styles.title}>🏗️ {t('common.appName')}</Text>
         <Text style={styles.subtitle}>{t('auth.signInSubtitle')}</Text>
@@ -71,12 +82,13 @@ export default function LoginScreen({ onSwitch }) {
           <Text style={styles.switchText}>{t('auth.noAccount')}</Text>
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f0f4f0', justifyContent: 'center', padding: 20 },
+  container: { flex: 1, backgroundColor: '#f0f4f0' },
+  content: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 20 },
   card: { backgroundColor: '#fff', borderRadius: 16, padding: 24, elevation: 3 },
   title: { fontSize: 28, fontWeight: 'bold', textAlign: 'center', color: '#1a6b4a', marginBottom: 4 },
   subtitle: { fontSize: 14, textAlign: 'center', color: '#888', marginBottom: 24 },

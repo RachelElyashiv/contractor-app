@@ -364,7 +364,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       )}
 
       {/* Project filter modal */}
-      <Modal visible={showProjectFilter} animationType="slide" transparent>
+      <Modal visible={showProjectFilter} animationType="slide" transparent onRequestClose={() => setShowProjectFilter(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('workers.chooseProject')}</Text>
@@ -387,7 +387,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       </Modal>
 
       {/* Apartment filter modal */}
-      <Modal visible={showApartmentFilter} animationType="slide" transparent>
+      <Modal visible={showApartmentFilter} animationType="slide" transparent onRequestClose={() => setShowApartmentFilter(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('workers.chooseApartment')}</Text>
@@ -413,7 +413,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       </Modal>
 
       {/* Add worker modal */}
-      <Modal visible={modalVisible} animationType="slide" transparent>
+      <Modal visible={modalVisible} animationType="slide" transparent onRequestClose={() => setModalVisible(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('workers.newWorker')}</Text>
@@ -452,7 +452,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       </Modal>
 
       {/* Form: pick project for new worker */}
-      <Modal visible={showFormProject} animationType="slide" transparent>
+      <Modal visible={showFormProject} animationType="slide" transparent onRequestClose={() => setShowFormProject(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('workers.assignProject')}</Text>
@@ -476,7 +476,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       </Modal>
 
       {/* Form: pick apartment for new worker */}
-      <Modal visible={showFormApartment} animationType="slide" transparent>
+      <Modal visible={showFormApartment} animationType="slide" transparent onRequestClose={() => setShowFormApartment(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>{t('workers.assignApartment')}</Text>
@@ -502,7 +502,7 @@ export default function WorkersScreen({ pendingCreate, onClearPendingCreate } = 
       </Modal>
 
       {/* Confirm delete dialog */}
-      <Modal visible={!!confirmDelete} transparent animationType="fade">
+      <Modal visible={!!confirmDelete} transparent animationType="fade" onRequestClose={() => setConfirmDelete(null)}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 30 }}>
           <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 24 }}>
             <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 24, color: '#1a1a1a' }}>{confirmDelete?.message}</Text>

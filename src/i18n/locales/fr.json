@@ -10,7 +10,6 @@
     "cancel": "Annuler",
     "delete": "Supprimer",
     "permissionRequired": "Autorisation requise",
-    "add": "+ Ajouter",
     "submitting": "Envoi…"
   },
   "nav": {
@@ -93,7 +92,6 @@
     "confirmDelete": "Supprimer « {{name}} » ?",
     "errors": {
       "uploadFailed": "Échec de l'import",
-      "uploadError": "Erreur lors de l'import",
       "deleteFailed": "Échec de la suppression",
       "deleteError": "Erreur lors de la suppression",
       "needGalleryPermission": "Autorisez l'accès à vos photos pour les importer",
@@ -131,8 +129,12 @@
       "nameRequired": "Saisissez le nom du matériau",
       "serverError": "Erreur du serveur — réessayez",
       "stockUpdateFailed": "Impossible de mettre à jour le stock",
-      "deleteFailed": "Erreur lors de la suppression du matériau"
-    }
+      "deleteFailed": "Erreur lors de la suppression du matériau",
+      "noUrlFromServer": "Le serveur n'a renvoyé aucun lien"
+    },
+    "deliveryPhoto": "Photo de livraison",
+    "deliveryNote": "Bon de livraison",
+    "openDeliveryNote": "Ouvrir le bon de livraison →"
   },
   "workers": {
     "title": "Ouvriers",

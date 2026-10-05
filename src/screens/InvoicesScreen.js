@@ -412,7 +412,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
         )}
       </ScrollView>
 
-      <Modal visible={modalVisible} animationType="slide" transparent>
+      <Modal visible={modalVisible} animationType="slide" transparent onRequestClose={() => setModalVisible(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>
@@ -510,7 +510,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
       </Modal>
 
       {/* Pick source project */}
-      <Modal visible={showSrcProject} animationType="slide" transparent>
+      <Modal visible={showSrcProject} animationType="slide" transparent onRequestClose={() => setShowSrcProject(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>בחרי פרויקט</Text>
@@ -531,7 +531,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
       </Modal>
 
       {/* Pick source apartment */}
-      <Modal visible={showSrcApartment} animationType="slide" transparent>
+      <Modal visible={showSrcApartment} animationType="slide" transparent onRequestClose={() => setShowSrcApartment(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>בחרי דירה</Text>
@@ -557,7 +557,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
       </Modal>
 
       {/* Pick a single material from inventory */}
-      <Modal visible={showMaterialPicker} animationType="slide" transparent>
+      <Modal visible={showMaterialPicker} animationType="slide" transparent onRequestClose={() => setShowMaterialPicker(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>📦 משוך חומר מהמלאי</Text>
@@ -589,7 +589,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
         onClose={() => setPdfModal({ visible: false, html: '' })}
       />
 
-      <Modal visible={!!confirmDelete} transparent animationType="fade">
+      <Modal visible={!!confirmDelete} transparent animationType="fade" onRequestClose={() => setConfirmDelete(null)}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 30 }}>
           <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 24 }}>
             <Text style={{ fontSize: 16, textAlign: 'center', marginBottom: 24, color: '#1a1a1a' }}>{confirmDelete?.message}</Text>

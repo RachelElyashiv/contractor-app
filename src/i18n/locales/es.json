@@ -10,7 +10,6 @@
     "cancel": "Cancelar",
     "delete": "Eliminar",
     "permissionRequired": "Permiso necesario",
-    "add": "+ Añadir",
     "submitting": "Enviando…"
   },
   "nav": {
@@ -93,7 +92,6 @@
     "confirmDelete": "¿Eliminar \"{{name}}\"?",
     "errors": {
       "uploadFailed": "No se pudo subir",
-      "uploadError": "Error al subir",
       "deleteFailed": "No se pudo eliminar",
       "deleteError": "Error al eliminar",
       "needGalleryPermission": "Permite el acceso a tus fotos para subirlas",
@@ -131,8 +129,12 @@
       "nameRequired": "Introduce el nombre del material",
       "serverError": "Error del servidor — inténtalo de nuevo",
       "stockUpdateFailed": "No se pudo actualizar el stock",
-      "deleteFailed": "Error al eliminar el material"
-    }
+      "deleteFailed": "Error al eliminar el material",
+      "noUrlFromServer": "El servidor no devolvió ningún enlace"
+    },
+    "deliveryPhoto": "Foto de entrega",
+    "deliveryNote": "Albarán",
+    "openDeliveryNote": "Abrir albarán →"
   },
   "workers": {
     "title": "Trabajadores",

@@ -10,7 +10,6 @@
     "cancel": "Cancelar",
     "delete": "Excluir",
     "permissionRequired": "Permissão necessária",
-    "add": "+ Adicionar",
     "submitting": "Enviando…"
   },
   "nav": {
@@ -93,7 +92,6 @@
     "confirmDelete": "Excluir \"{{name}}\"?",
     "errors": {
       "uploadFailed": "Não foi possível enviar",
-      "uploadError": "Erro ao enviar",
       "deleteFailed": "Não foi possível excluir",
       "deleteError": "Erro ao excluir",
       "needGalleryPermission": "Permita o acesso às suas fotos para enviar",
@@ -131,8 +129,12 @@
       "nameRequired": "Informe o nome do material",
       "serverError": "Erro no servidor — tente novamente",
       "stockUpdateFailed": "Não foi possível atualizar o estoque",
-      "deleteFailed": "Erro ao excluir o material"
-    }
+      "deleteFailed": "Erro ao excluir o material",
+      "noUrlFromServer": "O servidor não devolveu nenhum link"
+    },
+    "deliveryPhoto": "Foto da entrega",
+    "deliveryNote": "Guia de remessa",
+    "openDeliveryNote": "Abrir guia de remessa →"
   },
   "workers": {
     "title": "Trabalhadores",

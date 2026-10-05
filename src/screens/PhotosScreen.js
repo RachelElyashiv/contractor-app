@@ -247,7 +247,7 @@ export default function PhotosScreen() {
             {pdfs.map(pdf => (
               <View key={pdf.id} style={styles.pdfCard}>
                 <View style={styles.pdfIcon}>
-                  <Text style={styles.pdfIconText}>{(fileExt(pdf) || 'קובץ').toUpperCase()}</Text>
+                  <Text style={styles.pdfIconText}>{(fileExt(pdf) || t('photos.file')).toUpperCase()}</Text>
                 </View>
                 <View style={styles.pdfInfo}>
                   <Text style={styles.pdfName}>{pdf.caption || pdf.filename}</Text>

@@ -10,7 +10,6 @@
     "cancel": "İptal",
     "delete": "Sil",
     "permissionRequired": "İzin gerekli",
-    "add": "+ Ekle",
     "submitting": "Gönderiliyor…"
   },
   "nav": {
@@ -93,7 +92,6 @@
     "confirmDelete": "\"{{name}}\" silinsin mi?",
     "errors": {
       "uploadFailed": "Yükleme başarısız",
-      "uploadError": "Yükleme sırasında hata",
       "deleteFailed": "Silme başarısız",
       "deleteError": "Silme sırasında hata",
       "needGalleryPermission": "Yüklemek için fotoğraflara erişime izin verin",
@@ -131,8 +129,12 @@
       "nameRequired": "Malzeme adını girin",
       "serverError": "Sunucu hatası — tekrar deneyin",
       "stockUpdateFailed": "Stok güncellenemedi",
-      "deleteFailed": "Malzeme silinirken hata"
-    }
+      "deleteFailed": "Malzeme silinirken hata",
+      "noUrlFromServer": "Sunucu dosya bağlantısı döndürmedi"
+    },
+    "deliveryPhoto": "Teslimat fotoğrafı",
+    "deliveryNote": "İrsaliye",
+    "openDeliveryNote": "İrsaliyeyi aç →"
   },
   "workers": {
     "title": "İşçiler",

@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
-  StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView
+  StyleSheet, ActivityIndicator, ScrollView
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useKeyboardHeight } from '../hooks/useKeyboardHeight';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTopInset } from '../hooks/useTopInset';
 
 export default function RegisterScreen({ onSwitch }) {
   const { t } = useLanguage();
+  const keyboardHeight = useKeyboardHeight();
+  const topInset = useTopInset();
   const [form, setForm] = useState({ fullName: '', email: '', password: '', companyName: '', phone: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -35,8 +39,14 @@ export default function RegisterScreen({ onSwitch }) {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.scroll}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={[
+        styles.scroll,
+        { paddingTop: topInset + 20, paddingBottom: keyboardHeight + 20 },
+      ]}
+      keyboardShouldPersistTaps="handled"
+    >
         <View style={styles.card}>
           <Text style={styles.title}>🏗️ {t('common.appName')}</Text>
           <Text style={styles.subtitle}>{t('auth.signUpSubtitle')}</Text>
@@ -76,14 +86,13 @@ export default function RegisterScreen({ onSwitch }) {
             <Text style={styles.switchText}>{t('auth.haveAccount')}</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f0f4f0' },
-  scroll: { flexGrow: 1, justifyContent: 'center', padding: 20 },
+  scroll: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 20 },
   card: { backgroundColor: '#fff', borderRadius: 16, padding: 24, elevation: 3 },
   title: { fontSize: 28, fontWeight: 'bold', textAlign: 'center', color: '#1a6b4a', marginBottom: 4 },
   subtitle: { fontSize: 14, textAlign: 'center', color: '#888', marginBottom: 24 },

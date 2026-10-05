@@ -10,7 +10,6 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "permissionRequired": "Permission required",
-    "add": "+ Add",
     "submitting": "Sending…"
   },
   "nav": {
@@ -93,7 +92,6 @@
     "confirmDelete": "Delete \"{{name}}\"?",
     "errors": {
       "uploadFailed": "Upload failed",
-      "uploadError": "Error while uploading",
       "deleteFailed": "Delete failed",
       "deleteError": "Error while deleting",
       "needGalleryPermission": "Allow access to your photos to upload",
@@ -131,8 +129,12 @@
       "nameRequired": "Enter a material name",
       "serverError": "Server error — please try again",
       "stockUpdateFailed": "Could not update stock",
-      "deleteFailed": "Error deleting material"
-    }
+      "deleteFailed": "Error deleting material",
+      "noUrlFromServer": "The server returned no file link"
+    },
+    "deliveryPhoto": "Delivery photo",
+    "deliveryNote": "Delivery note",
+    "openDeliveryNote": "Open delivery note →"
   },
   "workers": {
     "title": "Workers",

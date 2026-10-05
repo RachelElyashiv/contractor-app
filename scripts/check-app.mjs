@@ -43,16 +43,77 @@ const mismatched = files.filter(f => JSON.stringify(flat(parsed[f]).sort()) !== 
 check('every language has exactly the same keys as hebrew', mismatched.length === 0,
   mismatched.length ? 'differ: ' + mismatched.join(', ') : `${base.length} keys x ${files.length} languages`);
 
-// keys the screens actually call
-const screens = ['src/screens/PhotosScreen.js'];
-const used = new Set();
-for (const s of screens) {
-  const text = fs.readFileSync(s, 'utf8');
-  for (const m of text.matchAll(/\bt\('([^']+)'/g)) used.add(m[1]);
+// every key any screen actually calls must exist in every language
+const srcFiles = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap(d =>
+  d.isDirectory() ? srcFiles(path.join(dir, d.name)) : [path.join(dir, d.name)]);
+const code = srcFiles('src').filter(f => /\.(js|jsx|ts|tsx)$/.test(f));
+const used = new Map();
+for (const f of code) {
+  const text = fs.readFileSync(f, 'utf8');
+  for (const m of text.matchAll(/\bt\(\s*'([a-zA-Z][\w.]*)'/g)) {
+    if (!used.has(m[1])) used.set(m[1], f);
+  }
 }
-const missing = [...used].filter(k => !base.includes(k));
-check('every translation key the photos screen calls exists', missing.length === 0,
-  missing.length ? 'missing: ' + missing.join(', ') : `${used.size} keys checked`);
+const missing = [...used].filter(([k]) => !base.includes(k));
+check('every translation key the code calls exists in every language', missing.length === 0,
+  missing.length
+    ? 'missing: ' + missing.map(([k, f]) => `${k} (${f})`).join(', ')
+    : `${used.size} keys used across ${code.length} files`);
+
+// and nothing is defined but never used, which usually means a rename was missed.
+// Some keys are reached through a variable (the tab bar holds them in a list),
+// so a key counts as used if it appears quoted anywhere in the source.
+const allCode = code.map(f => fs.readFileSync(f, 'utf8')).join('\n');
+const unused = base.filter(k => !used.has(k) && !allCode.includes(`'${k}'`) && !allCode.includes(`"${k}"`));
+check('no translation key is left behind unused', unused.length === 0,
+  unused.length ? unused.join(', ') : `all ${base.length} keys are referenced`);
+
+// --- every modal can be dismissed with the phone's back button ---
+// On Android a <Modal> without onRequestClose swallows the back press, which
+// leaves the user stuck inside a form that covers the screen.
+const screenFiles = srcFiles('src/screens').filter(f => f.endsWith('.js'));
+const modals = [];
+for (const f of screenFiles) {
+  for (const m of fs.readFileSync(f, 'utf8').matchAll(/<Modal\b[^>]*>/g)) {
+    modals.push({ file: f, tag: m[0], ok: m[0].includes('onRequestClose') });
+  }
+}
+check('every modal closes on the phone back button', modals.every(m => m.ok),
+  modals.filter(m => !m.ok).map(m => m.file).join(', ') || `${modals.length} modals checked`);
+
+// --- the screens keep clear of the status bar and the keyboard ---
+const headers = [];
+const bareHeaders = [];
+for (const f of screenFiles) {
+  const text = fs.readFileSync(f, 'utf8');
+  headers.push(...(text.match(/styles\.header, \{ paddingTop: topInset/g) || []));
+  bareHeaders.push(...(text.match(/style=\{styles\.header\}/g) || []));
+}
+check('every screen header is pushed below the status bar', bareHeaders.length === 0 && headers.length >= 8,
+  `${headers.length} headers inset, ${bareHeaders.length} left bare`);
+
+const bareOverlays = [];
+for (const f of screenFiles) {
+  bareOverlays.push(...(fs.readFileSync(f, 'utf8').match(/style=\{styles\.overlay\}/g) || []));
+}
+check('no modal sheet is left sitting under the keyboard', bareOverlays.length === 0,
+  bareOverlays.length ? `${bareOverlays.length} overlays without keyboard padding` : 'all overlays lifted');
+
+// --- the app ships its own icon, not the Expo template one ---
+const appJson = JSON.parse(fs.readFileSync('app.json', 'utf8')).expo;
+const iconBytes = fs.statSync(appJson.icon).size;
+check('the app has a name people will recognise', appJson.name !== 'contractor-app' && appJson.name.length > 1,
+  `name = ${appJson.name}`);
+check('the icon file exists and is a real image', fs.existsSync(appJson.icon) && iconBytes > 1000,
+  `${appJson.icon} (${iconBytes} bytes)`);
+for (const key of ['foregroundImage', 'backgroundImage', 'monochromeImage']) {
+  const p = appJson.android.adaptiveIcon[key];
+  if (p && !fs.existsSync(p)) check(`adaptive icon ${key} exists`, false, p);
+}
+check('every icon path in app.json points at a file that exists',
+  [appJson.icon, ...Object.values(appJson.android.adaptiveIcon).filter(v => String(v).startsWith('./'))]
+    .every(p => fs.existsSync(p)),
+  'icon, foreground, background, monochrome');
 
 // --- no stale backend url anywhere ---
 const grep = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap(d =>

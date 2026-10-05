@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "contractor-app",
+    "name": "בונים",
     "slug": "contractor-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,7 +10,6 @@
     "description": "אפליקציה לניהול דוחות שטח ומסמכים עבור קבלנים וייעוצים מקצועיים",
     "privacy": "https://github.com/rachelelyashiv/contractor-app/blob/main/PRIVACY_POLICY.md",
     "ios": {
-      "icon": "./assets/expo.icon",
       "supportsTabletMode": true,
       "infoPlist": {
         "NSCameraUsageDescription": "האפליקציה צריכה גישה למצלמה כדי לצלם תמונות שטח.",

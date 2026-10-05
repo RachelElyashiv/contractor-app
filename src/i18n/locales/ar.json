@@ -10,7 +10,6 @@
     "cancel": "إلغاء",
     "delete": "حذف",
     "permissionRequired": "إذن مطلوب",
-    "add": "+ إضافة",
     "submitting": "جارٍ الإرسال…"
   },
   "nav": {
@@ -93,7 +92,6 @@
     "confirmDelete": "حذف \"{{name}}\"؟",
     "errors": {
       "uploadFailed": "فشل الرفع",
-      "uploadError": "خطأ أثناء الرفع",
       "deleteFailed": "فشل الحذف",
       "deleteError": "خطأ أثناء الحذف",
       "needGalleryPermission": "يرجى السماح بالوصول إلى الصور للرفع",
@@ -131,8 +129,12 @@
       "nameRequired": "أدخل اسم المادة",
       "serverError": "خطأ في الخادم — حاول مرة أخرى",
       "stockUpdateFailed": "تعذّر تحديث المخزون",
-      "deleteFailed": "خطأ في حذف المادة"
-    }
+      "deleteFailed": "خطأ في حذف المادة",
+      "noUrlFromServer": "لم يُرجع الخادم رابطًا للملف"
+    },
+    "deliveryPhoto": "صورة التسليم",
+    "deliveryNote": "إشعار التسليم",
+    "openDeliveryNote": "فتح إشعار التسليم ←"
   },
   "workers": {
     "title": "العمال",

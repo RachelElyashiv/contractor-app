@@ -10,7 +10,6 @@
     "cancel": "Anulează",
     "delete": "Șterge",
     "permissionRequired": "Permisiune necesară",
-    "add": "+ Adaugă",
     "submitting": "Se trimite…"
   },
   "nav": {
@@ -93,7 +92,6 @@
     "confirmDelete": "Ștergi \"{{name}}\"?",
     "errors": {
       "uploadFailed": "Încărcarea a eșuat",
-      "uploadError": "Eroare la încărcare",
       "deleteFailed": "Ștergerea a eșuat",
       "deleteError": "Eroare la ștergere",
       "needGalleryPermission": "Permite accesul la fotografii pentru încărcare",
@@ -131,8 +129,12 @@
       "nameRequired": "Introdu numele materialului",
       "serverError": "Eroare de server — încearcă din nou",
       "stockUpdateFailed": "Nu s-a putut actualiza stocul",
-      "deleteFailed": "Eroare la ștergerea materialului"
-    }
+      "deleteFailed": "Eroare la ștergerea materialului",
+      "noUrlFromServer": "Serverul nu a returnat niciun link"
+    },
+    "deliveryPhoto": "Fotografie livrare",
+    "deliveryNote": "Aviz de însoțire",
+    "openDeliveryNote": "Deschide avizul →"
   },
   "workers": {
     "title": "Muncitori",

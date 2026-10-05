@@ -10,7 +10,6 @@
     "cancel": "Отмена",
     "delete": "Удалить",
     "permissionRequired": "Требуется разрешение",
-    "add": "+ Добавить",
     "submitting": "Отправка…"
   },
   "nav": {
@@ -93,7 +92,6 @@
     "confirmDelete": "Удалить \"{{name}}\"?",
     "errors": {
       "uploadFailed": "Не удалось загрузить",
-      "uploadError": "Ошибка при загрузке",
       "deleteFailed": "Не удалось удалить",
       "deleteError": "Ошибка при удалении",
       "needGalleryPermission": "Разрешите доступ к фото для загрузки",
@@ -131,8 +129,12 @@
       "nameRequired": "Введите название материала",
       "serverError": "Ошибка сервера — попробуйте снова",
       "stockUpdateFailed": "Не удалось обновить запас",
-      "deleteFailed": "Ошибка при удалении материала"
-    }
+      "deleteFailed": "Ошибка при удалении материала",
+      "noUrlFromServer": "Сервер не вернул ссылку на файл"
+    },
+    "deliveryPhoto": "Фото поставки",
+    "deliveryNote": "Накладная",
+    "openDeliveryNote": "Открыть накладную →"
   },
   "workers": {
     "title": "Рабочие",
