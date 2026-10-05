@@ -99,6 +99,36 @@ for (const f of screenFiles) {
 check('no modal sheet is left sitting under the keyboard', bareOverlays.length === 0,
   bareOverlays.length ? `${bareOverlays.length} overlays without keyboard padding` : 'all overlays lifted');
 
+// --- nothing can be left under the keyboard ---
+// Every text field must sit either inside a modal sheet (whose overlay is
+// padded by the live keyboard height) or on a screen that does the padding
+// itself. On Android the window no longer resizes for the keyboard, so a
+// field that relies on neither simply stays hidden.
+const strandedInputs = [];
+const unboundedSheets = [];
+for (const f of screenFiles) {
+  const text = fs.readFileSync(f, 'utf8');
+  const lines = text.split('\n');
+  let depth = 0;
+  const loose = [];
+  lines.forEach((line, i) => {
+    if (line.includes('<Modal')) depth++;
+    if (line.includes('</Modal>')) depth--;
+    if (line.includes('<TextInput') && depth === 0) loose.push(i + 1);
+  });
+  if (loose.length && !text.includes('useKeyboardHeight')) {
+    strandedInputs.push(`${f}:${loose.join(',')}`);
+  }
+  // a sheet with no maxHeight would have its top pushed off screen as it rises
+  if (/overlay: \{/.test(text) && !/modal: \{[^}]*maxHeight/.test(text)) {
+    unboundedSheets.push(f);
+  }
+}
+check('every text field is lifted clear of the keyboard', strandedInputs.length === 0,
+  strandedInputs.join('; ') || 'checked every screen');
+check('every sheet is capped so rising cannot push its top off screen',
+  unboundedSheets.length === 0, unboundedSheets.join(', ') || 'all sheets have a maxHeight');
+
 // --- exactly one create button ---
 // Three screens used to carry their own floating +, which sat on top of the
 // one in the tab bar.
