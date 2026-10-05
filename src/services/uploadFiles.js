@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { t } from '../i18n';
 import { BASE_URL } from './api';
 
 /**
@@ -55,12 +56,12 @@ export async function uploadFiles(files, extra = {}) {
       body: formData,
     });
   } catch (e) {
-    throw new Error(`אין חיבור לשרת (${e?.message || e})`);
+    throw new Error(t('photos.errors.noConnection', { detail: e?.message || e }));
   }
 
   if (res.ok) return res.json();
 
-  let detail = `קוד שגיאה ${res.status}`;
+  let detail = t('photos.errors.statusCode', { status: res.status });
   try {
     const body = await res.text();
     try {

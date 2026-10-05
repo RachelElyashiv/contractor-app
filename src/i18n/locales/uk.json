@@ -95,7 +95,9 @@
       "deleteFailed": "Не вдалося видалити",
       "deleteError": "Помилка під час видалення",
       "needGalleryPermission": "Дозвольте доступ до фото для завантаження",
-      "needCameraPermission": "Дозвольте доступ до камери для зйомки"
+      "needCameraPermission": "Дозвольте доступ до камери для зйомки",
+      "noConnection": "Немає зв'язку із сервером ({{detail}})",
+      "statusCode": "Код помилки {{status}}"
     },
     "file": "Файл"
   },
@@ -271,6 +273,89 @@
       "updateFailed": "Не вдалося оновити",
       "deleteFailed": "Не вдалося видалити",
       "pdfFailed": "Не вдалося створити PDF"
+    }
+  },
+  "projects": {
+    "back": "Назад",
+    "add": "Додати",
+    "update": "Оновити",
+    "done": "виконано",
+    "creating": "Створення…",
+    "empty": "Об'єктів поки немає. Натисніть + Новий, щоб додати.",
+    "newProject": "Новий об'єкт",
+    "createProject": "Створити об'єкт",
+    "newApartment": "Нова квартира",
+    "addApartment": "Додати квартиру",
+    "addApartmentHint": "Натисніть «+ Додати квартиру»",
+    "addWorkerToApartment": "Додати працівника до квартири",
+    "addWorkerHint": "Натисніть «+ Додати працівника до квартири»",
+    "addMaterialToApartment": "Додати матеріал до квартири",
+    "addMaterialToProject": "Додати матеріал до об'єкта",
+    "updateProgress": "Оновити відсоток готовності",
+    "clientLine": "Клієнт: {{name}}",
+    "quantityOf": "Кількість: {{quantity}} {{unit}}",
+    "apartmentNumbered": "Квартира {{number}}",
+    "workersInApartmentToday": "Працівники в {{name}} сьогодні",
+    "noWorkersListed": "Працівників не записано",
+    "noMaterialsForApartment": "Для цієї квартири немає матеріалів",
+    "noMaterialsForProject": "Для цього об'єкта немає матеріалів",
+    "overdueSince": "Прострочено! Термін був {{date}}",
+    "dueOn": "Термін: {{date}}",
+    "daysLeft": "({{days}} дн.)",
+    "confirmDeleteProject": "Видалити цей об'єкт?",
+    "confirmDeleteApartment": "Видалити цю квартиру?",
+    "confirmDeleteFile": "Видалити цей файл?",
+    "tabs": {
+      "files": "Файли",
+      "plans": "Креслення",
+      "apartments": "Квартири"
+    },
+    "status": {
+      "active": "Активний",
+      "delayed": "Із затримкою",
+      "completed": "Завершений",
+      "pending": "Очікує"
+    },
+    "delivery": {
+      "pending": "Очікує",
+      "arrivedOk": "✓ Доставлено в порядку",
+      "arrivedDamaged": "⚠ Доставлено пошкодженим",
+      "damagedShort": "⚠ Пошкоджено",
+      "notArrived": "✕ Не доставлено"
+    },
+    "captions": {
+      "planPdf": "Креслення PDF",
+      "apartmentPlan": "План квартири"
+    },
+    "fields": {
+      "name": "Назва об'єкта *",
+      "city": "Місто",
+      "address": "Адреса",
+      "budget": "Бюджет ₪",
+      "apartmentCount": "Кількість квартир",
+      "endDate": "Термін здачі (ДД/ММ/РРРР)",
+      "apartmentName": "Назва квартири *",
+      "apartmentNumber": "Номер квартири / поверх",
+      "descriptionOptional": "Опис (необов'язково)"
+    },
+    "report": {
+      "button": "Звіт",
+      "greeting": "Вітаю, {{name}}! 👋",
+      "intro": "Ось повний звіт по об'єкту:",
+      "progress": "Готовність: *{{percent}}%*",
+      "closing": "Ми на зв'язку з будь-яких питань! 🙏"
+    },
+    "errors": {
+      "nameAndClientRequired": "Вкажіть назву об'єкта та ім'я клієнта",
+      "serverStatus": "Помилка сервера ({{status}}) — спробуйте ще раз",
+      "noConnection": "Немає зв'язку із сервером — перевірте інтернет і спробуйте ще раз",
+      "apartmentNameRequired": "Введіть назву квартири",
+      "addMaterialFailed": "Не вдалося додати матеріал",
+      "addApartmentFailed": "Не вдалося додати квартиру",
+      "addWorkerFailed": "Не вдалося додати працівника",
+      "deleteFailed": "Не вдалося видалити",
+      "deleteProjectFailed": "Не вдалося видалити об'єкт",
+      "percentRange": "Введіть число від 0 до 100"
     }
   }
 }

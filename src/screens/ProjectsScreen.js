@@ -21,6 +21,7 @@ import {
 import PdfViewer from '../components/PdfViewer';
 import { BASE_URL, apartments as apartmentsApi, materials as materialsApi, projects as projectsApi, workers as workersApi } from '../services/api';
 import { toUploadFile, uploadFiles } from '../services/uploadFiles';
+import { useLanguage } from '../i18n/LanguageContext';
 import { useTopInset } from '../hooks/useTopInset';
 import { useKeyboardHeight } from '../hooks/useKeyboardHeight';
 
@@ -34,9 +35,9 @@ function openUrl(url) {
 }
 
 // Native file pickers — return RN-style file objects compatible with FormData
-async function pickImagesNative(multiple = true) {
+async function pickImagesNative(t, multiple = true) {
   const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (!perm.granted) { Alert.alert('הרשאה נדרשת', 'יש לאשר גישה לתמונות'); return null; }
+  if (!perm.granted) { Alert.alert(t('common.permissionRequired'), t('photos.errors.needGalleryPermission')); return null; }
   const result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ['images'],
     allowsMultipleSelection: multiple,
@@ -66,14 +67,14 @@ function pickFilesWeb(accept, multiple = false) {
 }
 
 const DELIVERY_STATUS = {
-  pending: { label: 'ממתין', color: '#ba7517', bg: '#faeeda' },
-  arrived_ok: { label: '✓ הגיע תקין', color: '#1a6b4a', bg: '#e8f5ef' },
-  arrived_damaged: { label: '⚠ הגיע פגום', color: '#a32d2d', bg: '#fcebeb' },
-  not_arrived: { label: '✕ לא הגיע', color: '#555', bg: '#f0f0f0' },
+  pending: { key: 'projects.delivery.pending', color: '#ba7517', bg: '#faeeda' },
+  arrived_ok: { key: 'projects.delivery.arrivedOk', color: '#1a6b4a', bg: '#e8f5ef' },
+  arrived_damaged: { key: 'projects.delivery.arrivedDamaged', color: '#a32d2d', bg: '#fcebeb' },
+  not_arrived: { key: 'projects.delivery.notArrived', color: '#555', bg: '#f0f0f0' },
 };
 
 const statusColor = { active: '#1a6b4a', delayed: '#a32d2d', completed: '#185fa5', pending: '#ba7517' };
-const statusLabel = { active: 'פעיל', delayed: 'מאחר', completed: 'הושלם', pending: 'ממתין' };
+const STATUS_KEY = { active: 'projects.status.active', delayed: 'projects.status.delayed', completed: 'projects.status.completed', pending: 'projects.status.pending' };
 
 async function getToken() {
   return AsyncStorage.getItem('token');
@@ -91,6 +92,9 @@ async function apiFetch(path, opts = {}) {
 export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } = {}) {
   const topInset = useTopInset();
   const keyboardHeight = useKeyboardHeight();
+  const { t, lang } = useLanguage();
+  // dates in the card follow the chosen language
+  const dateLocale = { he: 'he-IL', ar: 'ar', en: 'en-GB', es: 'es', pt: 'pt', ru: 'ru', uk: 'uk', ro: 'ro', pl: 'pl', tr: 'tr', fr: 'fr', de: 'de' }[lang] || 'en-GB';
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -111,7 +115,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   const [projectMaterials, setProjectMaterials] = useState([]);
   const [filesLoading, setFilesLoading] = useState(false);
   const [addMaterialModal, setAddMaterialModal] = useState(false);
-  const [matForm, setMatForm] = useState({ name: '', unit: 'יחידות', quantity: '', unitPrice: '', supplier: '' });
+  const [matForm, setMatForm] = useState({ name: '', unit: '', quantity: '', unitPrice: '', supplier: '' });
 
   // Apartments state
   const [projectApartments, setProjectApartments] = useState([]);
@@ -127,7 +131,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   const [aptWorkers, setAptWorkers] = useState([]);
   const [aptFilesLoading, setAptFilesLoading] = useState(false);
   const [addAptMaterialModal, setAddAptMaterialModal] = useState(false);
-  const [aptMatForm, setAptMatForm] = useState({ name: '', unit: 'יחידות', quantity: '', unitPrice: '', supplier: '' });
+  const [aptMatForm, setAptMatForm] = useState({ name: '', unit: '', quantity: '', unitPrice: '', supplier: '' });
   const [progressModal, setProgressModal] = useState(false);
   const [progressValue, setProgressValue] = useState('');
 
@@ -258,7 +262,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   }
 
   async function createProject() {
-    if (!form.name || !form.clientName) { setProjectError('חובה למלא שם פרויקט ושם לקוח'); return; }
+    if (!form.name || !form.clientName) { setProjectError(t('projects.errors.nameAndClientRequired')); return; }
     setProjectError('');
     setProjectSubmitting(true);
     try {
@@ -278,7 +282,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         if (count > 0 && project?.id) {
           // Create one at a time (in order) so numbering stays 1,2,3... and never races
           for (let i = 0; i < count; i++) {
-            await apartmentsApi.create({ name: `דירה ${i + 1}`, number: String(i + 1), projectId: project.id });
+            await apartmentsApi.create({ name: t('projects.apartmentNumbered', { number: i + 1 }), number: String(i + 1), projectId: project.id });
           }
         }
         setModalVisible(false);
@@ -287,32 +291,32 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         loadProjects();
       } else {
         const body = await res.json().catch(() => ({}));
-        setProjectError(body?.message ? String(body.message) : `שגיאה בשרת (${res.status}) — נסי שוב`);
+        setProjectError(body?.message ? String(body.message) : t('projects.errors.serverStatus', { status: res.status }));
       }
     } catch (e) {
-      setProjectError('אין חיבור לשרת — בדקי אינטרנט ונסי שוב');
+      setProjectError(t('projects.errors.noConnection'));
     } finally {
       setProjectSubmitting(false);
     }
   }
 
   async function addMaterial() {
-    if (!matForm.name) return Alert.alert('שגיאה', 'מלא שם חומר');
+    if (!matForm.name) return Alert.alert(t('common.error'), t('materials.errors.nameRequired'));
     try {
       const res = await apiFetch('/materials', {
         method: 'POST',
-        body: JSON.stringify({ ...matForm, quantity: Number(matForm.quantity) || 0, unitPrice: Number(matForm.unitPrice) || 0, projectId: selectedProject.id, deliveryStatus: 'pending' }),
+        body: JSON.stringify({ ...matForm, unit: matForm.unit || t('materials.defaultUnit'), quantity: Number(matForm.quantity) || 0, unitPrice: Number(matForm.unitPrice) || 0, projectId: selectedProject.id, deliveryStatus: 'pending' }),
       });
       if (res.ok) {
         setAddMaterialModal(false);
-        setMatForm({ name: '', unit: 'יחידות', quantity: '', unitPrice: '', supplier: '' });
+        setMatForm({ name: '', unit: '', quantity: '', unitPrice: '', supplier: '' });
         loadProjectMaterials(selectedProject.id);
       }
-    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו להוסיף חומר'); }
+    } catch (e) { Alert.alert(t('common.error'), t('projects.errors.addMaterialFailed')); }
   }
 
   async function addAptMaterial() {
-    if (!aptMatForm.name) { setAptMatError('חובה למלא שם חומר'); return; }
+    if (!aptMatForm.name) { setAptMatError(t('materials.errors.nameRequired')); return; }
     setAptMatError('');
     setAptMatSubmitting(true);
     try {
@@ -320,6 +324,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         method: 'POST',
         body: JSON.stringify({
           ...aptMatForm,
+          unit: aptMatForm.unit || t('materials.defaultUnit'),
           quantity: Number(aptMatForm.quantity) || 0,
           unitPrice: Number(aptMatForm.unitPrice) || 0,
           projectId: selectedProject.id,
@@ -329,59 +334,59 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
       });
       if (res.ok) {
         setAddAptMaterialModal(false);
-        setAptMatForm({ name: '', unit: 'יחידות', quantity: '', unitPrice: '', supplier: '' });
+        setAptMatForm({ name: '', unit: '', quantity: '', unitPrice: '', supplier: '' });
         loadApartmentMaterials(selectedApartment.id);
       } else {
         const body = await res.json().catch(() => ({}));
-        setAptMatError(body?.message || `שגיאה ${res.status}`);
+        setAptMatError(body?.message || t('projects.errors.serverStatus', { status: res.status }));
       }
-    } catch (e) { setAptMatError('אין חיבור לשרת'); }
+    } catch (e) { setAptMatError(t('projects.errors.noConnection')); }
     finally { setAptMatSubmitting(false); }
   }
 
   async function createApartment() {
-    if (!aptForm.name) return Alert.alert('שגיאה', 'מלא שם דירה');
+    if (!aptForm.name) return Alert.alert(t('common.error'), t('projects.errors.apartmentNameRequired'));
     try {
       await apartmentsApi.create({ ...aptForm, projectId: selectedProject.id });
       setAddApartmentModal(false);
       setAptForm({ name: '', number: '', description: '' });
       loadProjectApartments(selectedProject.id);
-    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו להוסיף דירה'); }
+    } catch (e) { Alert.alert(t('common.error'), t('projects.errors.addApartmentFailed')); }
   }
 
   function deleteApartment(aptId) {
-    askDelete('האם למחוק דירה זו?', async () => {
+    askDelete(t('projects.confirmDeleteApartment'), async () => {
       try { await apartmentsApi.delete(aptId); loadProjectApartments(selectedProject.id); }
-      catch (e) { Alert.alert('שגיאה', 'שגיאה במחיקה'); }
+      catch (e) { Alert.alert(t('common.error'), t('projects.errors.deleteFailed')); }
     });
   }
 
   function deleteProject(projectId) {
-    askDelete('האם למחוק פרויקט זה?', async () => {
+    askDelete(t('projects.confirmDeleteProject'), async () => {
       try { await projectsApi.delete(projectId); loadProjects(); }
-      catch (e) { Alert.alert('שגיאה', 'שגיאה במחיקת פרויקט'); }
+      catch (e) { Alert.alert(t('common.error'), t('projects.errors.deleteProjectFailed')); }
     });
   }
 
   function deleteMaterial(materialId, isApt = false) {
-    askDelete('האם למחוק חומר זה?', async () => {
+    askDelete(t('materials.confirmDelete'), async () => {
       try {
         await materialsApi.delete(materialId);
         if (isApt) loadApartmentMaterials(selectedApartment.id);
         else loadProjectMaterials(selectedProject.id);
-      } catch (e) { Alert.alert('שגיאה', 'שגיאה במחיקת חומר'); }
+      } catch (e) { Alert.alert(t('common.error'), t('materials.errors.deleteFailed')); }
     });
   }
 
   async function updateApartmentProgress() {
     const pct = Number(progressValue);
-    if (isNaN(pct) || pct < 0 || pct > 100) return Alert.alert('שגיאה', 'הכנס מספר בין 0 ל-100');
+    if (isNaN(pct) || pct < 0 || pct > 100) return Alert.alert(t('common.error'), t('projects.errors.percentRange'));
     try {
       await apartmentsApi.update(selectedApartment.id, { progressPercent: pct });
       setSelectedApartment(prev => ({ ...prev, progressPercent: pct }));
       setProgressModal(false);
       loadProjectApartments(selectedProject.id);
-    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו לעדכן'); }
+    } catch (e) { Alert.alert(t('common.error'), t('workers.errors.updateFailed')); }
   }
 
   async function markWorkerForApartment(workerId) {
@@ -396,11 +401,11 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         apartmentId: selectedApartment.id,
       });
       loadApartmentWorkers(selectedApartment.id);
-    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו לרשום נוכחות'); }
+    } catch (e) { Alert.alert(t('common.error'), t('workers.errors.attendanceFailed')); }
   }
 
   async function addWorkerToApartment() {
-    if (!workerForm.firstName || !workerForm.lastName) return Alert.alert('שגיאה', 'מלא שם פרטי ומשפחה');
+    if (!workerForm.firstName || !workerForm.lastName) return Alert.alert(t('common.error'), t('workers.errors.nameRequired'));
     try {
       const res = await apiFetch('/workers', {
         method: 'POST',
@@ -421,7 +426,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         setWorkerForm({ firstName: '', lastName: '', phone: '', role: '', dailyRate: '' });
         loadApartmentWorkers(selectedApartment.id);
       }
-    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו להוסיף עובד'); }
+    } catch (e) { Alert.alert(t('common.error'), t('projects.errors.addWorkerFailed')); }
   }
 
   async function updateDeliveryStatus(materialId, status, isApt = false) {
@@ -432,7 +437,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
       });
       if (isApt) loadApartmentMaterials(selectedApartment.id);
       else loadProjectMaterials(selectedProject.id);
-    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו לעדכן'); }
+    } catch (e) { Alert.alert(t('common.error'), t('workers.errors.updateFailed')); }
   }
 
   async function doUpload(files, projectId, apartmentId, caption) {
@@ -442,7 +447,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
       await uploadFiles(Array.from(files), { projectId, apartmentId, caption });
       return true;
     } catch (err) {
-      setUploadError(err?.message || 'שגיאה בהעלאה');
+      setUploadError(err?.message || t('photos.errors.uploadFailed'));
       return false;
     } finally {
       setUploading(false);
@@ -452,7 +457,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   async function uploadToProject(projectId, type) {
     const files = isWeb
       ? await pickFilesWeb(type === 'pdf' ? '' : 'image/*', type !== 'pdf')
-      : type === 'pdf' ? await pickDocsNative('*/*') : await pickImagesNative(true);
+      : type === 'pdf' ? await pickDocsNative('*/*') : await pickImagesNative(t, true);
     if (!files || files.length === 0) return;
     const ok = await doUpload(files, projectId, null, type === 'pdf' ? 'PDF' : '');
     if (ok) loadProjectFiles(projectId);
@@ -461,23 +466,23 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   async function uploadToApartment(apartmentId, type) {
     const files = isWeb
       ? await pickFilesWeb(type === 'pdf' ? '' : 'image/*', type !== 'pdf')
-      : type === 'pdf' ? await pickDocsNative('*/*') : await pickImagesNative(true);
+      : type === 'pdf' ? await pickDocsNative('*/*') : await pickImagesNative(t, true);
     if (!files || files.length === 0) return;
-    const ok = await doUpload(files, selectedProject.id, apartmentId, type === 'pdf' ? 'תוכנית PDF' : 'תוכנית דירה');
+    const ok = await doUpload(files, selectedProject.id, apartmentId, type === 'pdf' ? t('projects.captions.planPdf') : t('projects.captions.apartmentPlan'));
     if (ok) loadApartmentFiles(apartmentId);
   }
 
   async function uploadMaterialFile(materialId, type, isApt = false) {
     const files = isWeb
       ? await pickFilesWeb(type === 'image' ? 'image/*' : '', false)
-      : type === 'image' ? await pickImagesNative(false) : await pickDocsNative('*/*');
+      : type === 'image' ? await pickImagesNative(t, false) : await pickDocsNative('*/*');
     if (!files || files.length === 0) return;
     setUploading(true);
     setUploadError('');
     try {
       const uploaded = await uploadFiles([files[0]], {
         projectId: selectedProject?.id,
-        caption: type === 'image' ? 'תמונת משלוח' : 'תעודת משלוח',
+        caption: type === 'image' ? t('materials.deliveryPhoto') : t('materials.deliveryNote'),
       });
       const url = uploaded[0]?.url;
       if (url) {
@@ -489,22 +494,22 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         if (isApt) loadApartmentMaterials(selectedApartment.id);
         else loadProjectMaterials(selectedProject.id);
       } else {
-        setUploadError('שגיאה: לא התקבל קישור מהשרת');
+        setUploadError(t('materials.errors.noUrlFromServer'));
       }
     } catch (err) {
-      setUploadError(err?.message || 'שגיאה בהעלאה');
+      setUploadError(err?.message || t('photos.errors.uploadFailed'));
     } finally {
       setUploading(false);
     }
   }
 
   function deleteFile(id, isApt = false) {
-    askDelete('האם למחוק קובץ זה?', async () => {
+    askDelete(t('projects.confirmDeleteFile'), async () => {
       try {
         await apiFetch(`/photos/${id}`, { method: 'DELETE' });
         if (isApt) loadApartmentFiles(selectedApartment.id);
         else loadProjectFiles(selectedProject.id);
-      } catch (e) { Alert.alert('שגיאה', 'שגיאה במחיקה'); }
+      } catch (e) { Alert.alert(t('common.error'), t('projects.errors.deleteFailed')); }
     });
   }
 
@@ -512,7 +517,18 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
     const userStr = await AsyncStorage.getItem('user');
     const userData = userStr ? JSON.parse(userStr) : {};
     const reportUrl = `${BASE_URL}/projects/${project.id}/report?ownerId=${userData.id}`;
-    const msg = `שלום ${project.clientName}! 👋\n\nהנה דוח מלא של הפרויקט:\n🏗️ *${project.name}*\n📊 התקדמות: *${project.progressPercent}%*\n📍 ${project.city || ''}\n\n${reportUrl}\n\nלכל שאלה אנחנו זמינים! 🙏`;
+    const msg = [
+      t('projects.report.greeting', { name: project.clientName }),
+      '',
+      t('projects.report.intro'),
+      `🏗️ *${project.name}*`,
+      `📊 ${t('projects.report.progress', { percent: project.progressPercent })}`,
+      `📍 ${project.city || ''}`,
+      '',
+      reportUrl,
+      '',
+      t('projects.report.closing'),
+    ].join('\n');
     const phone = project.clientPhone?.replace(/[^0-9]/g, '');
     const url = phone
       ? `https://wa.me/972${phone.startsWith('0') ? phone.slice(1) : phone}?text=${encodeURIComponent(msg)}`
@@ -552,45 +568,45 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
             <Text style={styles.deleteSmallText}>🗑</Text>
           </TouchableOpacity>
           <View style={[styles.statusBadge, { backgroundColor: status.bg }]}>
-            <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
+            <Text style={[styles.statusText, { color: status.color }]}>{t(status.key)}</Text>
           </View>
           <Text style={styles.materialName}>{m.name}</Text>
         </View>
-        {!!m.supplier && <Text style={styles.materialMeta}>ספק: {m.supplier}</Text>}
-        <Text style={styles.materialMeta}>כמות: {m.quantity} {m.unit}</Text>
+        {!!m.supplier && <Text style={styles.materialMeta}>{t('materials.supplier', { name: m.supplier })}</Text>}
+        <Text style={styles.materialMeta}>{t('projects.quantityOf', { quantity: m.quantity, unit: m.unit })}</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
           <TouchableOpacity style={[styles.statusBtn, { backgroundColor: '#e8f5ef' }]} onPress={() => updateDeliveryStatus(m.id, 'arrived_ok', isApt)}>
-            <Text style={{ color: '#1a6b4a', fontSize: 12 }}>✓ הגיע תקין</Text>
+            <Text style={{ color: '#1a6b4a', fontSize: 12 }}>{t('projects.delivery.arrivedOk')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.statusBtn, { backgroundColor: '#fcebeb' }]} onPress={() => updateDeliveryStatus(m.id, 'arrived_damaged', isApt)}>
-            <Text style={{ color: '#a32d2d', fontSize: 12 }}>⚠ פגום</Text>
+            <Text style={{ color: '#a32d2d', fontSize: 12 }}>{t('projects.delivery.damagedShort')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.statusBtn, { backgroundColor: '#f0f0f0' }]} onPress={() => updateDeliveryStatus(m.id, 'not_arrived', isApt)}>
-            <Text style={{ color: '#555', fontSize: 12 }}>✕ לא הגיע</Text>
+            <Text style={{ color: '#555', fontSize: 12 }}>{t('projects.delivery.notArrived')}</Text>
           </TouchableOpacity>
         </View>
         <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
           <TouchableOpacity style={[styles.statusBtn, { backgroundColor: '#e6f1fb', flex: 1 }]} onPress={() => uploadMaterialFile(m.id, 'image', isApt)}>
-            <Text style={{ color: '#185fa5', fontSize: 12, textAlign: 'center' }}>📸 תמונת משלוח</Text>
+            <Text style={{ color: '#185fa5', fontSize: 12, textAlign: 'center' }}>📸 {t('materials.deliveryPhoto')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.statusBtn, { backgroundColor: '#f5f0ff', flex: 1 }]} onPress={() => uploadMaterialFile(m.id, 'pdf', isApt)}>
-            <Text style={{ color: '#6b35a0', fontSize: 12, textAlign: 'center' }}>📄 תעודת משלוח</Text>
+            <Text style={{ color: '#6b35a0', fontSize: 12, textAlign: 'center' }}>📄 {t('materials.deliveryNote')}</Text>
           </TouchableOpacity>
         </View>
         {!!m.deliveryImageUrl && (
           <View style={{ marginTop: 8 }}>
-            <Text style={{ fontSize: 11, color: '#888', textAlign: 'right', marginBottom: 4 }}>📸 תמונת משלוח</Text>
+            <Text style={{ fontSize: 11, color: '#888', textAlign: 'right', marginBottom: 4 }}>📸 {t('materials.deliveryPhoto')}</Text>
             <Image source={{ uri: m.deliveryImageUrl }} style={{ width: '100%', height: 160, borderRadius: 8 }} resizeMode="cover" />
           </View>
         )}
         {!!m.imageUrl && (
           m.imageUrl.toLowerCase().includes('.pdf') || m.imageUrl.includes('/raw/') ? (
-            <TouchableOpacity onPress={() => setDocViewer({ visible: true, uri: m.imageUrl, title: 'תעודת משלוח' })} style={{ marginTop: 8, padding: 10, backgroundColor: '#f5f0ff', borderRadius: 8 }}>
-              <Text style={{ color: '#6b35a0', fontSize: 13, textAlign: 'right' }}>📄 פתח תעודת משלוח ←</Text>
+            <TouchableOpacity onPress={() => setDocViewer({ visible: true, uri: m.imageUrl, title: t('materials.deliveryNote') })} style={{ marginTop: 8, padding: 10, backgroundColor: '#f5f0ff', borderRadius: 8 }}>
+              <Text style={{ color: '#6b35a0', fontSize: 13, textAlign: 'right' }}>📄 {t('materials.openDeliveryNote')}</Text>
             </TouchableOpacity>
           ) : (
             <View style={{ marginTop: 8 }}>
-              <Text style={{ fontSize: 11, color: '#888', textAlign: 'right', marginBottom: 4 }}>📄 תעודת משלוח</Text>
+              <Text style={{ fontSize: 11, color: '#888', textAlign: 'right', marginBottom: 4 }}>📄 {t('materials.deliveryNote')}</Text>
               <Image source={{ uri: m.imageUrl }} style={{ width: '100%', height: 160, borderRadius: 8 }} resizeMode="cover" />
             </View>
           )
@@ -606,7 +622,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
       <ScrollView>
         {images.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>📸 תמונות ({images.length})</Text>
+            <Text style={styles.sectionTitle}>📸 {t('photos.siteImages', { count: images.length })}</Text>
             <View style={styles.grid}>
               {images.map(photo => (
                 <View key={photo.id} style={styles.photoCard}>
@@ -621,14 +637,14 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         )}
         {pdfs.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>📄 מסמכים ותוכניות ({pdfs.length})</Text>
+            <Text style={styles.sectionTitle}>📄 {t('photos.pdfFiles', { count: pdfs.length })}</Text>
             {pdfs.map(pdf => (
               <View key={pdf.id} style={styles.pdfCard}>
-                <View style={styles.pdfIcon}><Text style={styles.pdfIconText}>{(fileExt(pdf) || 'קובץ').toUpperCase()}</Text></View>
+                <View style={styles.pdfIcon}><Text style={styles.pdfIconText}>{(fileExt(pdf) || t('photos.file')).toUpperCase()}</Text></View>
                 <View style={styles.pdfInfo}>
                   <Text style={styles.pdfName}>{pdf.caption || pdf.filename}</Text>
                   <TouchableOpacity onPress={() => openDocument(pdf)}>
-                    <Text style={styles.pdfOpen}>פתח קובץ</Text>
+                    <Text style={styles.pdfOpen}>{t('photos.openFile')}</Text>
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity style={styles.pdfDelete} onPress={() => deleteFile(pdf.id, isApt)}>
@@ -641,7 +657,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         {files.length === 0 && (
           <View style={styles.empty}>
             <Text style={styles.emptyIcon}>📁</Text>
-            <Text style={styles.emptyText}>אין קבצים עדיין</Text>
+            <Text style={styles.emptyText}>{t('photos.empty')}</Text>
           </View>
         )}
       </ScrollView>
@@ -656,11 +672,11 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
           <View style={{ flexDirection: 'row', gap: 10 }}>
             <TouchableOpacity style={{ flex: 1, backgroundColor: '#fcebeb', padding: 14, borderRadius: 10, alignItems: 'center' }}
               onPress={() => { const fn = pendingDeleteFn.current; pendingDeleteFn.current = null; setConfirmDelete(null); fn?.(); }}>
-              <Text style={{ color: '#a32d2d', fontWeight: '600', fontSize: 15 }}>מחק</Text>
+              <Text style={{ color: '#a32d2d', fontWeight: '600', fontSize: 15 }}>{t('common.delete')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={{ flex: 1, backgroundColor: '#f0f0f0', padding: 14, borderRadius: 10, alignItems: 'center' }}
               onPress={() => { pendingDeleteFn.current = null; setConfirmDelete(null); }}>
-              <Text style={{ color: '#555', fontSize: 15 }}>ביטול</Text>
+              <Text style={{ color: '#555', fontSize: 15 }}>{t('common.cancel')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -686,7 +702,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
       <View style={styles.container}>
         <View style={[styles.header, { paddingTop: topInset + 12 }]}>
           <TouchableOpacity onPress={() => setSelectedApartment(null)} style={styles.backBtn}>
-            <Text style={styles.backBtnText}>→ חזור</Text>
+            <Text style={styles.backBtnText}>→ {t('projects.back')}</Text>
           </TouchableOpacity>
           <Text style={styles.headerTitle} numberOfLines={1}>🏠 {selectedApartment.name}</Text>
           <TouchableOpacity onPress={() => { setProgressValue(String(selectedApartment.progressPercent || 0)); setProgressModal(true); }} style={styles.progressEditBtn}>
@@ -704,7 +720,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         </View>
 
         <View style={styles.tabRow}>
-          {[['plans', '📋 תוכנית'], ['materials', '📦 חומרים'], ['workers', '👷 עובדים']].map(([key, label]) => (
+          {[['plans', `📋 ${t('projects.tabs.plans')}`], ['materials', `📦 ${t('nav.materials')}`], ['workers', `👷 ${t('nav.workers')}`]].map(([key, label]) => (
             <TouchableOpacity key={key} style={[styles.tab, aptTab === key && styles.tabActive]} onPress={() => setAptTab(key)}>
               <Text style={[styles.tabText, aptTab === key && styles.tabTextActive]}>{label}</Text>
             </TouchableOpacity>
@@ -715,10 +731,10 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
           <View style={{ flex: 1 }}>
             <View style={styles.uploadRow}>
               <TouchableOpacity style={styles.uploadBtn} onPress={() => uploadToApartment(selectedApartment.id, 'image')} disabled={uploading}>
-                <Text style={styles.uploadBtnText}>{uploading ? 'מעלה...' : '📸 תמונות'}</Text>
+                <Text style={styles.uploadBtnText}>{uploading ? t('photos.uploading') : `📸 ${t('nav.photos')}`}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.uploadBtn, { backgroundColor: '#fcebeb' }]} onPress={() => uploadToApartment(selectedApartment.id, 'pdf')} disabled={uploading}>
-                <Text style={[styles.uploadBtnText, { color: '#a32d2d' }]}>📄 תוכנית PDF</Text>
+                <Text style={[styles.uploadBtnText, { color: '#a32d2d' }]}>📄 {t('projects.captions.planPdf')}</Text>
               </TouchableOpacity>
             </View>
             {!!uploadError && <Text style={{ color: '#a32d2d', textAlign: 'center', padding: 8 }}>{uploadError}</Text>}
@@ -730,7 +746,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
           <View style={{ flex: 1 }}>
             <View style={styles.uploadRow}>
               <TouchableOpacity style={styles.uploadBtn} onPress={() => setAddAptMaterialModal(true)}>
-                <Text style={styles.uploadBtnText}>+ הוסף חומר</Text>
+                <Text style={styles.uploadBtnText}>+ {t('materials.addMaterial')}</Text>
               </TouchableOpacity>
             </View>
             <ScrollView>
@@ -738,20 +754,20 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
               {aptMaterials.length === 0 && (
                 <View style={styles.empty}>
                   <Text style={styles.emptyIcon}>📦</Text>
-                  <Text style={styles.emptyText}>אין חומרים לדירה זו</Text>
+                  <Text style={styles.emptyText}>{t('projects.noMaterialsForApartment')}</Text>
                 </View>
               )}
             </ScrollView>
             <Modal visible={addAptMaterialModal} animationType="slide" transparent onRequestClose={() => setAddAptMaterialModal(false)}>
               <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
                 <View style={styles.modal}>
-                  <Text style={styles.modalTitle}>הוסף חומר לדירה</Text>
+                  <Text style={styles.modalTitle}>{t('projects.addMaterialToApartment')}</Text>
                   {[
-                    { key: 'name', placeholder: 'שם חומר *' },
-                    { key: 'unit', placeholder: 'יחידה (שקים, מטרים...)' },
-                    { key: 'quantity', placeholder: 'כמות', keyboardType: 'numeric' },
-                    { key: 'unitPrice', placeholder: 'מחיר ליחידה ₪', keyboardType: 'numeric' },
-                    { key: 'supplier', placeholder: 'ספק' },
+                    { key: 'name', placeholder: t('materials.fields.name') },
+                    { key: 'unit', placeholder: t('materials.fields.unit') },
+                    { key: 'quantity', placeholder: t('invoices.fields.quantity'), keyboardType: 'numeric' },
+                    { key: 'unitPrice', placeholder: t('materials.fields.unitPrice'), keyboardType: 'numeric' },
+                    { key: 'supplier', placeholder: t('materials.fields.supplier') },
                   ].map(f => (
                     <TextInput key={f.key} style={styles.input} placeholderTextColor="#9a9a9a" placeholder={f.placeholder} value={aptMatForm[f.key]}
                       onChangeText={v => setAptMatForm({ ...aptMatForm, [f.key]: v })} keyboardType={f.keyboardType || 'default'} textAlign="right" />
@@ -759,10 +775,10 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                   {aptMatError ? <Text style={{ color: '#a32d2d', textAlign: 'center', marginBottom: 8 }}>{aptMatError}</Text> : null}
                   <View style={styles.modalActions}>
                     <TouchableOpacity style={[styles.btnPrimary, aptMatSubmitting && { opacity: 0.6 }]} onPress={addAptMaterial} disabled={aptMatSubmitting}>
-                      <Text style={styles.btnPrimaryText}>{aptMatSubmitting ? 'שולח...' : 'הוסף'}</Text>
+                      <Text style={styles.btnPrimaryText}>{aptMatSubmitting ? t('common.submitting') : t('projects.add')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btnSecondary} onPress={() => { setAddAptMaterialModal(false); setAptMatError(''); }}>
-                      <Text style={styles.btnSecondaryText}>ביטול</Text>
+                      <Text style={styles.btnSecondaryText}>{t('common.cancel')}</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -775,11 +791,11 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
           <View style={{ flex: 1 }}>
             <View style={styles.uploadRow}>
               <TouchableOpacity style={styles.uploadBtn} onPress={() => setAddWorkerModal(true)}>
-                <Text style={styles.uploadBtnText}>+ הוסף עובד לדירה</Text>
+                <Text style={styles.uploadBtnText}>+ {t('projects.addWorkerToApartment')}</Text>
               </TouchableOpacity>
             </View>
             <ScrollView>
-            <Text style={styles.sectionTitle}>עובדים ב{selectedApartment.name} היום</Text>
+            <Text style={styles.sectionTitle}>{t('projects.workersInApartmentToday', { name: selectedApartment.name })}</Text>
             {aptWorkers.map(w => {
               const present = w.todayAttendance?.status === 'present' && w.todayAttendance?.apartmentId === selectedApartment.id;
               return (
@@ -792,13 +808,13 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                     </View>
                     <View style={{ flex: 1, marginRight: 12 }}>
                       <Text style={styles.workerName}>{w.firstName} {w.lastName}</Text>
-                      <Text style={styles.workerRole}>{w.role || 'פועל'}</Text>
+                      <Text style={styles.workerRole}>{w.role || t('workers.defaultRole')}</Text>
                     </View>
                     {present ? (
-                      <View style={styles.presentBadge}><Text style={styles.presentText}>נוכח ✓</Text></View>
+                      <View style={styles.presentBadge}><Text style={styles.presentText}>{t('workers.present')} ✓</Text></View>
                     ) : (
                       <TouchableOpacity style={styles.markBtn} onPress={() => markWorkerForApartment(w.id)}>
-                        <Text style={styles.markBtnText}>סמן נוכח</Text>
+                        <Text style={styles.markBtnText}>{t('workers.markPresent')}</Text>
                       </TouchableOpacity>
                     )}
                   </View>
@@ -808,8 +824,8 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
             {aptWorkers.length === 0 && (
               <View style={styles.empty}>
                 <Text style={styles.emptyIcon}>👷</Text>
-                <Text style={styles.emptyText}>אין עובדים רשומים</Text>
-                <Text style={styles.emptySub}>לחצי "+ הוסף עובד לדירה"</Text>
+                <Text style={styles.emptyText}>{t('projects.noWorkersListed')}</Text>
+                <Text style={styles.emptySub}>{t('projects.addWorkerHint')}</Text>
               </View>
             )}
             </ScrollView>
@@ -817,13 +833,13 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
             <Modal visible={addWorkerModal} animationType="slide" transparent onRequestClose={() => setAddWorkerModal(false)}>
               <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
                 <View style={styles.modal}>
-                  <Text style={styles.modalTitle}>הוסף עובד לדירה</Text>
+                  <Text style={styles.modalTitle}>{t('projects.addWorkerToApartment')}</Text>
                   {[
-                    { key: 'firstName', placeholder: 'שם פרטי *' },
-                    { key: 'lastName', placeholder: 'שם משפחה *' },
-                    { key: 'phone', placeholder: 'טלפון', keyboardType: 'phone-pad' },
-                    { key: 'role', placeholder: 'תפקיד (בנאי, חשמלאי...)' },
-                    { key: 'dailyRate', placeholder: 'שכר יומי ₪', keyboardType: 'numeric' },
+                    { key: 'firstName', placeholder: t('workers.fields.firstName') },
+                    { key: 'lastName', placeholder: t('workers.fields.lastName') },
+                    { key: 'phone', placeholder: t('workers.fields.phone'), keyboardType: 'phone-pad' },
+                    { key: 'role', placeholder: t('workers.fields.role') },
+                    { key: 'dailyRate', placeholder: t('workers.fields.dailyRate'), keyboardType: 'numeric' },
                   ].map(f => (
                     <TextInput key={f.key} style={styles.input} placeholderTextColor="#9a9a9a" placeholder={f.placeholder}
                       value={workerForm[f.key]}
@@ -832,10 +848,10 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                   ))}
                   <View style={styles.modalActions}>
                     <TouchableOpacity style={styles.btnPrimary} onPress={addWorkerToApartment}>
-                      <Text style={styles.btnPrimaryText}>הוסף עובד</Text>
+                      <Text style={styles.btnPrimaryText}>{t('workers.addWorker')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btnSecondary} onPress={() => setAddWorkerModal(false)}>
-                      <Text style={styles.btnSecondaryText}>ביטול</Text>
+                      <Text style={styles.btnSecondaryText}>{t('common.cancel')}</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -848,15 +864,15 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
         <Modal visible={progressModal} animationType="slide" transparent onRequestClose={() => setProgressModal(false)}>
           <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
             <View style={[styles.modal, { paddingBottom: 30 }]}>
-              <Text style={styles.modalTitle}>עדכן אחוז התקדמות</Text>
+              <Text style={styles.modalTitle}>{t('projects.updateProgress')}</Text>
               <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder="0-100" value={progressValue}
                 onChangeText={setProgressValue} keyboardType="numeric" textAlign="right" />
               <View style={styles.modalActions}>
                 <TouchableOpacity style={styles.btnPrimary} onPress={updateApartmentProgress}>
-                  <Text style={styles.btnPrimaryText}>עדכן</Text>
+                  <Text style={styles.btnPrimaryText}>{t('projects.update')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btnSecondary} onPress={() => setProgressModal(false)}>
-                  <Text style={styles.btnSecondaryText}>ביטול</Text>
+                  <Text style={styles.btnSecondaryText}>{t('common.cancel')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -874,13 +890,13 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
       <View style={styles.container}>
         <View style={[styles.header, { paddingTop: topInset + 12 }]}>
           <TouchableOpacity onPress={() => setSelectedProject(null)} style={styles.backBtn}>
-            <Text style={styles.backBtnText}>→ חזור</Text>
+            <Text style={styles.backBtnText}>→ {t('projects.back')}</Text>
           </TouchableOpacity>
           <Text style={styles.headerTitle} numberOfLines={1}>{selectedProject.name}</Text>
         </View>
 
         <View style={styles.tabRow}>
-          {[['files', '📁 קבצים'], ['materials', '📦 חומרים'], ['apartments', '🏠 דירות']].map(([key, label]) => (
+          {[['files', `📁 ${t('projects.tabs.files')}`], ['materials', `📦 ${t('nav.materials')}`], ['apartments', `🏠 ${t('projects.tabs.apartments')}`]].map(([key, label]) => (
             <TouchableOpacity key={key} style={[styles.tab, activeTab === key && styles.tabActive]} onPress={() => setActiveTab(key)}>
               <Text style={[styles.tabText, activeTab === key && styles.tabTextActive]}>{label}</Text>
             </TouchableOpacity>
@@ -891,13 +907,13 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
           <View style={{ flex: 1 }}>
             <View style={styles.uploadRow}>
               <TouchableOpacity style={styles.uploadBtn} onPress={() => uploadToProject(selectedProject.id, 'image')} disabled={uploading}>
-                <Text style={styles.uploadBtnText}>{uploading ? 'מעלה...' : '📸 תמונות'}</Text>
+                <Text style={styles.uploadBtnText}>{uploading ? t('photos.uploading') : `📸 ${t('nav.photos')}`}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.uploadBtn, { backgroundColor: '#fcebeb' }]} onPress={() => uploadToProject(selectedProject.id, 'pdf')} disabled={uploading}>
                 <Text style={[styles.uploadBtnText, { color: '#a32d2d' }]}>📄 PDF</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.uploadBtn, { backgroundColor: '#e6f1fb' }]} onPress={() => sendReport(selectedProject)}>
-                <Text style={[styles.uploadBtnText, { color: '#185fa5' }]}>📲 דוח</Text>
+                <Text style={[styles.uploadBtnText, { color: '#185fa5' }]}>📲 {t('projects.report.button')}</Text>
               </TouchableOpacity>
             </View>
             {!!uploadError && <Text style={{ color: '#a32d2d', textAlign: 'center', padding: 8 }}>{uploadError}</Text>}
@@ -909,7 +925,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
           <View style={{ flex: 1 }}>
             <View style={styles.uploadRow}>
               <TouchableOpacity style={styles.uploadBtn} onPress={() => setAddMaterialModal(true)}>
-                <Text style={styles.uploadBtnText}>+ הוסף חומר</Text>
+                <Text style={styles.uploadBtnText}>+ {t('materials.addMaterial')}</Text>
               </TouchableOpacity>
             </View>
             <ScrollView>
@@ -917,30 +933,30 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
               {projectMaterials.length === 0 && (
                 <View style={styles.empty}>
                   <Text style={styles.emptyIcon}>📦</Text>
-                  <Text style={styles.emptyText}>אין חומרים לפרויקט זה</Text>
+                  <Text style={styles.emptyText}>{t('projects.noMaterialsForProject')}</Text>
                 </View>
               )}
             </ScrollView>
             <Modal visible={addMaterialModal} animationType="slide" transparent onRequestClose={() => setAddMaterialModal(false)}>
               <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
                 <View style={styles.modal}>
-                  <Text style={styles.modalTitle}>הוסף חומר לפרויקט</Text>
+                  <Text style={styles.modalTitle}>{t('projects.addMaterialToProject')}</Text>
                   {[
-                    { key: 'name', placeholder: 'שם חומר *' },
-                    { key: 'unit', placeholder: 'יחידה (שקים, מטרים...)' },
-                    { key: 'quantity', placeholder: 'כמות', keyboardType: 'numeric' },
-                    { key: 'unitPrice', placeholder: 'מחיר ליחידה ₪', keyboardType: 'numeric' },
-                    { key: 'supplier', placeholder: 'ספק' },
+                    { key: 'name', placeholder: t('materials.fields.name') },
+                    { key: 'unit', placeholder: t('materials.fields.unit') },
+                    { key: 'quantity', placeholder: t('invoices.fields.quantity'), keyboardType: 'numeric' },
+                    { key: 'unitPrice', placeholder: t('materials.fields.unitPrice'), keyboardType: 'numeric' },
+                    { key: 'supplier', placeholder: t('materials.fields.supplier') },
                   ].map(f => (
                     <TextInput key={f.key} style={styles.input} placeholderTextColor="#9a9a9a" placeholder={f.placeholder} value={matForm[f.key]}
                       onChangeText={v => setMatForm({ ...matForm, [f.key]: v })} keyboardType={f.keyboardType || 'default'} textAlign="right" />
                   ))}
                   <View style={styles.modalActions}>
                     <TouchableOpacity style={styles.btnPrimary} onPress={addMaterial}>
-                      <Text style={styles.btnPrimaryText}>הוסף</Text>
+                      <Text style={styles.btnPrimaryText}>{t('projects.add')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btnSecondary} onPress={() => setAddMaterialModal(false)}>
-                      <Text style={styles.btnSecondaryText}>ביטול</Text>
+                      <Text style={styles.btnSecondaryText}>{t('common.cancel')}</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -953,7 +969,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
           <View style={{ flex: 1 }}>
             <View style={styles.uploadRow}>
               <TouchableOpacity style={styles.uploadBtn} onPress={() => setAddApartmentModal(true)}>
-                <Text style={styles.uploadBtnText}>+ הוסף דירה</Text>
+                <Text style={styles.uploadBtnText}>+ {t('projects.addApartment')}</Text>
               </TouchableOpacity>
             </View>
             {apartmentsLoading ? <ActivityIndicator style={{ marginTop: 40 }} color="#1a6b4a" /> : (
@@ -968,7 +984,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                         <View style={styles.progressBar}>
                           <View style={[styles.progressFill, { width: `${apt.progressPercent || 0}%` }]} />
                         </View>
-                        <Text style={styles.pct}>{apt.progressPercent || 0}% הושלם</Text>
+                        <Text style={styles.pct}>{apt.progressPercent || 0}% {t('projects.done')}</Text>
                       </View>
                       <TouchableOpacity onPress={() => deleteApartment(apt.id)} style={styles.pdfDelete}>
                         <Text style={styles.deleteBtnText}>✕</Text>
@@ -979,8 +995,8 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
                 {projectApartments.length === 0 && (
                   <View style={styles.empty}>
                     <Text style={styles.emptyIcon}>🏠</Text>
-                    <Text style={styles.emptyText}>אין דירות לפרויקט זה</Text>
-                    <Text style={styles.emptySub}>לחצי "+ הוסף דירה"</Text>
+                    <Text style={styles.emptyText}>{t('materials.noApartmentsForProject')}</Text>
+                    <Text style={styles.emptySub}>{t('projects.addApartmentHint')}</Text>
                   </View>
                 )}
               </ScrollView>
@@ -988,21 +1004,21 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
             <Modal visible={addApartmentModal} animationType="slide" transparent onRequestClose={() => setAddApartmentModal(false)}>
               <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
                 <View style={styles.modal}>
-                  <Text style={styles.modalTitle}>דירה חדשה</Text>
+                  <Text style={styles.modalTitle}>{t('projects.newApartment')}</Text>
                   {[
-                    { key: 'name', placeholder: 'שם דירה *' },
-                    { key: 'number', placeholder: 'מספר דירה / קומה' },
-                    { key: 'description', placeholder: 'תיאור (אופציונלי)' },
+                    { key: 'name', placeholder: t('projects.fields.apartmentName') },
+                    { key: 'number', placeholder: t('projects.fields.apartmentNumber') },
+                    { key: 'description', placeholder: t('projects.fields.descriptionOptional') },
                   ].map(f => (
                     <TextInput key={f.key} style={styles.input} placeholderTextColor="#9a9a9a" placeholder={f.placeholder} value={aptForm[f.key]}
                       onChangeText={v => setAptForm({ ...aptForm, [f.key]: v })} textAlign="right" />
                   ))}
                   <View style={styles.modalActions}>
                     <TouchableOpacity style={styles.btnPrimary} onPress={createApartment}>
-                      <Text style={styles.btnPrimaryText}>הוסף דירה</Text>
+                      <Text style={styles.btnPrimaryText}>{t('projects.addApartment')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btnSecondary} onPress={() => setAddApartmentModal(false)}>
-                      <Text style={styles.btnSecondaryText}>ביטול</Text>
+                      <Text style={styles.btnSecondaryText}>{t('common.cancel')}</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -1020,7 +1036,7 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: topInset + 12 }]}>
-        <Text style={styles.headerTitle}>פרויקטים</Text>
+        <Text style={styles.headerTitle}>{t('nav.projects')}</Text>
       </View>
 
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadProjects(); }} />}>
@@ -1028,11 +1044,11 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
           <View key={p.id} style={styles.card}>
             <View style={styles.cardTop}>
               <View style={[styles.badge, { backgroundColor: (statusColor[p.status] || '#888') + '20' }]}>
-                <Text style={[styles.badgeText, { color: statusColor[p.status] || '#888' }]}>{statusLabel[p.status] || p.status}</Text>
+                <Text style={[styles.badgeText, { color: statusColor[p.status] || '#888' }]}>{STATUS_KEY[p.status] ? t(STATUS_KEY[p.status]) : p.status}</Text>
               </View>
               <Text style={styles.projName}>{p.name}</Text>
             </View>
-            <Text style={styles.client}>לקוח: {p.clientName}</Text>
+            <Text style={styles.client}>{t('projects.clientLine', { name: p.clientName })}</Text>
             {!!p.city && <Text style={styles.meta}>📍 {p.city}{p.address ? ` · ${p.address}` : ''}</Text>}
             {p.budget > 0 && <Text style={styles.meta}>💰 ₪{Number(p.budget).toLocaleString()}</Text>}
             {!!p.endDate && (() => {
@@ -1042,47 +1058,49 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
               const daysLeft = Math.ceil((due - today) / 86400000);
               return (
                 <Text style={[styles.meta, overdue && { color: '#a32d2d', fontWeight: '600' }]}>
-                  {overdue ? `⚠ איחור! היה ל-${due.toLocaleDateString('he-IL')}` : `📅 יעד: ${due.toLocaleDateString('he-IL')}${daysLeft <= 7 ? ` (${daysLeft} ימים)` : ''}`}
+                  {overdue
+                    ? `⚠ ${t('projects.overdueSince', { date: due.toLocaleDateString(dateLocale) })}`
+                    : `📅 ${t('projects.dueOn', { date: due.toLocaleDateString(dateLocale) })}${daysLeft <= 7 ? ` ${t('projects.daysLeft', { days: daysLeft })}` : ''}`}
                 </Text>
               );
             })()}
             <View style={styles.progressBar}>
               <View style={[styles.progressFill, { width: `${p.progressPercent}%`, backgroundColor: statusColor[p.status] || '#1a6b4a' }]} />
             </View>
-            <Text style={styles.pct}>{p.progressPercent}% הושלם</Text>
+            <Text style={styles.pct}>{p.progressPercent}% {t('projects.done')}</Text>
             <View style={styles.actions}>
               <TouchableOpacity style={[styles.actionBtn, { backgroundColor: '#e6f1fb' }]} onPress={() => { setSelectedProject(p); setActiveTab('files'); }}>
-                <Text style={[styles.actionBtnText, { color: '#185fa5' }]}>📁 קבצים</Text>
+                <Text style={[styles.actionBtnText, { color: '#185fa5' }]}>📁 {t('projects.tabs.files')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.actionBtn, { backgroundColor: '#faeeda' }]} onPress={() => { setSelectedProject(p); setActiveTab('materials'); }}>
-                <Text style={[styles.actionBtnText, { color: '#ba7517' }]}>📦 חומרים</Text>
+                <Text style={[styles.actionBtnText, { color: '#ba7517' }]}>📦 {t('nav.materials')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.actionBtn, { backgroundColor: '#e8f5ef' }]} onPress={() => { setSelectedProject(p); setActiveTab('apartments'); }}>
-                <Text style={[styles.actionBtnText, { color: '#1a6b4a' }]}>🏠 דירות</Text>
+                <Text style={[styles.actionBtnText, { color: '#1a6b4a' }]}>🏠 {t('projects.tabs.apartments')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.actionBtn, { backgroundColor: '#fcebeb' }]} onPress={() => deleteProject(p.id)}>
-                <Text style={[styles.actionBtnText, { color: '#a32d2d' }]}>🗑 מחק</Text>
+                <Text style={[styles.actionBtnText, { color: '#a32d2d' }]}>🗑 {t('common.delete')}</Text>
               </TouchableOpacity>
             </View>
           </View>
         ))}
-        {list.length === 0 && <Text style={styles.emptyList}>אין פרויקטים עדיין. לחץ + חדש להוסיף.</Text>}
+        {list.length === 0 && <Text style={styles.emptyList}>{t('projects.empty')}</Text>}
       </ScrollView>
 
       <Modal visible={modalVisible} animationType="slide" transparent onRequestClose={() => setModalVisible(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>פרויקט חדש</Text>
+            <Text style={styles.modalTitle}>{t('projects.newProject')}</Text>
             <ScrollView>
               {[
-                { key: 'name', placeholder: 'שם פרויקט *' },
-                { key: 'clientName', placeholder: 'שם לקוח *' },
-                { key: 'clientPhone', placeholder: 'טלפון לקוח', keyboardType: 'phone-pad' },
-                { key: 'city', placeholder: 'עיר' },
-                { key: 'address', placeholder: 'כתובת' },
-                { key: 'budget', placeholder: 'תקציב ₪', keyboardType: 'numeric' },
-                { key: 'apartmentCount', placeholder: 'מספר דירות בפרויקט', keyboardType: 'numeric' },
-                { key: 'endDate', placeholder: 'תאריך יעד (DD/MM/YYYY)' },
+                { key: 'name', placeholder: t('projects.fields.name') },
+                { key: 'clientName', placeholder: t('invoices.fields.clientName') },
+                { key: 'clientPhone', placeholder: t('invoices.fields.clientPhone'), keyboardType: 'phone-pad' },
+                { key: 'city', placeholder: t('projects.fields.city') },
+                { key: 'address', placeholder: t('projects.fields.address') },
+                { key: 'budget', placeholder: t('projects.fields.budget'), keyboardType: 'numeric' },
+                { key: 'apartmentCount', placeholder: t('projects.fields.apartmentCount'), keyboardType: 'numeric' },
+                { key: 'endDate', placeholder: t('projects.fields.endDate') },
               ].map(f => (
                 <TextInput key={f.key} style={styles.input} placeholderTextColor="#9a9a9a" placeholder={f.placeholder} value={form[f.key]}
                   onChangeText={v => setForm({ ...form, [f.key]: v })} keyboardType={f.keyboardType || 'default'} textAlign="right" />
@@ -1091,10 +1109,10 @@ export default function ProjectsScreen({ pendingCreate, onClearPendingCreate } =
             {projectError ? <Text style={{ color: '#a32d2d', textAlign: 'center', marginBottom: 8 }}>{projectError}</Text> : null}
             <View style={styles.modalActions}>
               <TouchableOpacity style={[styles.btnPrimary, projectSubmitting && { opacity: 0.6 }]} onPress={createProject} disabled={projectSubmitting}>
-                <Text style={styles.btnPrimaryText}>{projectSubmitting ? 'יוצר...' : 'צור פרויקט'}</Text>
+                <Text style={styles.btnPrimaryText}>{projectSubmitting ? t('projects.creating') : t('projects.createProject')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btnSecondary} onPress={() => { setModalVisible(false); setProjectError(''); }}>
-                <Text style={styles.btnSecondaryText}>ביטול</Text>
+                <Text style={styles.btnSecondaryText}>{t('common.cancel')}</Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -95,7 +95,9 @@
       "deleteFailed": "Nie udało się usunąć",
       "deleteError": "Błąd podczas usuwania",
       "needGalleryPermission": "Zezwól na dostęp do zdjęć, aby je przesłać",
-      "needCameraPermission": "Zezwól na dostęp do aparatu, aby robić zdjęcia"
+      "needCameraPermission": "Zezwól na dostęp do aparatu, aby robić zdjęcia",
+      "noConnection": "Brak połączenia z serwerem ({{detail}})",
+      "statusCode": "Kod błędu {{status}}"
     },
     "file": "Plik"
   },
@@ -271,6 +273,89 @@
       "updateFailed": "Nie udało się zaktualizować",
       "deleteFailed": "Nie udało się usunąć",
       "pdfFailed": "Nie udało się utworzyć pliku PDF"
+    }
+  },
+  "projects": {
+    "back": "Wstecz",
+    "add": "Dodaj",
+    "update": "Aktualizuj",
+    "done": "ukończono",
+    "creating": "Tworzenie…",
+    "empty": "Nie ma jeszcze budów. Naciśnij + Nowa, aby dodać.",
+    "newProject": "Nowa budowa",
+    "createProject": "Utwórz budowę",
+    "newApartment": "Nowe mieszkanie",
+    "addApartment": "Dodaj mieszkanie",
+    "addApartmentHint": "Naciśnij „+ Dodaj mieszkanie\"",
+    "addWorkerToApartment": "Dodaj pracownika do mieszkania",
+    "addWorkerHint": "Naciśnij „+ Dodaj pracownika do mieszkania\"",
+    "addMaterialToApartment": "Dodaj materiał do mieszkania",
+    "addMaterialToProject": "Dodaj materiał do budowy",
+    "updateProgress": "Zaktualizuj postęp",
+    "clientLine": "Klient: {{name}}",
+    "quantityOf": "Ilość: {{quantity}} {{unit}}",
+    "apartmentNumbered": "Mieszkanie {{number}}",
+    "workersInApartmentToday": "Pracownicy w {{name}} dzisiaj",
+    "noWorkersListed": "Brak zapisanych pracowników",
+    "noMaterialsForApartment": "Brak materiałów dla tego mieszkania",
+    "noMaterialsForProject": "Brak materiałów dla tej budowy",
+    "overdueSince": "Po terminie! Termin minął {{date}}",
+    "dueOn": "Termin: {{date}}",
+    "daysLeft": "({{days}} dni)",
+    "confirmDeleteProject": "Usunąć tę budowę?",
+    "confirmDeleteApartment": "Usunąć to mieszkanie?",
+    "confirmDeleteFile": "Usunąć ten plik?",
+    "tabs": {
+      "files": "Pliki",
+      "plans": "Projekt",
+      "apartments": "Mieszkania"
+    },
+    "status": {
+      "active": "Aktywna",
+      "delayed": "Opóźniona",
+      "completed": "Ukończona",
+      "pending": "Oczekuje"
+    },
+    "delivery": {
+      "pending": "Oczekuje",
+      "arrivedOk": "✓ Dotarło w porządku",
+      "arrivedDamaged": "⚠ Dotarło uszkodzone",
+      "damagedShort": "⚠ Uszkodzone",
+      "notArrived": "✕ Nie dotarło"
+    },
+    "captions": {
+      "planPdf": "Projekt PDF",
+      "apartmentPlan": "Rzut mieszkania"
+    },
+    "fields": {
+      "name": "Nazwa budowy *",
+      "city": "Miasto",
+      "address": "Adres",
+      "budget": "Budżet ₪",
+      "apartmentCount": "Liczba mieszkań",
+      "endDate": "Termin (DD/MM/RRRR)",
+      "apartmentName": "Nazwa mieszkania *",
+      "apartmentNumber": "Numer mieszkania / piętro",
+      "descriptionOptional": "Opis (opcjonalnie)"
+    },
+    "report": {
+      "button": "Raport",
+      "greeting": "Dzień dobry, {{name}}! 👋",
+      "intro": "Oto pełny raport z budowy:",
+      "progress": "Postęp: *{{percent}}%*",
+      "closing": "Jesteśmy do dyspozycji w razie pytań! 🙏"
+    },
+    "errors": {
+      "nameAndClientRequired": "Nazwa budowy i nazwa klienta są wymagane",
+      "serverStatus": "Błąd serwera ({{status}}) — spróbuj ponownie",
+      "noConnection": "Brak połączenia z serwerem — sprawdź internet i spróbuj ponownie",
+      "apartmentNameRequired": "Wpisz nazwę mieszkania",
+      "addMaterialFailed": "Nie udało się dodać materiału",
+      "addApartmentFailed": "Nie udało się dodać mieszkania",
+      "addWorkerFailed": "Nie udało się dodać pracownika",
+      "deleteFailed": "Nie udało się usunąć",
+      "deleteProjectFailed": "Nie udało się usunąć budowy",
+      "percentRange": "Wpisz liczbę od 0 do 100"
     }
   }
 }

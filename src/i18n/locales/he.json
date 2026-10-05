@@ -95,7 +95,9 @@
       "deleteFailed": "לא הצלחנו למחוק",
       "deleteError": "שגיאה במחיקה",
       "needGalleryPermission": "יש לאשר גישה לתמונות כדי להעלות",
-      "needCameraPermission": "יש לאשר גישה למצלמה כדי לצלם"
+      "needCameraPermission": "יש לאשר גישה למצלמה כדי לצלם",
+      "noConnection": "אין חיבור לשרת ({{detail}})",
+      "statusCode": "קוד שגיאה {{status}}"
     },
     "file": "קובץ"
   },
@@ -271,6 +273,89 @@
       "updateFailed": "לא הצלחנו לעדכן",
       "deleteFailed": "שגיאה במחיקה",
       "pdfFailed": "לא הצלחנו ליצור PDF"
+    }
+  },
+  "projects": {
+    "back": "חזור",
+    "add": "הוסף",
+    "update": "עדכן",
+    "done": "הושלם",
+    "creating": "יוצר...",
+    "empty": "אין פרויקטים עדיין. לחץ + חדש להוסיף.",
+    "newProject": "פרויקט חדש",
+    "createProject": "צור פרויקט",
+    "newApartment": "דירה חדשה",
+    "addApartment": "הוסף דירה",
+    "addApartmentHint": "לחצי \"+ הוסף דירה\"",
+    "addWorkerToApartment": "הוסף עובד לדירה",
+    "addWorkerHint": "לחצי \"+ הוסף עובד לדירה\"",
+    "addMaterialToApartment": "הוסף חומר לדירה",
+    "addMaterialToProject": "הוסף חומר לפרויקט",
+    "updateProgress": "עדכן אחוז התקדמות",
+    "clientLine": "לקוח: {{name}}",
+    "quantityOf": "כמות: {{quantity}} {{unit}}",
+    "apartmentNumbered": "דירה {{number}}",
+    "workersInApartmentToday": "עובדים ב{{name}} היום",
+    "noWorkersListed": "אין עובדים רשומים",
+    "noMaterialsForApartment": "אין חומרים לדירה זו",
+    "noMaterialsForProject": "אין חומרים לפרויקט זה",
+    "overdueSince": "איחור! היה ל-{{date}}",
+    "dueOn": "יעד: {{date}}",
+    "daysLeft": "({{days}} ימים)",
+    "confirmDeleteProject": "האם למחוק פרויקט זה?",
+    "confirmDeleteApartment": "האם למחוק דירה זו?",
+    "confirmDeleteFile": "האם למחוק קובץ זה?",
+    "tabs": {
+      "files": "קבצים",
+      "plans": "תוכנית",
+      "apartments": "דירות"
+    },
+    "status": {
+      "active": "פעיל",
+      "delayed": "מאחר",
+      "completed": "הושלם",
+      "pending": "ממתין"
+    },
+    "delivery": {
+      "pending": "ממתין",
+      "arrivedOk": "✓ הגיע תקין",
+      "arrivedDamaged": "⚠ הגיע פגום",
+      "damagedShort": "⚠ פגום",
+      "notArrived": "✕ לא הגיע"
+    },
+    "captions": {
+      "planPdf": "תוכנית PDF",
+      "apartmentPlan": "תוכנית דירה"
+    },
+    "fields": {
+      "name": "שם פרויקט *",
+      "city": "עיר",
+      "address": "כתובת",
+      "budget": "תקציב ₪",
+      "apartmentCount": "מספר דירות בפרויקט",
+      "endDate": "תאריך יעד (DD/MM/YYYY)",
+      "apartmentName": "שם דירה *",
+      "apartmentNumber": "מספר דירה / קומה",
+      "descriptionOptional": "תיאור (אופציונלי)"
+    },
+    "report": {
+      "button": "דוח",
+      "greeting": "שלום {{name}}! 👋",
+      "intro": "הנה דוח מלא של הפרויקט:",
+      "progress": "התקדמות: *{{percent}}%*",
+      "closing": "לכל שאלה אנחנו זמינים! 🙏"
+    },
+    "errors": {
+      "nameAndClientRequired": "חובה למלא שם פרויקט ושם לקוח",
+      "serverStatus": "שגיאה בשרת ({{status}}) — נסי שוב",
+      "noConnection": "אין חיבור לשרת — בדקי אינטרנט ונסי שוב",
+      "apartmentNameRequired": "מלא שם דירה",
+      "addMaterialFailed": "לא הצלחנו להוסיף חומר",
+      "addApartmentFailed": "לא הצלחנו להוסיף דירה",
+      "addWorkerFailed": "לא הצלחנו להוסיף עובד",
+      "deleteFailed": "שגיאה במחיקה",
+      "deleteProjectFailed": "שגיאה במחיקת פרויקט",
+      "percentRange": "הכנס מספר בין 0 ל-100"
     }
   }
 }

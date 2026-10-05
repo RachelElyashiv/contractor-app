@@ -95,7 +95,9 @@
       "deleteFailed": "Ștergerea a eșuat",
       "deleteError": "Eroare la ștergere",
       "needGalleryPermission": "Permite accesul la fotografii pentru încărcare",
-      "needCameraPermission": "Permite accesul la cameră pentru a fotografia"
+      "needCameraPermission": "Permite accesul la cameră pentru a fotografia",
+      "noConnection": "Fără legătură cu serverul ({{detail}})",
+      "statusCode": "Cod de eroare {{status}}"
     },
     "file": "Fișier"
   },
@@ -271,6 +273,89 @@
       "updateFailed": "Actualizarea nu a reușit",
       "deleteFailed": "Ștergerea nu a reușit",
       "pdfFailed": "PDF-ul nu a putut fi creat"
+    }
+  },
+  "projects": {
+    "back": "Înapoi",
+    "add": "Adaugă",
+    "update": "Actualizează",
+    "done": "finalizat",
+    "creating": "Se creează…",
+    "empty": "Încă nu există proiecte. Apasă + Nou pentru a adăuga.",
+    "newProject": "Proiect nou",
+    "createProject": "Creează proiectul",
+    "newApartment": "Apartament nou",
+    "addApartment": "Adaugă apartament",
+    "addApartmentHint": "Apasă „+ Adaugă apartament\"",
+    "addWorkerToApartment": "Adaugă un muncitor la apartament",
+    "addWorkerHint": "Apasă „+ Adaugă un muncitor la apartament\"",
+    "addMaterialToApartment": "Adaugă material la apartament",
+    "addMaterialToProject": "Adaugă material la proiect",
+    "updateProgress": "Actualizează procentul de execuție",
+    "clientLine": "Client: {{name}}",
+    "quantityOf": "Cantitate: {{quantity}} {{unit}}",
+    "apartmentNumbered": "Apartamentul {{number}}",
+    "workersInApartmentToday": "Muncitori în {{name}} astăzi",
+    "noWorkersListed": "Nu sunt muncitori înregistrați",
+    "noMaterialsForApartment": "Nu există materiale pentru acest apartament",
+    "noMaterialsForProject": "Nu există materiale pentru acest proiect",
+    "overdueSince": "Întârziere! Termenul a fost {{date}}",
+    "dueOn": "Termen: {{date}}",
+    "daysLeft": "({{days}} zile)",
+    "confirmDeleteProject": "Ștergi acest proiect?",
+    "confirmDeleteApartment": "Ștergi acest apartament?",
+    "confirmDeleteFile": "Ștergi acest fișier?",
+    "tabs": {
+      "files": "Fișiere",
+      "plans": "Plan",
+      "apartments": "Apartamente"
+    },
+    "status": {
+      "active": "Activ",
+      "delayed": "Întârziat",
+      "completed": "Finalizat",
+      "pending": "În așteptare"
+    },
+    "delivery": {
+      "pending": "În așteptare",
+      "arrivedOk": "✓ A sosit în regulă",
+      "arrivedDamaged": "⚠ A sosit deteriorat",
+      "damagedShort": "⚠ Deteriorat",
+      "notArrived": "✕ Nu a sosit"
+    },
+    "captions": {
+      "planPdf": "Plan PDF",
+      "apartmentPlan": "Planul apartamentului"
+    },
+    "fields": {
+      "name": "Numele proiectului *",
+      "city": "Oraș",
+      "address": "Adresă",
+      "budget": "Buget ₪",
+      "apartmentCount": "Numărul de apartamente",
+      "endDate": "Termen (ZZ/LL/AAAA)",
+      "apartmentName": "Numele apartamentului *",
+      "apartmentNumber": "Număr apartament / etaj",
+      "descriptionOptional": "Descriere (opțional)"
+    },
+    "report": {
+      "button": "Raport",
+      "greeting": "Bună ziua, {{name}}! 👋",
+      "intro": "Iată raportul complet al proiectului:",
+      "progress": "Execuție: *{{percent}}%*",
+      "closing": "Suntem aici pentru orice întrebare! 🙏"
+    },
+    "errors": {
+      "nameAndClientRequired": "Numele proiectului și al clientului sunt obligatorii",
+      "serverStatus": "Eroare de server ({{status}}) — încearcă din nou",
+      "noConnection": "Fără legătură cu serverul — verifică internetul și încearcă din nou",
+      "apartmentNameRequired": "Scrie un nume de apartament",
+      "addMaterialFailed": "Materialul nu a putut fi adăugat",
+      "addApartmentFailed": "Apartamentul nu a putut fi adăugat",
+      "addWorkerFailed": "Muncitorul nu a putut fi adăugat",
+      "deleteFailed": "Ștergerea nu a reușit",
+      "deleteProjectFailed": "Proiectul nu a putut fi șters",
+      "percentRange": "Scrie un număr între 0 și 100"
     }
   }
 }

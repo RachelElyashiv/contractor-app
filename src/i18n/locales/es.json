@@ -95,7 +95,9 @@
       "deleteFailed": "No se pudo eliminar",
       "deleteError": "Error al eliminar",
       "needGalleryPermission": "Permite el acceso a tus fotos para subirlas",
-      "needCameraPermission": "Permite el acceso a la cámara para hacer fotos"
+      "needCameraPermission": "Permite el acceso a la cámara para hacer fotos",
+      "noConnection": "Sin conexión con el servidor ({{detail}})",
+      "statusCode": "Código de error {{status}}"
     },
     "file": "Archivo"
   },
@@ -271,6 +273,89 @@
       "updateFailed": "No se ha podido actualizar",
       "deleteFailed": "No se ha podido eliminar",
       "pdfFailed": "No se ha podido crear el PDF"
+    }
+  },
+  "projects": {
+    "back": "Volver",
+    "add": "Añadir",
+    "update": "Actualizar",
+    "done": "completado",
+    "creating": "Creando…",
+    "empty": "Aún no hay obras. Pulsa + Nueva para añadir una.",
+    "newProject": "Nueva obra",
+    "createProject": "Crear obra",
+    "newApartment": "Nueva vivienda",
+    "addApartment": "Añadir vivienda",
+    "addApartmentHint": "Pulsa \"+ Añadir vivienda\"",
+    "addWorkerToApartment": "Añadir un operario a la vivienda",
+    "addWorkerHint": "Pulsa \"+ Añadir un operario a la vivienda\"",
+    "addMaterialToApartment": "Añadir material a la vivienda",
+    "addMaterialToProject": "Añadir material a la obra",
+    "updateProgress": "Actualizar el avance",
+    "clientLine": "Cliente: {{name}}",
+    "quantityOf": "Cantidad: {{quantity}} {{unit}}",
+    "apartmentNumbered": "Vivienda {{number}}",
+    "workersInApartmentToday": "Operarios en {{name}} hoy",
+    "noWorkersListed": "No hay operarios registrados",
+    "noMaterialsForApartment": "No hay materiales para esta vivienda",
+    "noMaterialsForProject": "No hay materiales para esta obra",
+    "overdueSince": "¡Retraso! Vencía el {{date}}",
+    "dueOn": "Entrega: {{date}}",
+    "daysLeft": "({{days}} días)",
+    "confirmDeleteProject": "¿Eliminar esta obra?",
+    "confirmDeleteApartment": "¿Eliminar esta vivienda?",
+    "confirmDeleteFile": "¿Eliminar este archivo?",
+    "tabs": {
+      "files": "Archivos",
+      "plans": "Plano",
+      "apartments": "Viviendas"
+    },
+    "status": {
+      "active": "Activa",
+      "delayed": "Retrasada",
+      "completed": "Terminada",
+      "pending": "Pendiente"
+    },
+    "delivery": {
+      "pending": "Pendiente",
+      "arrivedOk": "✓ Llegó en orden",
+      "arrivedDamaged": "⚠ Llegó dañado",
+      "damagedShort": "⚠ Dañado",
+      "notArrived": "✕ No llegó"
+    },
+    "captions": {
+      "planPdf": "Plano PDF",
+      "apartmentPlan": "Plano de la vivienda"
+    },
+    "fields": {
+      "name": "Nombre de la obra *",
+      "city": "Ciudad",
+      "address": "Dirección",
+      "budget": "Presupuesto ₪",
+      "apartmentCount": "Número de viviendas",
+      "endDate": "Fecha de entrega (DD/MM/AAAA)",
+      "apartmentName": "Nombre de la vivienda *",
+      "apartmentNumber": "Número de vivienda / planta",
+      "descriptionOptional": "Descripción (opcional)"
+    },
+    "report": {
+      "button": "Informe",
+      "greeting": "¡Hola {{name}}! 👋",
+      "intro": "Aquí tienes el informe completo de la obra:",
+      "progress": "Avance: *{{percent}}%*",
+      "closing": "¡Estamos aquí para cualquier duda! 🙏"
+    },
+    "errors": {
+      "nameAndClientRequired": "El nombre de la obra y del cliente son obligatorios",
+      "serverStatus": "Error del servidor ({{status}}) — inténtalo de nuevo",
+      "noConnection": "Sin conexión con el servidor — comprueba tu internet e inténtalo de nuevo",
+      "apartmentNameRequired": "Escribe un nombre de vivienda",
+      "addMaterialFailed": "No se ha podido añadir el material",
+      "addApartmentFailed": "No se ha podido añadir la vivienda",
+      "addWorkerFailed": "No se ha podido añadir el operario",
+      "deleteFailed": "No se ha podido eliminar",
+      "deleteProjectFailed": "No se ha podido eliminar la obra",
+      "percentRange": "Escribe un número entre 0 y 100"
     }
   }
 }

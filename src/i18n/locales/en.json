@@ -95,7 +95,9 @@
       "deleteFailed": "Delete failed",
       "deleteError": "Error while deleting",
       "needGalleryPermission": "Allow access to your photos to upload",
-      "needCameraPermission": "Allow camera access to take photos"
+      "needCameraPermission": "Allow camera access to take photos",
+      "noConnection": "No connection to the server ({{detail}})",
+      "statusCode": "Error code {{status}}"
     },
     "file": "File"
   },
@@ -271,6 +273,89 @@
       "updateFailed": "Could not update",
       "deleteFailed": "Could not delete",
       "pdfFailed": "Could not create the PDF"
+    }
+  },
+  "projects": {
+    "back": "Back",
+    "add": "Add",
+    "update": "Update",
+    "done": "done",
+    "creating": "Creating…",
+    "empty": "No projects yet. Tap + New to add one.",
+    "newProject": "New project",
+    "createProject": "Create project",
+    "newApartment": "New apartment",
+    "addApartment": "Add apartment",
+    "addApartmentHint": "Tap \"+ Add apartment\"",
+    "addWorkerToApartment": "Add a worker to the apartment",
+    "addWorkerHint": "Tap \"+ Add a worker to the apartment\"",
+    "addMaterialToApartment": "Add material to the apartment",
+    "addMaterialToProject": "Add material to the project",
+    "updateProgress": "Update progress",
+    "clientLine": "Client: {{name}}",
+    "quantityOf": "Quantity: {{quantity}} {{unit}}",
+    "apartmentNumbered": "Apartment {{number}}",
+    "workersInApartmentToday": "Workers in {{name}} today",
+    "noWorkersListed": "No workers listed",
+    "noMaterialsForApartment": "No materials for this apartment",
+    "noMaterialsForProject": "No materials for this project",
+    "overdueSince": "Overdue! Was due {{date}}",
+    "dueOn": "Due: {{date}}",
+    "daysLeft": "({{days}} days)",
+    "confirmDeleteProject": "Delete this project?",
+    "confirmDeleteApartment": "Delete this apartment?",
+    "confirmDeleteFile": "Delete this file?",
+    "tabs": {
+      "files": "Files",
+      "plans": "Plan",
+      "apartments": "Apartments"
+    },
+    "status": {
+      "active": "Active",
+      "delayed": "Delayed",
+      "completed": "Completed",
+      "pending": "Pending"
+    },
+    "delivery": {
+      "pending": "Pending",
+      "arrivedOk": "✓ Arrived in order",
+      "arrivedDamaged": "⚠ Arrived damaged",
+      "damagedShort": "⚠ Damaged",
+      "notArrived": "✕ Not arrived"
+    },
+    "captions": {
+      "planPdf": "Plan PDF",
+      "apartmentPlan": "Apartment plan"
+    },
+    "fields": {
+      "name": "Project name *",
+      "city": "City",
+      "address": "Address",
+      "budget": "Budget ₪",
+      "apartmentCount": "Number of apartments",
+      "endDate": "Due date (DD/MM/YYYY)",
+      "apartmentName": "Apartment name *",
+      "apartmentNumber": "Apartment / floor number",
+      "descriptionOptional": "Description (optional)"
+    },
+    "report": {
+      "button": "Report",
+      "greeting": "Hello {{name}}! 👋",
+      "intro": "Here is the full project report:",
+      "progress": "Progress: *{{percent}}%*",
+      "closing": "We are here for any questions! 🙏"
+    },
+    "errors": {
+      "nameAndClientRequired": "A project name and a client name are required",
+      "serverStatus": "Server error ({{status}}) — try again",
+      "noConnection": "No connection to the server — check your internet and try again",
+      "apartmentNameRequired": "Enter an apartment name",
+      "addMaterialFailed": "Could not add the material",
+      "addApartmentFailed": "Could not add the apartment",
+      "addWorkerFailed": "Could not add the worker",
+      "deleteFailed": "Could not delete",
+      "deleteProjectFailed": "Could not delete the project",
+      "percentRange": "Enter a number between 0 and 100"
     }
   }
 }

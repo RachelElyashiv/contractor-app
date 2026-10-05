@@ -95,7 +95,9 @@
       "deleteFailed": "Échec de la suppression",
       "deleteError": "Erreur lors de la suppression",
       "needGalleryPermission": "Autorisez l'accès à vos photos pour les importer",
-      "needCameraPermission": "Autorisez l'accès à l'appareil photo pour prendre des photos"
+      "needCameraPermission": "Autorisez l'accès à l'appareil photo pour prendre des photos",
+      "noConnection": "Pas de connexion au serveur ({{detail}})",
+      "statusCode": "Code d’erreur {{status}}"
     },
     "file": "Fichier"
   },
@@ -271,6 +273,89 @@
       "updateFailed": "La mise à jour a échoué",
       "deleteFailed": "La suppression a échoué",
       "pdfFailed": "Impossible de créer le PDF"
+    }
+  },
+  "projects": {
+    "back": "Retour",
+    "add": "Ajouter",
+    "update": "Mettre à jour",
+    "done": "terminé",
+    "creating": "Création…",
+    "empty": "Aucun chantier pour le moment. Appuyez sur + Nouveau pour en ajouter un.",
+    "newProject": "Nouveau chantier",
+    "createProject": "Créer le chantier",
+    "newApartment": "Nouveau logement",
+    "addApartment": "Ajouter un logement",
+    "addApartmentHint": "Appuyez sur « + Ajouter un logement »",
+    "addWorkerToApartment": "Ajouter un ouvrier au logement",
+    "addWorkerHint": "Appuyez sur « + Ajouter un ouvrier au logement »",
+    "addMaterialToApartment": "Ajouter un matériau au logement",
+    "addMaterialToProject": "Ajouter un matériau au chantier",
+    "updateProgress": "Mettre à jour l'avancement",
+    "clientLine": "Client : {{name}}",
+    "quantityOf": "Quantité : {{quantity}} {{unit}}",
+    "apartmentNumbered": "Logement {{number}}",
+    "workersInApartmentToday": "Ouvriers dans {{name}} aujourd'hui",
+    "noWorkersListed": "Aucun ouvrier enregistré",
+    "noMaterialsForApartment": "Aucun matériau pour ce logement",
+    "noMaterialsForProject": "Aucun matériau pour ce chantier",
+    "overdueSince": "En retard ! Échéance : {{date}}",
+    "dueOn": "Échéance : {{date}}",
+    "daysLeft": "({{days}} jours)",
+    "confirmDeleteProject": "Supprimer ce chantier ?",
+    "confirmDeleteApartment": "Supprimer ce logement ?",
+    "confirmDeleteFile": "Supprimer ce fichier ?",
+    "tabs": {
+      "files": "Fichiers",
+      "plans": "Plan",
+      "apartments": "Logements"
+    },
+    "status": {
+      "active": "En cours",
+      "delayed": "En retard",
+      "completed": "Terminé",
+      "pending": "En attente"
+    },
+    "delivery": {
+      "pending": "En attente",
+      "arrivedOk": "✓ Livré conforme",
+      "arrivedDamaged": "⚠ Livré endommagé",
+      "damagedShort": "⚠ Endommagé",
+      "notArrived": "✕ Non livré"
+    },
+    "captions": {
+      "planPdf": "Plan PDF",
+      "apartmentPlan": "Plan du logement"
+    },
+    "fields": {
+      "name": "Nom du chantier *",
+      "city": "Ville",
+      "address": "Adresse",
+      "budget": "Budget ₪",
+      "apartmentCount": "Nombre de logements",
+      "endDate": "Échéance (JJ/MM/AAAA)",
+      "apartmentName": "Nom du logement *",
+      "apartmentNumber": "Numéro de logement / étage",
+      "descriptionOptional": "Description (facultatif)"
+    },
+    "report": {
+      "button": "Rapport",
+      "greeting": "Bonjour {{name}} ! 👋",
+      "intro": "Voici le rapport complet du chantier :",
+      "progress": "Avancement : *{{percent}} %*",
+      "closing": "Nous restons à votre disposition ! 🙏"
+    },
+    "errors": {
+      "nameAndClientRequired": "Le nom du chantier et celui du client sont obligatoires",
+      "serverStatus": "Erreur du serveur ({{status}}) — réessayez",
+      "noConnection": "Pas de connexion au serveur — vérifiez votre connexion et réessayez",
+      "apartmentNameRequired": "Saisissez un nom de logement",
+      "addMaterialFailed": "Le matériau n'a pas pu être ajouté",
+      "addApartmentFailed": "Le logement n'a pas pu être ajouté",
+      "addWorkerFailed": "L'ouvrier n'a pas pu être ajouté",
+      "deleteFailed": "La suppression a échoué",
+      "deleteProjectFailed": "Le chantier n'a pas pu être supprimé",
+      "percentRange": "Saisissez un nombre entre 0 et 100"
     }
   }
 }

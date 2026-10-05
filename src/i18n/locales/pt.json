@@ -95,7 +95,9 @@
       "deleteFailed": "Não foi possível excluir",
       "deleteError": "Erro ao excluir",
       "needGalleryPermission": "Permita o acesso às suas fotos para enviar",
-      "needCameraPermission": "Permita o acesso à câmera para tirar fotos"
+      "needCameraPermission": "Permita o acesso à câmera para tirar fotos",
+      "noConnection": "Sem ligação ao servidor ({{detail}})",
+      "statusCode": "Código de erro {{status}}"
     },
     "file": "Arquivo"
   },
@@ -271,6 +273,89 @@
       "updateFailed": "Não foi possível atualizar",
       "deleteFailed": "Não foi possível eliminar",
       "pdfFailed": "Não foi possível criar o PDF"
+    }
+  },
+  "projects": {
+    "back": "Voltar",
+    "add": "Adicionar",
+    "update": "Atualizar",
+    "done": "concluído",
+    "creating": "A criar…",
+    "empty": "Ainda não há obras. Toque em + Nova para adicionar.",
+    "newProject": "Nova obra",
+    "createProject": "Criar obra",
+    "newApartment": "Novo apartamento",
+    "addApartment": "Adicionar apartamento",
+    "addApartmentHint": "Toque em \"+ Adicionar apartamento\"",
+    "addWorkerToApartment": "Adicionar trabalhador ao apartamento",
+    "addWorkerHint": "Toque em \"+ Adicionar trabalhador ao apartamento\"",
+    "addMaterialToApartment": "Adicionar material ao apartamento",
+    "addMaterialToProject": "Adicionar material à obra",
+    "updateProgress": "Atualizar o progresso",
+    "clientLine": "Cliente: {{name}}",
+    "quantityOf": "Quantidade: {{quantity}} {{unit}}",
+    "apartmentNumbered": "Apartamento {{number}}",
+    "workersInApartmentToday": "Trabalhadores em {{name}} hoje",
+    "noWorkersListed": "Não há trabalhadores registados",
+    "noMaterialsForApartment": "Não há materiais para este apartamento",
+    "noMaterialsForProject": "Não há materiais para esta obra",
+    "overdueSince": "Em atraso! Vencia a {{date}}",
+    "dueOn": "Prazo: {{date}}",
+    "daysLeft": "({{days}} dias)",
+    "confirmDeleteProject": "Eliminar esta obra?",
+    "confirmDeleteApartment": "Eliminar este apartamento?",
+    "confirmDeleteFile": "Eliminar este ficheiro?",
+    "tabs": {
+      "files": "Ficheiros",
+      "plans": "Planta",
+      "apartments": "Apartamentos"
+    },
+    "status": {
+      "active": "Ativa",
+      "delayed": "Atrasada",
+      "completed": "Concluída",
+      "pending": "Pendente"
+    },
+    "delivery": {
+      "pending": "Pendente",
+      "arrivedOk": "✓ Chegou em ordem",
+      "arrivedDamaged": "⚠ Chegou danificado",
+      "damagedShort": "⚠ Danificado",
+      "notArrived": "✕ Não chegou"
+    },
+    "captions": {
+      "planPdf": "Planta PDF",
+      "apartmentPlan": "Planta do apartamento"
+    },
+    "fields": {
+      "name": "Nome da obra *",
+      "city": "Cidade",
+      "address": "Morada",
+      "budget": "Orçamento ₪",
+      "apartmentCount": "Número de apartamentos",
+      "endDate": "Data de entrega (DD/MM/AAAA)",
+      "apartmentName": "Nome do apartamento *",
+      "apartmentNumber": "Número do apartamento / piso",
+      "descriptionOptional": "Descrição (opcional)"
+    },
+    "report": {
+      "button": "Relatório",
+      "greeting": "Olá {{name}}! 👋",
+      "intro": "Aqui está o relatório completo da obra:",
+      "progress": "Progresso: *{{percent}}%*",
+      "closing": "Estamos disponíveis para qualquer questão! 🙏"
+    },
+    "errors": {
+      "nameAndClientRequired": "O nome da obra e do cliente são obrigatórios",
+      "serverStatus": "Erro do servidor ({{status}}) — tente de novo",
+      "noConnection": "Sem ligação ao servidor — verifique a internet e tente de novo",
+      "apartmentNameRequired": "Escreva um nome de apartamento",
+      "addMaterialFailed": "Não foi possível adicionar o material",
+      "addApartmentFailed": "Não foi possível adicionar o apartamento",
+      "addWorkerFailed": "Não foi possível adicionar o trabalhador",
+      "deleteFailed": "Não foi possível eliminar",
+      "deleteProjectFailed": "Não foi possível eliminar a obra",
+      "percentRange": "Escreva um número entre 0 e 100"
     }
   }
 }

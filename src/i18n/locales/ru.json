@@ -95,7 +95,9 @@
       "deleteFailed": "Не удалось удалить",
       "deleteError": "Ошибка при удалении",
       "needGalleryPermission": "Разрешите доступ к фото для загрузки",
-      "needCameraPermission": "Разрешите доступ к камере для съёмки"
+      "needCameraPermission": "Разрешите доступ к камере для съёмки",
+      "noConnection": "Нет связи с сервером ({{detail}})",
+      "statusCode": "Код ошибки {{status}}"
     },
     "file": "Файл"
   },
@@ -271,6 +273,89 @@
       "updateFailed": "Не удалось обновить",
       "deleteFailed": "Не удалось удалить",
       "pdfFailed": "Не удалось создать PDF"
+    }
+  },
+  "projects": {
+    "back": "Назад",
+    "add": "Добавить",
+    "update": "Обновить",
+    "done": "выполнено",
+    "creating": "Создание…",
+    "empty": "Объектов пока нет. Нажмите + Новый, чтобы добавить.",
+    "newProject": "Новый объект",
+    "createProject": "Создать объект",
+    "newApartment": "Новая квартира",
+    "addApartment": "Добавить квартиру",
+    "addApartmentHint": "Нажмите «+ Добавить квартиру»",
+    "addWorkerToApartment": "Добавить работника в квартиру",
+    "addWorkerHint": "Нажмите «+ Добавить работника в квартиру»",
+    "addMaterialToApartment": "Добавить материал в квартиру",
+    "addMaterialToProject": "Добавить материал на объект",
+    "updateProgress": "Обновить процент готовности",
+    "clientLine": "Клиент: {{name}}",
+    "quantityOf": "Количество: {{quantity}} {{unit}}",
+    "apartmentNumbered": "Квартира {{number}}",
+    "workersInApartmentToday": "Работники в {{name}} сегодня",
+    "noWorkersListed": "Работники не записаны",
+    "noMaterialsForApartment": "Для этой квартиры нет материалов",
+    "noMaterialsForProject": "Для этого объекта нет материалов",
+    "overdueSince": "Просрочено! Срок был {{date}}",
+    "dueOn": "Срок: {{date}}",
+    "daysLeft": "({{days}} дн.)",
+    "confirmDeleteProject": "Удалить этот объект?",
+    "confirmDeleteApartment": "Удалить эту квартиру?",
+    "confirmDeleteFile": "Удалить этот файл?",
+    "tabs": {
+      "files": "Файлы",
+      "plans": "Чертёж",
+      "apartments": "Квартиры"
+    },
+    "status": {
+      "active": "Активный",
+      "delayed": "С задержкой",
+      "completed": "Завершён",
+      "pending": "Ожидает"
+    },
+    "delivery": {
+      "pending": "Ожидает",
+      "arrivedOk": "✓ Доставлено в порядке",
+      "arrivedDamaged": "⚠ Доставлено повреждённым",
+      "damagedShort": "⚠ Повреждено",
+      "notArrived": "✕ Не доставлено"
+    },
+    "captions": {
+      "planPdf": "Чертёж PDF",
+      "apartmentPlan": "План квартиры"
+    },
+    "fields": {
+      "name": "Название объекта *",
+      "city": "Город",
+      "address": "Адрес",
+      "budget": "Бюджет ₪",
+      "apartmentCount": "Количество квартир",
+      "endDate": "Срок сдачи (ДД/ММ/ГГГГ)",
+      "apartmentName": "Название квартиры *",
+      "apartmentNumber": "Номер квартиры / этаж",
+      "descriptionOptional": "Описание (необязательно)"
+    },
+    "report": {
+      "button": "Отчёт",
+      "greeting": "Здравствуйте, {{name}}! 👋",
+      "intro": "Вот полный отчёт по объекту:",
+      "progress": "Готовность: *{{percent}}%*",
+      "closing": "Мы на связи по любым вопросам! 🙏"
+    },
+    "errors": {
+      "nameAndClientRequired": "Укажите название объекта и имя клиента",
+      "serverStatus": "Ошибка сервера ({{status}}) — попробуйте снова",
+      "noConnection": "Нет связи с сервером — проверьте интернет и попробуйте снова",
+      "apartmentNameRequired": "Введите название квартиры",
+      "addMaterialFailed": "Не удалось добавить материал",
+      "addApartmentFailed": "Не удалось добавить квартиру",
+      "addWorkerFailed": "Не удалось добавить работника",
+      "deleteFailed": "Не удалось удалить",
+      "deleteProjectFailed": "Не удалось удалить объект",
+      "percentRange": "Введите число от 0 до 100"
     }
   }
 }

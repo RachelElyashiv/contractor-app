@@ -95,7 +95,9 @@
       "deleteFailed": "Löschen fehlgeschlagen",
       "deleteError": "Fehler beim Löschen",
       "needGalleryPermission": "Erlauben Sie den Zugriff auf Ihre Fotos zum Hochladen",
-      "needCameraPermission": "Erlauben Sie den Kamerazugriff zum Fotografieren"
+      "needCameraPermission": "Erlauben Sie den Kamerazugriff zum Fotografieren",
+      "noConnection": "Keine Verbindung zum Server ({{detail}})",
+      "statusCode": "Fehlercode {{status}}"
     },
     "file": "Datei"
   },
@@ -271,6 +273,89 @@
       "updateFailed": "Aktualisieren fehlgeschlagen",
       "deleteFailed": "Löschen fehlgeschlagen",
       "pdfFailed": "Das PDF konnte nicht erstellt werden"
+    }
+  },
+  "projects": {
+    "back": "Zurück",
+    "add": "Hinzufügen",
+    "update": "Aktualisieren",
+    "done": "fertig",
+    "creating": "Wird angelegt…",
+    "empty": "Noch keine Bauvorhaben. Auf + Neu tippen, um eines anzulegen.",
+    "newProject": "Neues Bauvorhaben",
+    "createProject": "Bauvorhaben anlegen",
+    "newApartment": "Neue Wohnung",
+    "addApartment": "Wohnung hinzufügen",
+    "addApartmentHint": "Auf „+ Wohnung hinzufügen\" tippen",
+    "addWorkerToApartment": "Mitarbeiter zur Wohnung hinzufügen",
+    "addWorkerHint": "Auf „+ Mitarbeiter zur Wohnung hinzufügen\" tippen",
+    "addMaterialToApartment": "Material zur Wohnung hinzufügen",
+    "addMaterialToProject": "Material zum Bauvorhaben hinzufügen",
+    "updateProgress": "Baufortschritt aktualisieren",
+    "clientLine": "Kunde: {{name}}",
+    "quantityOf": "Menge: {{quantity}} {{unit}}",
+    "apartmentNumbered": "Wohnung {{number}}",
+    "workersInApartmentToday": "Mitarbeiter heute in {{name}}",
+    "noWorkersListed": "Keine Mitarbeiter eingetragen",
+    "noMaterialsForApartment": "Keine Materialien für diese Wohnung",
+    "noMaterialsForProject": "Keine Materialien für dieses Bauvorhaben",
+    "overdueSince": "Überfällig! Termin war {{date}}",
+    "dueOn": "Termin: {{date}}",
+    "daysLeft": "(noch {{days}} Tage)",
+    "confirmDeleteProject": "Dieses Bauvorhaben löschen?",
+    "confirmDeleteApartment": "Diese Wohnung löschen?",
+    "confirmDeleteFile": "Diese Datei löschen?",
+    "tabs": {
+      "files": "Dateien",
+      "plans": "Plan",
+      "apartments": "Wohnungen"
+    },
+    "status": {
+      "active": "Laufend",
+      "delayed": "Verzögert",
+      "completed": "Abgeschlossen",
+      "pending": "Offen"
+    },
+    "delivery": {
+      "pending": "Offen",
+      "arrivedOk": "✓ Einwandfrei geliefert",
+      "arrivedDamaged": "⚠ Beschädigt geliefert",
+      "damagedShort": "⚠ Beschädigt",
+      "notArrived": "✕ Nicht geliefert"
+    },
+    "captions": {
+      "planPdf": "Plan als PDF",
+      "apartmentPlan": "Wohnungsgrundriss"
+    },
+    "fields": {
+      "name": "Name des Bauvorhabens *",
+      "city": "Ort",
+      "address": "Adresse",
+      "budget": "Budget ₪",
+      "apartmentCount": "Anzahl der Wohnungen",
+      "endDate": "Termin (TT/MM/JJJJ)",
+      "apartmentName": "Name der Wohnung *",
+      "apartmentNumber": "Wohnungs- / Geschossnummer",
+      "descriptionOptional": "Beschreibung (optional)"
+    },
+    "report": {
+      "button": "Bericht",
+      "greeting": "Guten Tag {{name}}! 👋",
+      "intro": "Hier ist der vollständige Baubericht:",
+      "progress": "Fortschritt: *{{percent}} %*",
+      "closing": "Bei Fragen sind wir für Sie da! 🙏"
+    },
+    "errors": {
+      "nameAndClientRequired": "Name des Bauvorhabens und des Kunden sind erforderlich",
+      "serverStatus": "Serverfehler ({{status}}) — bitte erneut versuchen",
+      "noConnection": "Keine Verbindung zum Server — Internet prüfen und erneut versuchen",
+      "apartmentNameRequired": "Geben Sie einen Wohnungsnamen ein",
+      "addMaterialFailed": "Das Material konnte nicht hinzugefügt werden",
+      "addApartmentFailed": "Die Wohnung konnte nicht hinzugefügt werden",
+      "addWorkerFailed": "Der Mitarbeiter konnte nicht hinzugefügt werden",
+      "deleteFailed": "Löschen fehlgeschlagen",
+      "deleteProjectFailed": "Das Bauvorhaben konnte nicht gelöscht werden",
+      "percentRange": "Geben Sie eine Zahl zwischen 0 und 100 ein"
     }
   }
 }

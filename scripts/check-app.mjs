@@ -115,6 +115,40 @@ check('every icon path in app.json points at a file that exists',
     .every(p => fs.existsSync(p)),
   'icon, foreground, background, monochrome');
 
+// --- every language uses the same {{placeholders}} for a given key ---
+// A typo here does not crash; it silently drops a name or a number from the
+// sentence, which is far harder to notice.
+const placeholders = (text) =>
+  [...String(text).matchAll(/\{\{\s*([\w.]+)\s*\}\}/g)].map(m => m[1]).sort().join(',');
+const valueAt = (obj, key) => key.split('.').reduce((o, k) => (o == null ? o : o[k]), obj);
+const placeholderMismatches = [];
+for (const key of base) {
+  const want = placeholders(valueAt(parsed['he.json'], key));
+  for (const f of files) {
+    if (f === 'he.json') continue;
+    const got = placeholders(valueAt(parsed[f], key));
+    if (got !== want) placeholderMismatches.push(`${key} in ${f} (${got || 'none'} vs ${want || 'none'})`);
+  }
+}
+check('every language fills the same placeholders', placeholderMismatches.length === 0,
+  placeholderMismatches.slice(0, 6).join('; ') || 'checked every key in every language');
+
+// --- no screen still carries text hardcoded in one language ---
+// Comments are fine; anything a user can read has to come from the locales.
+const HEBREW = /[\u05D0-\u05EA]/;
+const hardcoded = [];
+for (const f of code) {
+  // the i18n module itself names each language in its own script, by design
+  if (f.startsWith(path.join('src', 'i18n'))) continue;
+  fs.readFileSync(f, 'utf8').split('\n').forEach((line, i) => {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('//') || trimmed.startsWith('*')) return;
+    if (HEBREW.test(line)) hardcoded.push(`${f}:${i + 1}`);
+  });
+}
+check('no user-visible text is hardcoded in one language', hardcoded.length === 0,
+  hardcoded.length ? hardcoded.slice(0, 8).join(', ') : `${code.length} source files are clean`);
+
 // --- no stale backend url anywhere ---
 const grep = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap(d =>
   d.isDirectory() ? grep(path.join(dir, d.name)) : [path.join(dir, d.name)]);

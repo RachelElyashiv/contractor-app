@@ -95,7 +95,9 @@
       "deleteFailed": "Silme başarısız",
       "deleteError": "Silme sırasında hata",
       "needGalleryPermission": "Yüklemek için fotoğraflara erişime izin verin",
-      "needCameraPermission": "Fotoğraf çekmek için kameraya erişime izin verin"
+      "needCameraPermission": "Fotoğraf çekmek için kameraya erişime izin verin",
+      "noConnection": "Sunucuya bağlantı yok ({{detail}})",
+      "statusCode": "Hata kodu {{status}}"
     },
     "file": "Dosya"
   },
@@ -271,6 +273,89 @@
       "updateFailed": "Güncellenemedi",
       "deleteFailed": "Silinemedi",
       "pdfFailed": "PDF oluşturulamadı"
+    }
+  },
+  "projects": {
+    "back": "Geri",
+    "add": "Ekle",
+    "update": "Güncelle",
+    "done": "tamamlandı",
+    "creating": "Oluşturuluyor…",
+    "empty": "Henüz proje yok. Eklemek için + Yeni'ye dokunun.",
+    "newProject": "Yeni proje",
+    "createProject": "Proje oluştur",
+    "newApartment": "Yeni daire",
+    "addApartment": "Daire ekle",
+    "addApartmentHint": "\"+ Daire ekle\"ye dokunun",
+    "addWorkerToApartment": "Daireye işçi ekle",
+    "addWorkerHint": "\"+ Daireye işçi ekle\"ye dokunun",
+    "addMaterialToApartment": "Daireye malzeme ekle",
+    "addMaterialToProject": "Projeye malzeme ekle",
+    "updateProgress": "İlerlemeyi güncelle",
+    "clientLine": "Müşteri: {{name}}",
+    "quantityOf": "Miktar: {{quantity}} {{unit}}",
+    "apartmentNumbered": "{{number}}. daire",
+    "workersInApartmentToday": "Bugün {{name}} dairesindeki işçiler",
+    "noWorkersListed": "Kayıtlı işçi yok",
+    "noMaterialsForApartment": "Bu daire için malzeme yok",
+    "noMaterialsForProject": "Bu proje için malzeme yok",
+    "overdueSince": "Gecikme! Tarihi {{date}} idi",
+    "dueOn": "Teslim: {{date}}",
+    "daysLeft": "({{days}} gün)",
+    "confirmDeleteProject": "Bu proje silinsin mi?",
+    "confirmDeleteApartment": "Bu daire silinsin mi?",
+    "confirmDeleteFile": "Bu dosya silinsin mi?",
+    "tabs": {
+      "files": "Dosyalar",
+      "plans": "Plan",
+      "apartments": "Daireler"
+    },
+    "status": {
+      "active": "Aktif",
+      "delayed": "Gecikmiş",
+      "completed": "Tamamlandı",
+      "pending": "Bekliyor"
+    },
+    "delivery": {
+      "pending": "Bekliyor",
+      "arrivedOk": "✓ Sorunsuz geldi",
+      "arrivedDamaged": "⚠ Hasarlı geldi",
+      "damagedShort": "⚠ Hasarlı",
+      "notArrived": "✕ Gelmedi"
+    },
+    "captions": {
+      "planPdf": "Plan PDF",
+      "apartmentPlan": "Daire planı"
+    },
+    "fields": {
+      "name": "Proje adı *",
+      "city": "Şehir",
+      "address": "Adres",
+      "budget": "Bütçe ₪",
+      "apartmentCount": "Daire sayısı",
+      "endDate": "Teslim tarihi (GG/AA/YYYY)",
+      "apartmentName": "Daire adı *",
+      "apartmentNumber": "Daire / kat numarası",
+      "descriptionOptional": "Açıklama (isteğe bağlı)"
+    },
+    "report": {
+      "button": "Rapor",
+      "greeting": "Merhaba {{name}}! 👋",
+      "intro": "İşte projenin tam raporu:",
+      "progress": "İlerleme: *%{{percent}}*",
+      "closing": "Her türlü soru için buradayız! 🙏"
+    },
+    "errors": {
+      "nameAndClientRequired": "Proje adı ve müşteri adı zorunludur",
+      "serverStatus": "Sunucu hatası ({{status}}) — tekrar deneyin",
+      "noConnection": "Sunucuya bağlanılamıyor — internetinizi kontrol edip tekrar deneyin",
+      "apartmentNameRequired": "Bir daire adı girin",
+      "addMaterialFailed": "Malzeme eklenemedi",
+      "addApartmentFailed": "Daire eklenemedi",
+      "addWorkerFailed": "İşçi eklenemedi",
+      "deleteFailed": "Silinemedi",
+      "deleteProjectFailed": "Proje silinemedi",
+      "percentRange": "0 ile 100 arasında bir sayı girin"
     }
   }
 }

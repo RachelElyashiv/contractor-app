@@ -95,7 +95,9 @@
       "deleteFailed": "فشل الحذف",
       "deleteError": "خطأ أثناء الحذف",
       "needGalleryPermission": "يرجى السماح بالوصول إلى الصور للرفع",
-      "needCameraPermission": "يرجى السماح بالوصول إلى الكاميرا للتصوير"
+      "needCameraPermission": "يرجى السماح بالوصول إلى الكاميرا للتصوير",
+      "noConnection": "لا يوجد اتصال بالخادم ({{detail}})",
+      "statusCode": "رمز الخطأ {{status}}"
     },
     "file": "ملف"
   },
@@ -271,6 +273,89 @@
       "updateFailed": "تعذر التحديث",
       "deleteFailed": "تعذر الحذف",
       "pdfFailed": "تعذر إنشاء ملف PDF"
+    }
+  },
+  "projects": {
+    "back": "رجوع",
+    "add": "إضافة",
+    "update": "تحديث",
+    "done": "مكتمل",
+    "creating": "جارٍ الإنشاء…",
+    "empty": "لا توجد مشاريع بعد. اضغط + جديد للإضافة.",
+    "newProject": "مشروع جديد",
+    "createProject": "إنشاء مشروع",
+    "newApartment": "شقة جديدة",
+    "addApartment": "إضافة شقة",
+    "addApartmentHint": "اضغط \"+ إضافة شقة\"",
+    "addWorkerToApartment": "إضافة عامل إلى الشقة",
+    "addWorkerHint": "اضغط \"+ إضافة عامل إلى الشقة\"",
+    "addMaterialToApartment": "إضافة مادة إلى الشقة",
+    "addMaterialToProject": "إضافة مادة إلى المشروع",
+    "updateProgress": "تحديث نسبة الإنجاز",
+    "clientLine": "العميل: {{name}}",
+    "quantityOf": "الكمية: {{quantity}} {{unit}}",
+    "apartmentNumbered": "شقة {{number}}",
+    "workersInApartmentToday": "العمال في {{name}} اليوم",
+    "noWorkersListed": "لا يوجد عمال مسجلون",
+    "noMaterialsForApartment": "لا توجد مواد لهذه الشقة",
+    "noMaterialsForProject": "لا توجد مواد لهذا المشروع",
+    "overdueSince": "متأخر! كان موعده {{date}}",
+    "dueOn": "الموعد: {{date}}",
+    "daysLeft": "({{days}} أيام)",
+    "confirmDeleteProject": "هل تريد حذف هذا المشروع؟",
+    "confirmDeleteApartment": "هل تريد حذف هذه الشقة؟",
+    "confirmDeleteFile": "هل تريد حذف هذا الملف؟",
+    "tabs": {
+      "files": "الملفات",
+      "plans": "المخطط",
+      "apartments": "الشقق"
+    },
+    "status": {
+      "active": "نشط",
+      "delayed": "متأخر",
+      "completed": "مكتمل",
+      "pending": "قيد الانتظار"
+    },
+    "delivery": {
+      "pending": "قيد الانتظار",
+      "arrivedOk": "✓ وصلت سليمة",
+      "arrivedDamaged": "⚠ وصلت تالفة",
+      "damagedShort": "⚠ تالفة",
+      "notArrived": "✕ لم تصل"
+    },
+    "captions": {
+      "planPdf": "مخطط PDF",
+      "apartmentPlan": "مخطط الشقة"
+    },
+    "fields": {
+      "name": "اسم المشروع *",
+      "city": "المدينة",
+      "address": "العنوان",
+      "budget": "الميزانية ₪",
+      "apartmentCount": "عدد الشقق",
+      "endDate": "تاريخ التسليم (DD/MM/YYYY)",
+      "apartmentName": "اسم الشقة *",
+      "apartmentNumber": "رقم الشقة / الطابق",
+      "descriptionOptional": "الوصف (اختياري)"
+    },
+    "report": {
+      "button": "تقرير",
+      "greeting": "مرحبًا {{name}}! 👋",
+      "intro": "إليك التقرير الكامل للمشروع:",
+      "progress": "الإنجاز: *{{percent}}%*",
+      "closing": "نحن هنا لأي سؤال! 🙏"
+    },
+    "errors": {
+      "nameAndClientRequired": "اسم المشروع واسم العميل مطلوبان",
+      "serverStatus": "خطأ في الخادم ({{status}}) — حاول مرة أخرى",
+      "noConnection": "لا يوجد اتصال بالخادم — تحقق من الإنترنت وحاول مجددًا",
+      "apartmentNameRequired": "أدخل اسم الشقة",
+      "addMaterialFailed": "تعذرت إضافة المادة",
+      "addApartmentFailed": "تعذرت إضافة الشقة",
+      "addWorkerFailed": "تعذرت إضافة العامل",
+      "deleteFailed": "تعذر الحذف",
+      "deleteProjectFailed": "تعذر حذف المشروع",
+      "percentRange": "أدخل رقمًا بين 0 و100"
     }
   }
 }
