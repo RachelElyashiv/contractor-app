@@ -187,5 +187,90 @@
       "updateFailed": "تعذّر التحديث",
       "deleteFailed": "خطأ في حذف العامل"
     }
+  },
+  "invoices": {
+    "title": "الفواتير",
+    "quote": "عرض سعر",
+    "new": "جديد",
+    "tabs": {
+      "invoices": "الفواتير ({{count}})",
+      "quotes": "عروض الأسعار ({{count}})"
+    },
+    "summary": {
+      "revenue": "الإيرادات",
+      "pending": "قيد الانتظار",
+      "overdue": "متأخرة"
+    },
+    "status": {
+      "paid": "مدفوعة ✓",
+      "sent": "مُرسلة",
+      "overdue": "متأخرة",
+      "draft": "مسودة",
+      "cancelled": "ملغاة"
+    },
+    "markPaid": "وضع علامة مدفوعة ✓",
+    "markApproved": "تمت الموافقة ✓",
+    "emptyQuotes": "لا توجد عروض أسعار بعد",
+    "emptyInvoices": "لا توجد فواتير بعد",
+    "emptyQuotesHint": "اضغط \"📋 عرض سعر\" للإضافة",
+    "emptyInvoicesHint": "اضغط \"+ جديد\" للإضافة",
+    "newQuote": "عرض سعر جديد",
+    "newInvoice": "فاتورة جديدة",
+    "buildFromProject": "إنشاء من مشروع (اختياري)",
+    "buildFromProjectHint": "اختر مشروعًا أو شقة لتحميل كل المواد كبنود",
+    "pickProject": "اختر مشروعًا",
+    "pickApartment": "اختر شقة",
+    "allApartmentsInProject": "كل الشقق في المشروع",
+    "loadMaterialsAsItems": "تحميل المواد كبنود",
+    "loading": "جارٍ التحميل…",
+    "items": "البنود",
+    "addRow": "إضافة سطر",
+    "pullMaterial": "سحب مادة من المخزون",
+    "pullMaterialHint": "السعر مأخوذ من سعر الشراء — يمكنك تعديله لإضافة ربحك",
+    "noProjects": "لا توجد مشاريع بعد",
+    "noApartments": "لا توجد شقق في هذا المشروع",
+    "noMaterialsInStock": "لا توجد مواد في المخزون",
+    "subtotal": "المجموع قبل الضريبة",
+    "taxLine": "ضريبة القيمة المضافة ({{percent}}%)",
+    "totalDue": "المبلغ المستحق",
+    "createQuote": "إنشاء عرض سعر",
+    "createInvoice": "إنشاء فاتورة",
+    "confirmDelete": "هل تريد حذف هذا المستند؟",
+    "shareDocument": "مشاركة المستند",
+    "fields": {
+      "clientName": "اسم العميل *",
+      "clientPhone": "هاتف العميل",
+      "description": "الوصف",
+      "quantity": "الكمية",
+      "price": "السعر",
+      "notes": "ملاحظات",
+      "taxPercent": "الضريبة %"
+    },
+    "doc": {
+      "quote": "عرض سعر",
+      "taxInvoice": "فاتورة ضريبية",
+      "invoice": "فاتورة",
+      "client": "العميل",
+      "lineTotal": "المجموع",
+      "unitPrice": "سعر الوحدة",
+      "quantity": "الكمية",
+      "description": "الوصف",
+      "notes": "ملاحظات",
+      "generated": "أُنشئ تلقائيًا"
+    },
+    "share": {
+      "greeting": "مرحبًا {{name}}،",
+      "attached": "مرفق {{type}} رقم {{number}}:"
+    },
+    "errors": {
+      "chooseProjectFirst": "اختر مشروعًا أولاً",
+      "noMaterialsFound": "لم يتم العثور على مواد لهذا المشروع أو الشقة — أضف البنود يدويًا",
+      "loadMaterialsFailed": "تعذر تحميل المواد — حاول مرة أخرى",
+      "clientNameRequired": "اسم العميل مطلوب",
+      "serverError": "خطأ في الخادم",
+      "updateFailed": "تعذر التحديث",
+      "deleteFailed": "تعذر الحذف",
+      "pdfFailed": "تعذر إنشاء ملف PDF"
+    }
   }
 }

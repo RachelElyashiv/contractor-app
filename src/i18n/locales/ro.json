@@ -187,5 +187,90 @@
       "updateFailed": "Nu s-a putut actualiza",
       "deleteFailed": "Eroare la ștergerea muncitorului"
     }
+  },
+  "invoices": {
+    "title": "Facturi",
+    "quote": "Ofertă",
+    "new": "Nouă",
+    "tabs": {
+      "invoices": "Facturi ({{count}})",
+      "quotes": "Oferte ({{count}})"
+    },
+    "summary": {
+      "revenue": "Venituri",
+      "pending": "În așteptare",
+      "overdue": "Restante"
+    },
+    "status": {
+      "paid": "Plătită ✓",
+      "sent": "Trimisă",
+      "overdue": "Restantă",
+      "draft": "Ciornă",
+      "cancelled": "Anulată"
+    },
+    "markPaid": "Marchează ca plătită ✓",
+    "markApproved": "Aprobată ✓",
+    "emptyQuotes": "Încă nu există oferte",
+    "emptyInvoices": "Încă nu există facturi",
+    "emptyQuotesHint": "Apasă „📋 Ofertă\" pentru a adăuga",
+    "emptyInvoicesHint": "Apasă „+ Nouă\" pentru a adăuga",
+    "newQuote": "Ofertă nouă",
+    "newInvoice": "Factură nouă",
+    "buildFromProject": "Creează dintr-un proiect (opțional)",
+    "buildFromProjectHint": "Alege un proiect sau un apartament ca să încarci toate materialele ca poziții",
+    "pickProject": "Alege un proiect",
+    "pickApartment": "Alege un apartament",
+    "allApartmentsInProject": "Toate apartamentele din proiect",
+    "loadMaterialsAsItems": "Încarcă materialele ca poziții",
+    "loading": "Se încarcă…",
+    "items": "Poziții",
+    "addRow": "Adaugă rând",
+    "pullMaterial": "Ia un material din stoc",
+    "pullMaterialHint": "Prețul vine din costul de achiziție — modifică-l ca să adaugi marja",
+    "noProjects": "Încă nu există proiecte",
+    "noApartments": "Nu există apartamente în acest proiect",
+    "noMaterialsInStock": "Nu există materiale în stoc",
+    "subtotal": "Subtotal",
+    "taxLine": "TVA ({{percent}}%)",
+    "totalDue": "Total de plată",
+    "createQuote": "Creează oferta",
+    "createInvoice": "Creează factura",
+    "confirmDelete": "Ștergi acest document?",
+    "shareDocument": "Partajează documentul",
+    "fields": {
+      "clientName": "Numele clientului *",
+      "clientPhone": "Telefonul clientului",
+      "description": "Descriere",
+      "quantity": "Cant.",
+      "price": "Preț",
+      "notes": "Note",
+      "taxPercent": "TVA %"
+    },
+    "doc": {
+      "quote": "Ofertă",
+      "taxInvoice": "Factură fiscală",
+      "invoice": "Factură",
+      "client": "Client",
+      "lineTotal": "Total",
+      "unitPrice": "Preț unitar",
+      "quantity": "Cant.",
+      "description": "Descriere",
+      "notes": "Note",
+      "generated": "Generat automat"
+    },
+    "share": {
+      "greeting": "Bună ziua, {{name}},",
+      "attached": "Atașat este {{type}} numărul {{number}}:"
+    },
+    "errors": {
+      "chooseProjectFirst": "Alege mai întâi un proiect",
+      "noMaterialsFound": "Nu s-au găsit materiale pentru acest proiect sau apartament — adaugă pozițiile manual",
+      "loadMaterialsFailed": "Materialele nu au putut fi încărcate — încearcă din nou",
+      "clientNameRequired": "Numele clientului este obligatoriu",
+      "serverError": "Eroare de server",
+      "updateFailed": "Actualizarea nu a reușit",
+      "deleteFailed": "Ștergerea nu a reușit",
+      "pdfFailed": "PDF-ul nu a putut fi creat"
+    }
   }
 }

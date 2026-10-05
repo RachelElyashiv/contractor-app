@@ -187,5 +187,90 @@
       "updateFailed": "Güncellenemedi",
       "deleteFailed": "İşçi silinirken hata"
     }
+  },
+  "invoices": {
+    "title": "Faturalar",
+    "quote": "Teklif",
+    "new": "Yeni",
+    "tabs": {
+      "invoices": "Faturalar ({{count}})",
+      "quotes": "Teklifler ({{count}})"
+    },
+    "summary": {
+      "revenue": "Gelir",
+      "pending": "Bekliyor",
+      "overdue": "Gecikmiş"
+    },
+    "status": {
+      "paid": "Ödendi ✓",
+      "sent": "Gönderildi",
+      "overdue": "Gecikmiş",
+      "draft": "Taslak",
+      "cancelled": "İptal"
+    },
+    "markPaid": "Ödendi olarak işaretle ✓",
+    "markApproved": "Onaylandı ✓",
+    "emptyQuotes": "Henüz teklif yok",
+    "emptyInvoices": "Henüz fatura yok",
+    "emptyQuotesHint": "Eklemek için \"📋 Teklif\"e dokunun",
+    "emptyInvoicesHint": "Eklemek için \"+ Yeni\"ye dokunun",
+    "newQuote": "Yeni teklif",
+    "newInvoice": "Yeni fatura",
+    "buildFromProject": "Bir projeden oluştur (isteğe bağlı)",
+    "buildFromProjectHint": "Tüm malzemeleri kalem olarak yüklemek için bir proje veya daire seçin",
+    "pickProject": "Proje seçin",
+    "pickApartment": "Daire seçin",
+    "allApartmentsInProject": "Projedeki tüm daireler",
+    "loadMaterialsAsItems": "Malzemeleri kalem olarak yükle",
+    "loading": "Yükleniyor…",
+    "items": "Kalemler",
+    "addRow": "Satır ekle",
+    "pullMaterial": "Stoktan malzeme çek",
+    "pullMaterialHint": "Fiyat alış maliyetinden gelir — kârınızı eklemek için düzenleyin",
+    "noProjects": "Henüz proje yok",
+    "noApartments": "Bu projede daire yok",
+    "noMaterialsInStock": "Stokta malzeme yok",
+    "subtotal": "Ara toplam",
+    "taxLine": "KDV (%{{percent}})",
+    "totalDue": "Ödenecek tutar",
+    "createQuote": "Teklif oluştur",
+    "createInvoice": "Fatura oluştur",
+    "confirmDelete": "Bu belge silinsin mi?",
+    "shareDocument": "Belgeyi paylaş",
+    "fields": {
+      "clientName": "Müşteri adı *",
+      "clientPhone": "Müşteri telefonu",
+      "description": "Açıklama",
+      "quantity": "Adet",
+      "price": "Fiyat",
+      "notes": "Notlar",
+      "taxPercent": "KDV %"
+    },
+    "doc": {
+      "quote": "Teklif",
+      "taxInvoice": "Fatura",
+      "invoice": "Fatura",
+      "client": "Müşteri",
+      "lineTotal": "Toplam",
+      "unitPrice": "Birim fiyat",
+      "quantity": "Adet",
+      "description": "Açıklama",
+      "notes": "Notlar",
+      "generated": "Otomatik oluşturuldu"
+    },
+    "share": {
+      "greeting": "Merhaba {{name}},",
+      "attached": "Ekte {{number}} numaralı {{type}} var:"
+    },
+    "errors": {
+      "chooseProjectFirst": "Önce bir proje seçin",
+      "noMaterialsFound": "Bu proje veya daire için malzeme bulunamadı — kalemleri elle ekleyin",
+      "loadMaterialsFailed": "Malzemeler yüklenemedi — tekrar deneyin",
+      "clientNameRequired": "Müşteri adı zorunludur",
+      "serverError": "Sunucu hatası",
+      "updateFailed": "Güncellenemedi",
+      "deleteFailed": "Silinemedi",
+      "pdfFailed": "PDF oluşturulamadı"
+    }
   }
 }

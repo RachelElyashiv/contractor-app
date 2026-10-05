@@ -187,5 +187,90 @@
       "updateFailed": "No se pudo actualizar",
       "deleteFailed": "Error al eliminar el trabajador"
     }
+  },
+  "invoices": {
+    "title": "Facturas",
+    "quote": "Presupuesto",
+    "new": "Nueva",
+    "tabs": {
+      "invoices": "Facturas ({{count}})",
+      "quotes": "Presupuestos ({{count}})"
+    },
+    "summary": {
+      "revenue": "Ingresos",
+      "pending": "Pendiente",
+      "overdue": "Vencido"
+    },
+    "status": {
+      "paid": "Pagada ✓",
+      "sent": "Enviada",
+      "overdue": "Vencida",
+      "draft": "Borrador",
+      "cancelled": "Cancelada"
+    },
+    "markPaid": "Marcar como pagada ✓",
+    "markApproved": "Aprobado ✓",
+    "emptyQuotes": "Aún no hay presupuestos",
+    "emptyInvoices": "Aún no hay facturas",
+    "emptyQuotesHint": "Pulsa \"📋 Presupuesto\" para añadir",
+    "emptyInvoicesHint": "Pulsa \"+ Nueva\" para añadir",
+    "newQuote": "Nuevo presupuesto",
+    "newInvoice": "Nueva factura",
+    "buildFromProject": "Crear desde una obra (opcional)",
+    "buildFromProjectHint": "Elige una obra o vivienda para cargar todos sus materiales como líneas",
+    "pickProject": "Elige una obra",
+    "pickApartment": "Elige una vivienda",
+    "allApartmentsInProject": "Todas las viviendas de la obra",
+    "loadMaterialsAsItems": "Cargar materiales como líneas",
+    "loading": "Cargando…",
+    "items": "Líneas",
+    "addRow": "Añadir línea",
+    "pullMaterial": "Traer un material del almacén",
+    "pullMaterialHint": "El precio viene del coste de compra — edítalo para añadir tu margen",
+    "noProjects": "Aún no hay obras",
+    "noApartments": "No hay viviendas en esta obra",
+    "noMaterialsInStock": "No hay materiales en el almacén",
+    "subtotal": "Base imponible",
+    "taxLine": "IVA ({{percent}}%)",
+    "totalDue": "Total a pagar",
+    "createQuote": "Crear presupuesto",
+    "createInvoice": "Crear factura",
+    "confirmDelete": "¿Eliminar este documento?",
+    "shareDocument": "Compartir documento",
+    "fields": {
+      "clientName": "Nombre del cliente *",
+      "clientPhone": "Teléfono del cliente",
+      "description": "Descripción",
+      "quantity": "Cant.",
+      "price": "Precio",
+      "notes": "Notas",
+      "taxPercent": "IVA %"
+    },
+    "doc": {
+      "quote": "Presupuesto",
+      "taxInvoice": "Factura",
+      "invoice": "Factura",
+      "client": "Cliente",
+      "lineTotal": "Total",
+      "unitPrice": "Precio unitario",
+      "quantity": "Cant.",
+      "description": "Descripción",
+      "notes": "Notas",
+      "generated": "Generado automáticamente"
+    },
+    "share": {
+      "greeting": "Hola {{name}}:",
+      "attached": "Adjunto va {{type}} número {{number}}:"
+    },
+    "errors": {
+      "chooseProjectFirst": "Elige primero una obra",
+      "noMaterialsFound": "No se han encontrado materiales para esta obra o vivienda — añade las líneas a mano",
+      "loadMaterialsFailed": "No se han podido cargar los materiales — inténtalo de nuevo",
+      "clientNameRequired": "El nombre del cliente es obligatorio",
+      "serverError": "Error del servidor",
+      "updateFailed": "No se ha podido actualizar",
+      "deleteFailed": "No se ha podido eliminar",
+      "pdfFailed": "No se ha podido crear el PDF"
+    }
   }
 }

@@ -187,5 +187,90 @@
       "updateFailed": "Impossible de mettre à jour",
       "deleteFailed": "Erreur lors de la suppression de l'ouvrier"
     }
+  },
+  "invoices": {
+    "title": "Factures",
+    "quote": "Devis",
+    "new": "Nouvelle",
+    "tabs": {
+      "invoices": "Factures ({{count}})",
+      "quotes": "Devis ({{count}})"
+    },
+    "summary": {
+      "revenue": "Recettes",
+      "pending": "En attente",
+      "overdue": "En retard"
+    },
+    "status": {
+      "paid": "Payée ✓",
+      "sent": "Envoyée",
+      "overdue": "En retard",
+      "draft": "Brouillon",
+      "cancelled": "Annulée"
+    },
+    "markPaid": "Marquer comme payée ✓",
+    "markApproved": "Accepté ✓",
+    "emptyQuotes": "Aucun devis pour le moment",
+    "emptyInvoices": "Aucune facture pour le moment",
+    "emptyQuotesHint": "Appuyez sur « 📋 Devis » pour en ajouter",
+    "emptyInvoicesHint": "Appuyez sur « + Nouvelle » pour en ajouter",
+    "newQuote": "Nouveau devis",
+    "newInvoice": "Nouvelle facture",
+    "buildFromProject": "Créer à partir d’un chantier (facultatif)",
+    "buildFromProjectHint": "Choisissez un chantier ou un logement pour charger tous ses matériaux en lignes",
+    "pickProject": "Choisir un chantier",
+    "pickApartment": "Choisir un logement",
+    "allApartmentsInProject": "Tous les logements du chantier",
+    "loadMaterialsAsItems": "Charger les matériaux en lignes",
+    "loading": "Chargement…",
+    "items": "Lignes",
+    "addRow": "Ajouter une ligne",
+    "pullMaterial": "Prendre un matériau du stock",
+    "pullMaterialHint": "Le prix vient du coût d’achat — modifiez-le pour ajouter votre marge",
+    "noProjects": "Aucun chantier pour le moment",
+    "noApartments": "Aucun logement dans ce chantier",
+    "noMaterialsInStock": "Aucun matériau en stock",
+    "subtotal": "Total HT",
+    "taxLine": "TVA ({{percent}} %)",
+    "totalDue": "Total à payer",
+    "createQuote": "Créer le devis",
+    "createInvoice": "Créer la facture",
+    "confirmDelete": "Supprimer ce document ?",
+    "shareDocument": "Partager le document",
+    "fields": {
+      "clientName": "Nom du client *",
+      "clientPhone": "Téléphone du client",
+      "description": "Description",
+      "quantity": "Qté",
+      "price": "Prix",
+      "notes": "Remarques",
+      "taxPercent": "TVA %"
+    },
+    "doc": {
+      "quote": "Devis",
+      "taxInvoice": "Facture",
+      "invoice": "Facture",
+      "client": "Client",
+      "lineTotal": "Total",
+      "unitPrice": "Prix unitaire",
+      "quantity": "Qté",
+      "description": "Description",
+      "notes": "Remarques",
+      "generated": "Généré automatiquement"
+    },
+    "share": {
+      "greeting": "Bonjour {{name}},",
+      "attached": "Veuillez trouver ci-joint {{type}} n° {{number}} :"
+    },
+    "errors": {
+      "chooseProjectFirst": "Choisissez d’abord un chantier",
+      "noMaterialsFound": "Aucun matériau trouvé pour ce chantier ou ce logement — ajoutez les lignes à la main",
+      "loadMaterialsFailed": "Impossible de charger les matériaux — réessayez",
+      "clientNameRequired": "Le nom du client est obligatoire",
+      "serverError": "Erreur du serveur",
+      "updateFailed": "La mise à jour a échoué",
+      "deleteFailed": "La suppression a échoué",
+      "pdfFailed": "Impossible de créer le PDF"
+    }
   }
 }

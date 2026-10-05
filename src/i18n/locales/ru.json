@@ -187,5 +187,90 @@
       "updateFailed": "Не удалось обновить",
       "deleteFailed": "Ошибка при удалении рабочего"
     }
+  },
+  "invoices": {
+    "title": "Счета",
+    "quote": "Смета",
+    "new": "Новый",
+    "tabs": {
+      "invoices": "Счета ({{count}})",
+      "quotes": "Сметы ({{count}})"
+    },
+    "summary": {
+      "revenue": "Доход",
+      "pending": "Ожидает",
+      "overdue": "Просрочено"
+    },
+    "status": {
+      "paid": "Оплачен ✓",
+      "sent": "Отправлен",
+      "overdue": "Просрочен",
+      "draft": "Черновик",
+      "cancelled": "Отменён"
+    },
+    "markPaid": "Отметить оплаченным ✓",
+    "markApproved": "Утверждена ✓",
+    "emptyQuotes": "Смет пока нет",
+    "emptyInvoices": "Счетов пока нет",
+    "emptyQuotesHint": "Нажмите «📋 Смета», чтобы добавить",
+    "emptyInvoicesHint": "Нажмите «+ Новый», чтобы добавить",
+    "newQuote": "Новая смета",
+    "newInvoice": "Новый счёт",
+    "buildFromProject": "Собрать из объекта (необязательно)",
+    "buildFromProjectHint": "Выберите объект или квартиру, чтобы загрузить все материалы как позиции",
+    "pickProject": "Выберите объект",
+    "pickApartment": "Выберите квартиру",
+    "allApartmentsInProject": "Все квартиры объекта",
+    "loadMaterialsAsItems": "Загрузить материалы как позиции",
+    "loading": "Загрузка…",
+    "items": "Позиции",
+    "addRow": "Добавить строку",
+    "pullMaterial": "Взять материал со склада",
+    "pullMaterialHint": "Цена берётся из закупочной — измените её, чтобы заложить прибыль",
+    "noProjects": "Объектов пока нет",
+    "noApartments": "В этом объекте нет квартир",
+    "noMaterialsInStock": "На складе нет материалов",
+    "subtotal": "Сумма без НДС",
+    "taxLine": "НДС ({{percent}}%)",
+    "totalDue": "Итого к оплате",
+    "createQuote": "Создать смету",
+    "createInvoice": "Создать счёт",
+    "confirmDelete": "Удалить этот документ?",
+    "shareDocument": "Поделиться документом",
+    "fields": {
+      "clientName": "Имя клиента *",
+      "clientPhone": "Телефон клиента",
+      "description": "Описание",
+      "quantity": "Кол-во",
+      "price": "Цена",
+      "notes": "Примечания",
+      "taxPercent": "НДС %"
+    },
+    "doc": {
+      "quote": "Смета",
+      "taxInvoice": "Счёт-фактура",
+      "invoice": "Счёт",
+      "client": "Клиент",
+      "lineTotal": "Итого",
+      "unitPrice": "Цена за единицу",
+      "quantity": "Кол-во",
+      "description": "Описание",
+      "notes": "Примечания",
+      "generated": "Создано автоматически"
+    },
+    "share": {
+      "greeting": "Здравствуйте, {{name}}!",
+      "attached": "Во вложении {{type}} № {{number}}:"
+    },
+    "errors": {
+      "chooseProjectFirst": "Сначала выберите объект",
+      "noMaterialsFound": "Материалы для этого объекта или квартиры не найдены — добавьте позиции вручную",
+      "loadMaterialsFailed": "Не удалось загрузить материалы — попробуйте снова",
+      "clientNameRequired": "Укажите имя клиента",
+      "serverError": "Ошибка сервера",
+      "updateFailed": "Не удалось обновить",
+      "deleteFailed": "Не удалось удалить",
+      "pdfFailed": "Не удалось создать PDF"
+    }
   }
 }

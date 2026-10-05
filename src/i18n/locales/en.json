@@ -187,5 +187,90 @@
       "updateFailed": "Could not update",
       "deleteFailed": "Error deleting worker"
     }
+  },
+  "invoices": {
+    "title": "Invoices",
+    "quote": "Quote",
+    "new": "New",
+    "tabs": {
+      "invoices": "Invoices ({{count}})",
+      "quotes": "Quotes ({{count}})"
+    },
+    "summary": {
+      "revenue": "Revenue",
+      "pending": "Pending",
+      "overdue": "Overdue"
+    },
+    "status": {
+      "paid": "Paid ✓",
+      "sent": "Sent",
+      "overdue": "Overdue",
+      "draft": "Draft",
+      "cancelled": "Cancelled"
+    },
+    "markPaid": "Mark as paid ✓",
+    "markApproved": "Approved ✓",
+    "emptyQuotes": "No quotes yet",
+    "emptyInvoices": "No invoices yet",
+    "emptyQuotesHint": "Tap \"📋 Quote\" to add one",
+    "emptyInvoicesHint": "Tap \"+ New\" to add one",
+    "newQuote": "New quote",
+    "newInvoice": "New invoice",
+    "buildFromProject": "Build from a project (optional)",
+    "buildFromProjectHint": "Pick a project or apartment to load all its materials as line items",
+    "pickProject": "Choose a project",
+    "pickApartment": "Choose an apartment",
+    "allApartmentsInProject": "All apartments in the project",
+    "loadMaterialsAsItems": "Load materials as items",
+    "loading": "Loading…",
+    "items": "Items",
+    "addRow": "Add row",
+    "pullMaterial": "Pull a material from stock",
+    "pullMaterialHint": "The price comes from what you paid — edit it to add your margin",
+    "noProjects": "No projects yet",
+    "noApartments": "No apartments in this project",
+    "noMaterialsInStock": "No materials in stock",
+    "subtotal": "Subtotal",
+    "taxLine": "VAT ({{percent}}%)",
+    "totalDue": "Total due",
+    "createQuote": "Create quote",
+    "createInvoice": "Create invoice",
+    "confirmDelete": "Delete this document?",
+    "shareDocument": "Share document",
+    "fields": {
+      "clientName": "Client name *",
+      "clientPhone": "Client phone",
+      "description": "Description",
+      "quantity": "Qty",
+      "price": "Price",
+      "notes": "Notes",
+      "taxPercent": "VAT %"
+    },
+    "doc": {
+      "quote": "Quote",
+      "taxInvoice": "Tax invoice",
+      "invoice": "Invoice",
+      "client": "Client",
+      "lineTotal": "Total",
+      "unitPrice": "Unit price",
+      "quantity": "Qty",
+      "description": "Description",
+      "notes": "Notes",
+      "generated": "Generated automatically"
+    },
+    "share": {
+      "greeting": "Hello {{name}},",
+      "attached": "Attached is {{type}} number {{number}}:"
+    },
+    "errors": {
+      "chooseProjectFirst": "Choose a project first",
+      "noMaterialsFound": "No materials found for this project or apartment — add items by hand",
+      "loadMaterialsFailed": "Could not load the materials — try again",
+      "clientNameRequired": "A client name is required",
+      "serverError": "Server error",
+      "updateFailed": "Could not update",
+      "deleteFailed": "Could not delete",
+      "pdfFailed": "Could not create the PDF"
+    }
   }
 }

@@ -187,5 +187,90 @@
       "updateFailed": "Nie udało się zaktualizować",
       "deleteFailed": "Błąd podczas usuwania pracownika"
     }
+  },
+  "invoices": {
+    "title": "Faktury",
+    "quote": "Wycena",
+    "new": "Nowa",
+    "tabs": {
+      "invoices": "Faktury ({{count}})",
+      "quotes": "Wyceny ({{count}})"
+    },
+    "summary": {
+      "revenue": "Przychód",
+      "pending": "Oczekuje",
+      "overdue": "Po terminie"
+    },
+    "status": {
+      "paid": "Opłacona ✓",
+      "sent": "Wysłana",
+      "overdue": "Po terminie",
+      "draft": "Szkic",
+      "cancelled": "Anulowana"
+    },
+    "markPaid": "Oznacz jako opłaconą ✓",
+    "markApproved": "Zatwierdzona ✓",
+    "emptyQuotes": "Nie ma jeszcze wycen",
+    "emptyInvoices": "Nie ma jeszcze faktur",
+    "emptyQuotesHint": "Naciśnij „📋 Wycena\", aby dodać",
+    "emptyInvoicesHint": "Naciśnij „+ Nowa\", aby dodać",
+    "newQuote": "Nowa wycena",
+    "newInvoice": "Nowa faktura",
+    "buildFromProject": "Utwórz z budowy (opcjonalnie)",
+    "buildFromProjectHint": "Wybierz budowę lub mieszkanie, aby wczytać wszystkie materiały jako pozycje",
+    "pickProject": "Wybierz budowę",
+    "pickApartment": "Wybierz mieszkanie",
+    "allApartmentsInProject": "Wszystkie mieszkania na budowie",
+    "loadMaterialsAsItems": "Wczytaj materiały jako pozycje",
+    "loading": "Wczytywanie…",
+    "items": "Pozycje",
+    "addRow": "Dodaj wiersz",
+    "pullMaterial": "Pobierz materiał z magazynu",
+    "pullMaterialHint": "Cena pochodzi z zakupu — zmień ją, aby doliczyć marżę",
+    "noProjects": "Nie ma jeszcze budów",
+    "noApartments": "Na tej budowie nie ma mieszkań",
+    "noMaterialsInStock": "Brak materiałów w magazynie",
+    "subtotal": "Kwota netto",
+    "taxLine": "VAT ({{percent}}%)",
+    "totalDue": "Razem do zapłaty",
+    "createQuote": "Utwórz wycenę",
+    "createInvoice": "Utwórz fakturę",
+    "confirmDelete": "Usunąć ten dokument?",
+    "shareDocument": "Udostępnij dokument",
+    "fields": {
+      "clientName": "Nazwa klienta *",
+      "clientPhone": "Telefon klienta",
+      "description": "Opis",
+      "quantity": "Ilość",
+      "price": "Cena",
+      "notes": "Uwagi",
+      "taxPercent": "VAT %"
+    },
+    "doc": {
+      "quote": "Wycena",
+      "taxInvoice": "Faktura VAT",
+      "invoice": "Faktura",
+      "client": "Klient",
+      "lineTotal": "Razem",
+      "unitPrice": "Cena jedn.",
+      "quantity": "Ilość",
+      "description": "Opis",
+      "notes": "Uwagi",
+      "generated": "Wygenerowano automatycznie"
+    },
+    "share": {
+      "greeting": "Dzień dobry, {{name}},",
+      "attached": "W załączeniu {{type}} nr {{number}}:"
+    },
+    "errors": {
+      "chooseProjectFirst": "Najpierw wybierz budowę",
+      "noMaterialsFound": "Nie znaleziono materiałów dla tej budowy ani mieszkania — dodaj pozycje ręcznie",
+      "loadMaterialsFailed": "Nie udało się wczytać materiałów — spróbuj ponownie",
+      "clientNameRequired": "Nazwa klienta jest wymagana",
+      "serverError": "Błąd serwera",
+      "updateFailed": "Nie udało się zaktualizować",
+      "deleteFailed": "Nie udało się usunąć",
+      "pdfFailed": "Nie udało się utworzyć pliku PDF"
+    }
   }
 }

@@ -18,6 +18,7 @@ import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import PdfViewer from '../components/PdfViewer';
 import { apartments as apartmentsApi, invoices, materials as materialsApi, projects as projectsApi } from '../services/api';
+import { useLanguage } from '../i18n/LanguageContext';
 import { useTopInset } from '../hooks/useTopInset';
 import { useKeyboardHeight } from '../hooks/useKeyboardHeight';
 
@@ -26,6 +27,7 @@ const isWeb = Platform.OS === 'web';
 export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } = {}) {
   const topInset = useTopInset();
   const keyboardHeight = useKeyboardHeight();
+  const { t, lang, rtl } = useLanguage();
   const [list, setList] = useState([]);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -120,7 +122,7 @@ export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } =
 
   // Pull all materials of the project/apartment and turn them into quote line items
   async function importFromProject() {
-    if (!srcProjectId) { setFormError('בחרי פרויקט קודם'); return; }
+    if (!srcProjectId) { setFormError(t('invoices.errors.chooseProjectFirst')); return; }
     setImporting(true);
     try {
       const res = srcApartmentId
@@ -139,9 +141,9 @@ export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } =
         clientPhone: f.clientPhone || proj?.clientPhone || '',
         items: items.length ? items : f.items,
       }));
-      setFormError(items.length ? '' : 'לא נמצאו חומרים לפרויקט/דירה זו — הוסיפי פריטים ידנית');
+      setFormError(items.length ? '' : t('invoices.errors.noMaterialsFound'));
     } catch (e) {
-      setFormError('שגיאה בטעינת החומרים — נסי שוב');
+      setFormError(t('invoices.errors.loadMaterialsFailed'));
     } finally {
       setImporting(false);
     }
@@ -157,7 +159,7 @@ export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } =
   }
 
   async function createDocument() {
-    if (!form.clientName) { setFormError('חובה למלא שם לקוח'); return; }
+    if (!form.clientName) { setFormError(t('invoices.errors.clientNameRequired')); return; }
     setFormError('');
     setSubmitting(true);
     try {
@@ -178,7 +180,7 @@ export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } =
       setSrcApartmentId(null);
       loadData();
     } catch (e) {
-      const msg = e?.response?.data?.message || e?.message || 'שגיאה בשרת';
+      const msg = e?.response?.data?.message || e?.message || t('invoices.errors.serverError');
       setFormError(Array.isArray(msg) ? msg.join(', ') : String(msg));
     }
     finally { setSubmitting(false); }
@@ -188,22 +190,27 @@ export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } =
     try {
       await invoices.markPaid(id);
       loadData();
-    } catch (e) { Alert.alert('שגיאה', 'לא הצלחנו לעדכן'); }
+    } catch (e) { Alert.alert(t('common.error'), t('invoices.errors.updateFailed')); }
   }
 
   function deleteInvoice(id) {
     pendingDeleteFn.current = async () => {
       try { await invoices.delete(id); loadData(); }
-      catch (e) { Alert.alert('שגיאה', 'שגיאה במחיקה'); }
+      catch (e) { Alert.alert(t('common.error'), t('invoices.errors.deleteFailed')); }
     };
-    setConfirmDelete({ message: 'האם למחוק מסמך זה?' });
+    setConfirmDelete({ message: t('invoices.confirmDelete') });
   }
 
   const statusColor = { paid: '#1a6b4a', sent: '#185fa5', overdue: '#a32d2d', draft: '#ba7517', cancelled: '#888' };
-  const statusLabel = { paid: 'שולם ✓', sent: 'נשלח', overdue: 'איחור', draft: 'טיוטה', cancelled: 'בוטל' };
+  const statusLabel = {
+    paid: t('invoices.status.paid'), sent: t('invoices.status.sent'), overdue: t('invoices.status.overdue'),
+    draft: t('invoices.status.draft'), cancelled: t('invoices.status.cancelled'),
+  };
+  // Dates inside the printable document follow the chosen language
+  const dateLocale = { he: 'he-IL', ar: 'ar', en: 'en-GB', es: 'es', pt: 'pt', ru: 'ru', uk: 'uk', ro: 'ro', pl: 'pl', tr: 'tr', fr: 'fr', de: 'de' }[lang] || 'en-GB';
 
   async function printInvoice(inv) {
-    const typeLabel = inv.type === 'quote' ? 'הצעת מחיר' : 'חשבונית מס';
+    const typeLabel = inv.type === 'quote' ? t('invoices.doc.quote') : t('invoices.doc.taxInvoice');
     const itemRows = (inv.items || []).map(it => `
       <tr>
         <td style="padding:8px;text-align:left">₪${Number(it.total || (it.quantity * it.unitPrice)).toLocaleString()}</td>
@@ -211,11 +218,11 @@ export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } =
         <td style="padding:8px;text-align:center">${it.quantity}</td>
         <td style="padding:8px;text-align:right">${it.description}</td>
       </tr>`).join('');
-    const html = `<!DOCTYPE html><html dir="rtl" lang="he"><head><meta charset="UTF-8">
+    const html = `<!DOCTYPE html><html dir="${rtl ? 'rtl' : 'ltr'}" lang="${lang}"><head><meta charset="UTF-8">
 <title>${typeLabel} ${inv.invoiceNumber}</title>
 <style>
   * { box-sizing:border-box; margin:0; padding:0; font-family:Arial,sans-serif; }
-  body { background:#fff; color:#1a1a1a; padding:40px; direction:rtl; }
+  body { background:#fff; color:#1a1a1a; padding:40px; direction:${rtl ? 'rtl' : 'ltr'}; }
   .header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:32px; border-bottom:3px solid #1a6b4a; padding-bottom:20px; }
   .title { font-size:28px; font-weight:bold; color:#1a6b4a; }
   .num { font-size:14px; color:#888; margin-top:4px; }
@@ -237,33 +244,33 @@ export default function InvoicesScreen({ pendingCreate, onClearPendingCreate } =
 <div class="header">
   <div>
     <div class="title">${typeLabel}</div>
-    <div class="num">${inv.invoiceNumber} · ${new Date(inv.issueDate || inv.createdAt).toLocaleDateString('he-IL')}</div>
+    <div class="num">${inv.invoiceNumber} · ${new Date(inv.issueDate || inv.createdAt).toLocaleDateString(dateLocale)}</div>
   </div>
   <div style="text-align:left">
-    ${inv.status === 'paid' ? '<span style="background:#e8f5ef;color:#1a6b4a;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600">שולם ✓</span>' : ''}
+    ${inv.status === 'paid' ? `<span style="background:#e8f5ef;color:#1a6b4a;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600">${t('invoices.status.paid')}</span>` : ''}
   </div>
 </div>
 <div class="client-box">
-  <h3>לקוח</h3>
+  <h3>${t('invoices.doc.client')}</h3>
   <p>${inv.clientName}</p>
   ${inv.clientPhone ? `<p style="font-size:13px;color:#888;margin-top:4px">${inv.clientPhone}</p>` : ''}
 </div>
 <table>
   <thead><tr>
-    <th style="text-align:left">סה"כ</th>
-    <th style="text-align:center">מחיר יחידה</th>
-    <th style="text-align:center">כמות</th>
-    <th style="text-align:right">תיאור</th>
+    <th style="text-align:left">${t('invoices.doc.lineTotal')}</th>
+    <th style="text-align:center">${t('invoices.doc.unitPrice')}</th>
+    <th style="text-align:center">${t('invoices.doc.quantity')}</th>
+    <th style="text-align:right">${t('invoices.doc.description')}</th>
   </tr></thead>
   <tbody>${itemRows}</tbody>
 </table>
 <table class="totals">
-  <tr><td>סכום לפני מע"מ</td><td style="text-align:left">₪${Number(inv.subtotal||0).toLocaleString()}</td></tr>
-  <tr><td>מע"מ (${inv.taxPercent||17}%)</td><td style="text-align:left">₪${Number(inv.taxAmount||0).toLocaleString()}</td></tr>
-  <tr><td>סה"כ לתשלום</td><td style="text-align:left">₪${Number(inv.total||0).toLocaleString()}</td></tr>
+  <tr><td>${t('invoices.subtotal')}</td><td style="text-align:left">₪${Number(inv.subtotal||0).toLocaleString()}</td></tr>
+  <tr><td>${t('invoices.taxLine', { percent: inv.taxPercent || 17 })}</td><td style="text-align:left">₪${Number(inv.taxAmount||0).toLocaleString()}</td></tr>
+  <tr><td>${t('invoices.totalDue')}</td><td style="text-align:left">₪${Number(inv.total||0).toLocaleString()}</td></tr>
 </table>
-${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
-<div class="footer">נוצר אוטומטית · ${new Date().toLocaleDateString('he-IL')}</div>
+${inv.notes ? `<div class="notes">${t('invoices.doc.notes')}: ${inv.notes}</div>` : ''}
+<div class="footer">${t('invoices.doc.generated')} · ${new Date().toLocaleDateString(dateLocale)}</div>
 </body></html>`;
     setPdfModal({ visible: true, html });
   }
@@ -274,30 +281,30 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
     try {
       const { uri } = await Print.printToFileAsync({ html: pdfModal.html });
       if (await Sharing.isAvailableAsync()) {
-        await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: 'שיתוף מסמך', UTI: 'com.adobe.pdf' });
+        await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: t('invoices.shareDocument'), UTI: 'com.adobe.pdf' });
       } else {
         await Print.printAsync({ uri });
       }
     } catch (e) {
-      Alert.alert('שגיאה', 'לא הצלחנו ליצור PDF');
+      Alert.alert(t('common.error'), t('invoices.errors.pdfFailed'));
     }
   }
 
   function shareOnWhatsApp(inv) {
-    const typeLabel = inv.type === 'quote' ? 'הצעת מחיר' : 'חשבונית';
+    const typeLabel = inv.type === 'quote' ? t('invoices.doc.quote') : t('invoices.doc.invoice');
     const itemLines = (inv.items || []).map(it =>
       `• ${it.description} × ${it.quantity} = ₪${Number(it.total || it.unitPrice * it.quantity).toLocaleString()}`
     ).join('\n');
     const msg = [
-      `שלום ${inv.clientName},`,
+      t('invoices.share.greeting', { name: inv.clientName }),
       ``,
-      `מצורפת ${typeLabel} מספר ${inv.invoiceNumber}:`,
+      t('invoices.share.attached', { type: typeLabel, number: inv.invoiceNumber }),
       itemLines,
       ``,
-      `סה"כ לפני מע"מ: ₪${Number(inv.subtotal || 0).toLocaleString()}`,
-      `מע"מ (${inv.taxPercent || 17}%): ₪${Number(inv.taxAmount || 0).toLocaleString()}`,
-      `סה"כ לתשלום: ₪${Number(inv.total || 0).toLocaleString()}`,
-      inv.notes ? `\nהערות: ${inv.notes}` : '',
+      `${t('invoices.subtotal')}: ₪${Number(inv.subtotal || 0).toLocaleString()}`,
+      `${t('invoices.taxLine', { percent: inv.taxPercent || 17 })}: ₪${Number(inv.taxAmount || 0).toLocaleString()}`,
+      `${t('invoices.totalDue')}: ₪${Number(inv.total || 0).toLocaleString()}`,
+      inv.notes ? `\n${t('invoices.doc.notes')}: ${inv.notes}` : '',
     ].filter(l => l !== undefined).join('\n');
 
     const rawPhone = (inv.clientPhone || '').replace(/\D/g, '');
@@ -321,13 +328,13 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: topInset + 12 }]}>
-        <Text style={styles.headerTitle}>חשבוניות</Text>
+        <Text style={styles.headerTitle}>{t('invoices.title')}</Text>
         <View style={{ flexDirection: 'row', gap: 8 }}>
           <TouchableOpacity style={styles.addBtn} onPress={() => { setCreateType('quote'); setModalVisible(true); }}>
-            <Text style={styles.addBtnText}>📋 הצעה</Text>
+            <Text style={styles.addBtnText}>📋 {t('invoices.quote')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.addBtn} onPress={() => { setCreateType('invoice'); setModalVisible(true); }}>
-            <Text style={styles.addBtnText}>+ חדש</Text>
+            <Text style={styles.addBtnText}>+ {t('invoices.new')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -336,12 +343,12 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
       <View style={styles.tabRow}>
         <TouchableOpacity style={[styles.tab, activeTab === 'invoices' && styles.tabActive]} onPress={() => setActiveTab('invoices')}>
           <Text style={[styles.tabText, activeTab === 'invoices' && styles.tabTextActive]}>
-            🧾 חשבוניות ({invoiceList.length})
+            🧾 {t('invoices.tabs.invoices', { count: invoiceList.length })}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.tab, activeTab === 'quotes' && styles.tabActive]} onPress={() => setActiveTab('quotes')}>
           <Text style={[styles.tabText, activeTab === 'quotes' && styles.tabTextActive]}>
-            📋 הצעות מחיר ({quoteList.length})
+            📋 {t('invoices.tabs.quotes', { count: quoteList.length })}
           </Text>
         </TouchableOpacity>
       </View>
@@ -351,15 +358,15 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
           <View style={styles.summaryRow}>
             <View style={styles.summaryCard}>
               <Text style={styles.summaryVal}>₪{Math.round((summary.totalRevenue || 0) / 1000)}K</Text>
-              <Text style={styles.summaryLabel}>הכנסות</Text>
+              <Text style={styles.summaryLabel}>{t('invoices.summary.revenue')}</Text>
             </View>
             <View style={styles.summaryCard}>
               <Text style={[styles.summaryVal, { color: '#185fa5' }]}>₪{Math.round((summary.pendingAmount || 0) / 1000)}K</Text>
-              <Text style={styles.summaryLabel}>ממתין</Text>
+              <Text style={styles.summaryLabel}>{t('invoices.summary.pending')}</Text>
             </View>
             <View style={styles.summaryCard}>
               <Text style={[styles.summaryVal, { color: '#a32d2d' }]}>₪{Math.round((summary.overdueAmount || 0) / 1000)}K</Text>
-              <Text style={styles.summaryLabel}>איחור</Text>
+              <Text style={styles.summaryLabel}>{t('invoices.summary.overdue')}</Text>
             </View>
           </View>
         )}
@@ -378,12 +385,12 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
             <View style={{ flexDirection: 'row', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
               {inv.status !== 'paid' && inv.type !== 'quote' && (
                 <TouchableOpacity style={styles.paidBtn} onPress={() => markPaid(inv.id)}>
-                  <Text style={styles.paidBtnText}>סמן כשולם ✓</Text>
+                  <Text style={styles.paidBtnText}>{t('invoices.markPaid')}</Text>
                 </TouchableOpacity>
               )}
               {inv.type === 'quote' && inv.status !== 'paid' && (
                 <TouchableOpacity style={[styles.paidBtn, { backgroundColor: '#e6f1fb' }]} onPress={() => markPaid(inv.id)}>
-                  <Text style={[styles.paidBtnText, { color: '#185fa5' }]}>אושרה ✓</Text>
+                  <Text style={[styles.paidBtnText, { color: '#185fa5' }]}>{t('invoices.markApproved')}</Text>
                 </TouchableOpacity>
               )}
               <TouchableOpacity style={[styles.paidBtn, { backgroundColor: '#fff3e0' }]} onPress={() => printInvoice(inv)}>
@@ -393,7 +400,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
                 <Text style={[styles.paidBtnText, { color: '#1a7a3c' }]}>📲 WhatsApp</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.paidBtn, { backgroundColor: '#fcebeb' }]} onPress={() => deleteInvoice(inv.id)}>
-                <Text style={[styles.paidBtnText, { color: '#a32d2d' }]}>🗑 מחק</Text>
+                <Text style={[styles.paidBtnText, { color: '#a32d2d' }]}>🗑 {t('common.delete')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -403,10 +410,10 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
           <View style={{ alignItems: 'center', marginTop: 50 }}>
             <Text style={{ fontSize: 40, marginBottom: 10 }}>{activeTab === 'quotes' ? '📋' : '🧾'}</Text>
             <Text style={{ fontSize: 16, color: '#555', fontWeight: '600' }}>
-              {activeTab === 'quotes' ? 'אין הצעות מחיר עדיין' : 'אין חשבוניות עדיין'}
+              {activeTab === 'quotes' ? t('invoices.emptyQuotes') : t('invoices.emptyInvoices')}
             </Text>
             <Text style={{ fontSize: 13, color: '#888', marginTop: 4 }}>
-              {activeTab === 'quotes' ? 'לחצי "📋 הצעה" להוסיף' : 'לחצי "+ חדש" להוסיף'}
+              {activeTab === 'quotes' ? t('invoices.emptyQuotesHint') : t('invoices.emptyInvoicesHint')}
             </Text>
           </View>
         )}
@@ -416,55 +423,55 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>
-              {createType === 'quote' ? '📋 הצעת מחיר חדשה' : '🧾 חשבונית חדשה'}
+              {createType === 'quote' ? `📋 ${t('invoices.newQuote')}` : `🧾 ${t('invoices.newInvoice')}`}
             </Text>
             <ScrollView>
               {/* Auto-fill from a project / apartment */}
               <View style={styles.importBox}>
-                <Text style={styles.importTitle}>📥 בנה מפרויקט (אופציונלי)</Text>
-                <Text style={styles.importHint}>בחרי פרויקט/דירה כדי לטעון את כל החומרים כפריטים אוטומטית</Text>
+                <Text style={styles.importTitle}>📥 {t('invoices.buildFromProject')}</Text>
+                <Text style={styles.importHint}>{t('invoices.buildFromProjectHint')}</Text>
                 <TouchableOpacity style={styles.selectorBtn} onPress={() => setShowSrcProject(true)}>
-                  <Text style={styles.selectorText}>{srcProject ? `📁 ${srcProject.name}` : '📁 בחרי פרויקט'}</Text>
+                  <Text style={styles.selectorText}>{srcProject ? `📁 ${srcProject.name}` : `📁 ${t('invoices.pickProject')}`}</Text>
                 </TouchableOpacity>
                 {srcProjectId ? (
                   <TouchableOpacity style={styles.selectorBtn} onPress={() => setShowSrcApartment(true)}>
-                    <Text style={styles.selectorText}>{srcApartment ? `🏠 ${srcApartment.name}` : '🏠 כל הדירות בפרויקט'}</Text>
+                    <Text style={styles.selectorText}>{srcApartment ? `🏠 ${srcApartment.name}` : `🏠 ${t('invoices.allApartmentsInProject')}`}</Text>
                   </TouchableOpacity>
                 ) : null}
                 {srcProjectId ? (
                   <TouchableOpacity style={[styles.importBtn, importing && { opacity: 0.6 }]} onPress={importFromProject} disabled={importing}>
-                    <Text style={styles.importBtnText}>{importing ? 'טוען...' : '📥 טען חומרים כפריטים'}</Text>
+                    <Text style={styles.importBtnText}>{importing ? t('invoices.loading') : `📥 ${t('invoices.loadMaterialsAsItems')}`}</Text>
                   </TouchableOpacity>
                 ) : null}
               </View>
 
-              <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder="שם לקוח *" value={form.clientName}
+              <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder={t('invoices.fields.clientName')} value={form.clientName}
                 onChangeText={v => setForm({ ...form, clientName: v })} textAlign="right" />
-              <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder="טלפון לקוח" value={form.clientPhone}
+              <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder={t('invoices.fields.clientPhone')} value={form.clientPhone}
                 onChangeText={v => setForm({ ...form, clientPhone: v })} keyboardType="phone-pad" textAlign="right" />
-              <Text style={styles.itemsTitle}>פריטים</Text>
+              <Text style={styles.itemsTitle}>{t('invoices.items')}</Text>
               {form.items.map((item, idx) => (
                 <View key={idx} style={styles.itemRow}>
-                  <TextInput style={[styles.input, { flex: 2 }]} placeholderTextColor="#9a9a9a" placeholder="תיאור" value={item.description}
+                  <TextInput style={[styles.input, { flex: 2 }]} placeholderTextColor="#9a9a9a" placeholder={t('invoices.fields.description')} value={item.description}
                     onChangeText={v => { const items = [...form.items]; items[idx].description = v; setForm({ ...form, items }); }} textAlign="right" />
-                  <TextInput style={[styles.input, { flex: 1, marginRight: 6 }]} placeholderTextColor="#9a9a9a" placeholder="כמות" value={item.quantity}
+                  <TextInput style={[styles.input, { flex: 1, marginRight: 6 }]} placeholderTextColor="#9a9a9a" placeholder={t('invoices.fields.quantity')} value={item.quantity}
                     onChangeText={v => { const items = [...form.items]; items[idx].quantity = v; setForm({ ...form, items }); }} keyboardType="numeric" textAlign="right" />
-                  <TextInput style={[styles.input, { flex: 1, marginRight: 6 }]} placeholderTextColor="#9a9a9a" placeholder="מחיר" value={item.unitPrice}
+                  <TextInput style={[styles.input, { flex: 1, marginRight: 6 }]} placeholderTextColor="#9a9a9a" placeholder={t('invoices.fields.price')} value={item.unitPrice}
                     onChangeText={v => { const items = [...form.items]; items[idx].unitPrice = v; setForm({ ...form, items }); }} keyboardType="numeric" textAlign="right" />
                 </View>
               ))}
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 4 }}>
                 <TouchableOpacity onPress={() => setForm({ ...form, items: [...form.items, { description: '', quantity: '1', unitPrice: '' }] })}>
-                  <Text style={styles.addItem}>+ הוסף שורה</Text>
+                  <Text style={styles.addItem}>+ {t('invoices.addRow')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => { loadAllMaterials(); setShowMaterialPicker(true); }}>
-                  <Text style={styles.addItem}>📦 משוך חומר מהמלאי</Text>
+                  <Text style={styles.addItem}>📦 {t('invoices.pullMaterial')}</Text>
                 </TouchableOpacity>
               </View>
-              <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder="הערות" value={form.notes}
+              <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder={t('invoices.fields.notes')} value={form.notes}
                 onChangeText={v => setForm({ ...form, notes: v })} textAlign="right" />
               {createType === 'invoice' && (
-                <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder="מע״מ %" value={form.taxPercent}
+                <TextInput style={styles.input} placeholderTextColor="#9a9a9a" placeholder={t('invoices.fields.taxPercent')} value={form.taxPercent}
                   onChangeText={v => setForm({ ...form, taxPercent: v })} keyboardType="numeric" textAlign="right" />
               )}
               {/* Live total preview */}
@@ -478,17 +485,17 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
                   <View style={{ backgroundColor: '#f0f7f3', borderRadius: 10, padding: 12, marginBottom: 8 }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
                       <Text style={{ color: '#555', fontSize: 13 }}>₪{subtotal.toLocaleString()}</Text>
-                      <Text style={{ color: '#555', fontSize: 13 }}>סכום לפני מע"מ</Text>
+                      <Text style={{ color: '#555', fontSize: 13 }}>{t('invoices.subtotal')}</Text>
                     </View>
                     {createType === 'invoice' && (
                       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
                         <Text style={{ color: '#555', fontSize: 13 }}>₪{tax.toLocaleString()}</Text>
-                        <Text style={{ color: '#555', fontSize: 13 }}>מע"מ ({form.taxPercent || 17}%)</Text>
+                        <Text style={{ color: '#555', fontSize: 13 }}>{t('invoices.taxLine', { percent: form.taxPercent || 17 })}</Text>
                       </View>
                     )}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 1, borderTopColor: '#c8e6d6', paddingTop: 6, marginTop: 4 }}>
                       <Text style={{ color: '#1a6b4a', fontSize: 15, fontWeight: 'bold' }}>₪{total.toLocaleString()}</Text>
-                      <Text style={{ color: '#1a6b4a', fontSize: 15, fontWeight: 'bold' }}>סה"כ לתשלום</Text>
+                      <Text style={{ color: '#1a6b4a', fontSize: 15, fontWeight: 'bold' }}>{t('invoices.totalDue')}</Text>
                     </View>
                   </View>
                 );
@@ -498,11 +505,11 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
             <View style={styles.modalActions}>
               <TouchableOpacity style={[styles.btnPrimary, submitting && { opacity: 0.6 }]} onPress={createDocument} disabled={submitting}>
                 <Text style={styles.btnPrimaryText}>
-                  {submitting ? 'שולח...' : createType === 'quote' ? 'צור הצעה' : 'צור חשבונית'}
+                  {submitting ? t('common.submitting') : createType === 'quote' ? t('invoices.createQuote') : t('invoices.createInvoice')}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btnSecondary} onPress={() => { setModalVisible(false); setFormError(''); setSrcProjectId(null); setSrcApartmentId(null); }}>
-                <Text style={styles.btnSecondaryText}>ביטול</Text>
+                <Text style={styles.btnSecondaryText}>{t('common.cancel')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -513,7 +520,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
       <Modal visible={showSrcProject} animationType="slide" transparent onRequestClose={() => setShowSrcProject(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>בחרי פרויקט</Text>
+            <Text style={styles.modalTitle}>{t('invoices.pickProject')}</Text>
             <ScrollView>
               {projectsList.map(p => (
                 <TouchableOpacity key={p.id} style={[styles.filterOption, srcProjectId === p.id && styles.filterOptionActive]}
@@ -521,10 +528,10 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
                   <Text style={[styles.filterOptionText, srcProjectId === p.id && { color: '#1a6b4a', fontWeight: '600' }]}>{p.name}</Text>
                 </TouchableOpacity>
               ))}
-              {projectsList.length === 0 && <Text style={{ textAlign: 'center', color: '#888', marginTop: 20 }}>אין פרויקטים עדיין</Text>}
+              {projectsList.length === 0 && <Text style={{ textAlign: 'center', color: '#888', marginTop: 20 }}>{t('invoices.noProjects')}</Text>}
             </ScrollView>
             <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowSrcProject(false)}>
-              <Text style={styles.btnSecondaryText}>סגור</Text>
+              <Text style={styles.btnSecondaryText}>{t('common.close')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -534,10 +541,10 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
       <Modal visible={showSrcApartment} animationType="slide" transparent onRequestClose={() => setShowSrcApartment(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>בחרי דירה</Text>
+            <Text style={styles.modalTitle}>{t('invoices.pickApartment')}</Text>
             <ScrollView>
               <TouchableOpacity style={styles.filterOption} onPress={() => { setSrcApartmentId(null); setShowSrcApartment(false); }}>
-                <Text style={styles.filterOptionText}>כל הדירות בפרויקט</Text>
+                <Text style={styles.filterOptionText}>{t('invoices.allApartmentsInProject')}</Text>
               </TouchableOpacity>
               {srcApartments.map(a => (
                 <TouchableOpacity key={a.id} style={[styles.filterOption, srcApartmentId === a.id && styles.filterOptionActive]}
@@ -547,10 +554,10 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
                   </Text>
                 </TouchableOpacity>
               ))}
-              {srcApartments.length === 0 && <Text style={{ textAlign: 'center', color: '#888', marginTop: 20 }}>אין דירות לפרויקט זה</Text>}
+              {srcApartments.length === 0 && <Text style={{ textAlign: 'center', color: '#888', marginTop: 20 }}>{t('invoices.noApartments')}</Text>}
             </ScrollView>
             <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowSrcApartment(false)}>
-              <Text style={styles.btnSecondaryText}>סגור</Text>
+              <Text style={styles.btnSecondaryText}>{t('common.close')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -560,8 +567,8 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
       <Modal visible={showMaterialPicker} animationType="slide" transparent onRequestClose={() => setShowMaterialPicker(false)}>
         <View style={[styles.overlay, { paddingBottom: keyboardHeight }]}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>📦 משוך חומר מהמלאי</Text>
-            <Text style={{ textAlign: 'center', color: '#888', fontSize: 12, marginBottom: 10 }}>המחיר יטען לפי מחיר הקנייה — תוכלי לערוך אותו ולהוסיף רווח</Text>
+            <Text style={styles.modalTitle}>📦 {t('invoices.pullMaterial')}</Text>
+            <Text style={{ textAlign: 'center', color: '#888', fontSize: 12, marginBottom: 10 }}>{t('invoices.pullMaterialHint')}</Text>
             <ScrollView>
               {allMaterials.map(m => (
                 <TouchableOpacity key={m.id} style={styles.filterOption} onPress={() => addMaterialItem(m)}>
@@ -571,10 +578,10 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
                   </View>
                 </TouchableOpacity>
               ))}
-              {allMaterials.length === 0 && <Text style={{ textAlign: 'center', color: '#888', marginTop: 20 }}>אין חומרים במלאי</Text>}
+              {allMaterials.length === 0 && <Text style={{ textAlign: 'center', color: '#888', marginTop: 20 }}>{t('invoices.noMaterialsInStock')}</Text>}
             </ScrollView>
             <TouchableOpacity style={styles.btnSecondary} onPress={() => setShowMaterialPicker(false)}>
-              <Text style={styles.btnSecondaryText}>סגור</Text>
+              <Text style={styles.btnSecondaryText}>{t('common.close')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -584,7 +591,7 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
       <PdfViewer
         visible={pdfModal.visible}
         html={pdfModal.html}
-        title="תצוגת מסמך"
+        title={t('document.title')}
         onShare={isWeb ? undefined : sharePdf}
         onClose={() => setPdfModal({ visible: false, html: '' })}
       />
@@ -596,11 +603,11 @@ ${inv.notes ? `<div class="notes">הערות: ${inv.notes}</div>` : ''}
             <View style={{ flexDirection: 'row', gap: 10 }}>
               <TouchableOpacity style={{ flex: 1, backgroundColor: '#fcebeb', padding: 14, borderRadius: 10, alignItems: 'center' }}
                 onPress={() => { const fn = pendingDeleteFn.current; pendingDeleteFn.current = null; setConfirmDelete(null); fn?.(); }}>
-                <Text style={{ color: '#a32d2d', fontWeight: '600', fontSize: 15 }}>מחק</Text>
+                <Text style={{ color: '#a32d2d', fontWeight: '600', fontSize: 15 }}>{t('common.delete')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={{ flex: 1, backgroundColor: '#f0f0f0', padding: 14, borderRadius: 10, alignItems: 'center' }}
                 onPress={() => { pendingDeleteFn.current = null; setConfirmDelete(null); }}>
-                <Text style={{ color: '#555', fontSize: 15 }}>ביטול</Text>
+                <Text style={{ color: '#555', fontSize: 15 }}>{t('common.cancel')}</Text>
               </TouchableOpacity>
             </View>
           </View>

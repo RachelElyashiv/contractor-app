@@ -187,5 +187,90 @@
       "updateFailed": "Не вдалося оновити",
       "deleteFailed": "Помилка під час видалення робітника"
     }
+  },
+  "invoices": {
+    "title": "Рахунки",
+    "quote": "Кошторис",
+    "new": "Новий",
+    "tabs": {
+      "invoices": "Рахунки ({{count}})",
+      "quotes": "Кошториси ({{count}})"
+    },
+    "summary": {
+      "revenue": "Дохід",
+      "pending": "Очікує",
+      "overdue": "Прострочено"
+    },
+    "status": {
+      "paid": "Оплачено ✓",
+      "sent": "Надіслано",
+      "overdue": "Прострочено",
+      "draft": "Чернетка",
+      "cancelled": "Скасовано"
+    },
+    "markPaid": "Позначити оплаченим ✓",
+    "markApproved": "Погоджено ✓",
+    "emptyQuotes": "Кошторисів поки немає",
+    "emptyInvoices": "Рахунків поки немає",
+    "emptyQuotesHint": "Натисніть «📋 Кошторис», щоб додати",
+    "emptyInvoicesHint": "Натисніть «+ Новий», щоб додати",
+    "newQuote": "Новий кошторис",
+    "newInvoice": "Новий рахунок",
+    "buildFromProject": "Зібрати з об'єкта (необов'язково)",
+    "buildFromProjectHint": "Оберіть об'єкт або квартиру, щоб завантажити всі матеріали як позиції",
+    "pickProject": "Оберіть об'єкт",
+    "pickApartment": "Оберіть квартиру",
+    "allApartmentsInProject": "Усі квартири об'єкта",
+    "loadMaterialsAsItems": "Завантажити матеріали як позиції",
+    "loading": "Завантаження…",
+    "items": "Позиції",
+    "addRow": "Додати рядок",
+    "pullMaterial": "Узяти матеріал зі складу",
+    "pullMaterialHint": "Ціна береться із закупівельної — змініть її, щоб закласти прибуток",
+    "noProjects": "Об'єктів поки немає",
+    "noApartments": "У цьому об'єкті немає квартир",
+    "noMaterialsInStock": "На складі немає матеріалів",
+    "subtotal": "Сума без ПДВ",
+    "taxLine": "ПДВ ({{percent}}%)",
+    "totalDue": "Разом до сплати",
+    "createQuote": "Створити кошторис",
+    "createInvoice": "Створити рахунок",
+    "confirmDelete": "Видалити цей документ?",
+    "shareDocument": "Поділитися документом",
+    "fields": {
+      "clientName": "Ім'я клієнта *",
+      "clientPhone": "Телефон клієнта",
+      "description": "Опис",
+      "quantity": "К-сть",
+      "price": "Ціна",
+      "notes": "Нотатки",
+      "taxPercent": "ПДВ %"
+    },
+    "doc": {
+      "quote": "Кошторис",
+      "taxInvoice": "Податкова накладна",
+      "invoice": "Рахунок",
+      "client": "Клієнт",
+      "lineTotal": "Разом",
+      "unitPrice": "Ціна за одиницю",
+      "quantity": "К-сть",
+      "description": "Опис",
+      "notes": "Нотатки",
+      "generated": "Створено автоматично"
+    },
+    "share": {
+      "greeting": "Вітаю, {{name}}!",
+      "attached": "У вкладенні {{type}} № {{number}}:"
+    },
+    "errors": {
+      "chooseProjectFirst": "Спершу оберіть об'єкт",
+      "noMaterialsFound": "Матеріалів для цього об'єкта чи квартири не знайдено — додайте позиції вручну",
+      "loadMaterialsFailed": "Не вдалося завантажити матеріали — спробуйте ще раз",
+      "clientNameRequired": "Вкажіть ім'я клієнта",
+      "serverError": "Помилка сервера",
+      "updateFailed": "Не вдалося оновити",
+      "deleteFailed": "Не вдалося видалити",
+      "pdfFailed": "Не вдалося створити PDF"
+    }
   }
 }

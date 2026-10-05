@@ -187,5 +187,90 @@
       "updateFailed": "לא הצלחנו לעדכן",
       "deleteFailed": "שגיאה במחיקת עובד"
     }
+  },
+  "invoices": {
+    "title": "חשבוניות",
+    "quote": "הצעה",
+    "new": "חדש",
+    "tabs": {
+      "invoices": "חשבוניות ({{count}})",
+      "quotes": "הצעות מחיר ({{count}})"
+    },
+    "summary": {
+      "revenue": "הכנסות",
+      "pending": "ממתין",
+      "overdue": "איחור"
+    },
+    "status": {
+      "paid": "שולם ✓",
+      "sent": "נשלח",
+      "overdue": "איחור",
+      "draft": "טיוטה",
+      "cancelled": "בוטל"
+    },
+    "markPaid": "סמן כשולם ✓",
+    "markApproved": "אושרה ✓",
+    "emptyQuotes": "אין הצעות מחיר עדיין",
+    "emptyInvoices": "אין חשבוניות עדיין",
+    "emptyQuotesHint": "לחצי \"📋 הצעה\" להוסיף",
+    "emptyInvoicesHint": "לחצי \"+ חדש\" להוסיף",
+    "newQuote": "הצעת מחיר חדשה",
+    "newInvoice": "חשבונית חדשה",
+    "buildFromProject": "בנה מפרויקט (אופציונלי)",
+    "buildFromProjectHint": "בחרי פרויקט/דירה כדי לטעון את כל החומרים כפריטים אוטומטית",
+    "pickProject": "בחרי פרויקט",
+    "pickApartment": "בחרי דירה",
+    "allApartmentsInProject": "כל הדירות בפרויקט",
+    "loadMaterialsAsItems": "טען חומרים כפריטים",
+    "loading": "טוען...",
+    "items": "פריטים",
+    "addRow": "הוסף שורה",
+    "pullMaterial": "משוך חומר מהמלאי",
+    "pullMaterialHint": "המחיר יטען לפי מחיר הקנייה — תוכלי לערוך אותו ולהוסיף רווח",
+    "noProjects": "אין פרויקטים עדיין",
+    "noApartments": "אין דירות לפרויקט זה",
+    "noMaterialsInStock": "אין חומרים במלאי",
+    "subtotal": "סכום לפני מע\"מ",
+    "taxLine": "מע\"מ ({{percent}}%)",
+    "totalDue": "סה\"כ לתשלום",
+    "createQuote": "צור הצעה",
+    "createInvoice": "צור חשבונית",
+    "confirmDelete": "האם למחוק מסמך זה?",
+    "shareDocument": "שיתוף מסמך",
+    "fields": {
+      "clientName": "שם לקוח *",
+      "clientPhone": "טלפון לקוח",
+      "description": "תיאור",
+      "quantity": "כמות",
+      "price": "מחיר",
+      "notes": "הערות",
+      "taxPercent": "מע״מ %"
+    },
+    "doc": {
+      "quote": "הצעת מחיר",
+      "taxInvoice": "חשבונית מס",
+      "invoice": "חשבונית",
+      "client": "לקוח",
+      "lineTotal": "סה\"כ",
+      "unitPrice": "מחיר יחידה",
+      "quantity": "כמות",
+      "description": "תיאור",
+      "notes": "הערות",
+      "generated": "נוצר אוטומטית"
+    },
+    "share": {
+      "greeting": "שלום {{name}},",
+      "attached": "מצורפת {{type}} מספר {{number}}:"
+    },
+    "errors": {
+      "chooseProjectFirst": "בחרי פרויקט קודם",
+      "noMaterialsFound": "לא נמצאו חומרים לפרויקט/דירה זו — הוסיפי פריטים ידנית",
+      "loadMaterialsFailed": "שגיאה בטעינת החומרים — נסי שוב",
+      "clientNameRequired": "חובה למלא שם לקוח",
+      "serverError": "שגיאה בשרת",
+      "updateFailed": "לא הצלחנו לעדכן",
+      "deleteFailed": "שגיאה במחיקה",
+      "pdfFailed": "לא הצלחנו ליצור PDF"
+    }
   }
 }

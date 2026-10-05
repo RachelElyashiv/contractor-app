@@ -187,5 +187,90 @@
       "updateFailed": "Konnte nicht aktualisiert werden",
       "deleteFailed": "Fehler beim Löschen des Arbeiters"
     }
+  },
+  "invoices": {
+    "title": "Rechnungen",
+    "quote": "Angebot",
+    "new": "Neu",
+    "tabs": {
+      "invoices": "Rechnungen ({{count}})",
+      "quotes": "Angebote ({{count}})"
+    },
+    "summary": {
+      "revenue": "Einnahmen",
+      "pending": "Offen",
+      "overdue": "Überfällig"
+    },
+    "status": {
+      "paid": "Bezahlt ✓",
+      "sent": "Gesendet",
+      "overdue": "Überfällig",
+      "draft": "Entwurf",
+      "cancelled": "Storniert"
+    },
+    "markPaid": "Als bezahlt markieren ✓",
+    "markApproved": "Angenommen ✓",
+    "emptyQuotes": "Noch keine Angebote",
+    "emptyInvoices": "Noch keine Rechnungen",
+    "emptyQuotesHint": "Auf „📋 Angebot\" tippen, um eines anzulegen",
+    "emptyInvoicesHint": "Auf „+ Neu\" tippen, um eine anzulegen",
+    "newQuote": "Neues Angebot",
+    "newInvoice": "Neue Rechnung",
+    "buildFromProject": "Aus einem Bauvorhaben erstellen (optional)",
+    "buildFromProjectHint": "Bauvorhaben oder Wohnung wählen, um alle Materialien als Positionen zu laden",
+    "pickProject": "Bauvorhaben wählen",
+    "pickApartment": "Wohnung wählen",
+    "allApartmentsInProject": "Alle Wohnungen im Bauvorhaben",
+    "loadMaterialsAsItems": "Materialien als Positionen laden",
+    "loading": "Wird geladen…",
+    "items": "Positionen",
+    "addRow": "Zeile hinzufügen",
+    "pullMaterial": "Material aus dem Lager holen",
+    "pullMaterialHint": "Der Preis stammt aus dem Einkauf — ändern Sie ihn, um Ihre Marge aufzuschlagen",
+    "noProjects": "Noch keine Bauvorhaben",
+    "noApartments": "In diesem Bauvorhaben gibt es keine Wohnungen",
+    "noMaterialsInStock": "Keine Materialien im Lager",
+    "subtotal": "Nettobetrag",
+    "taxLine": "MwSt. ({{percent}} %)",
+    "totalDue": "Gesamtbetrag",
+    "createQuote": "Angebot erstellen",
+    "createInvoice": "Rechnung erstellen",
+    "confirmDelete": "Dieses Dokument löschen?",
+    "shareDocument": "Dokument teilen",
+    "fields": {
+      "clientName": "Name des Kunden *",
+      "clientPhone": "Telefon des Kunden",
+      "description": "Beschreibung",
+      "quantity": "Menge",
+      "price": "Preis",
+      "notes": "Anmerkungen",
+      "taxPercent": "MwSt. %"
+    },
+    "doc": {
+      "quote": "Angebot",
+      "taxInvoice": "Rechnung",
+      "invoice": "Rechnung",
+      "client": "Kunde",
+      "lineTotal": "Gesamt",
+      "unitPrice": "Einzelpreis",
+      "quantity": "Menge",
+      "description": "Beschreibung",
+      "notes": "Anmerkungen",
+      "generated": "Automatisch erstellt"
+    },
+    "share": {
+      "greeting": "Guten Tag {{name}},",
+      "attached": "Anbei {{type}} Nummer {{number}}:"
+    },
+    "errors": {
+      "chooseProjectFirst": "Wählen Sie zuerst ein Bauvorhaben",
+      "noMaterialsFound": "Für dieses Bauvorhaben oder diese Wohnung wurden keine Materialien gefunden — Positionen von Hand ergänzen",
+      "loadMaterialsFailed": "Die Materialien konnten nicht geladen werden — bitte erneut versuchen",
+      "clientNameRequired": "Der Name des Kunden ist erforderlich",
+      "serverError": "Serverfehler",
+      "updateFailed": "Aktualisieren fehlgeschlagen",
+      "deleteFailed": "Löschen fehlgeschlagen",
+      "pdfFailed": "Das PDF konnte nicht erstellt werden"
+    }
   }
 }
