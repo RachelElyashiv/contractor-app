@@ -13,6 +13,34 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
+// A stored token the server no longer accepts used to leave the app in a dead
+// end: every screen came back empty and every save answered "Unauthorized",
+// with nothing telling the user to sign in again. Any 401 now clears the
+// session so the app returns to the login screen.
+let sessionExpiredHandler = null;
+
+export function onSessionExpired(handler) {
+  sessionExpiredHandler = handler;
+}
+
+export async function reportUnauthorized() {
+  await AsyncStorage.removeItem('token');
+  await AsyncStorage.removeItem('user');
+  sessionExpiredHandler?.();
+}
+
+api.interceptors.response.use(
+  (res) => res,
+  async (error) => {
+    // a 401 from the login or register call means wrong details, not a dead session
+    const url = error?.config?.url || '';
+    if (error?.response?.status === 401 && !url.includes('/auth/')) {
+      await reportUnauthorized();
+    }
+    return Promise.reject(error);
+  },
+);
+
 export const auth = {
   login: (email, password) => api.post('/auth/login', { email, password }),
   register: (data) => api.post('/auth/register', data),

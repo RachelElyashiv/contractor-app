@@ -98,7 +98,9 @@
       "needGalleryPermission": "Allow access to your photos to upload",
       "needCameraPermission": "Allow camera access to take photos",
       "noConnection": "No connection to the server ({{detail}})",
-      "statusCode": "Error code {{status}}"
+      "statusCode": "Error code {{status}}",
+      "sessionExpired": "Your session has expired — sign in again",
+      "noFilePath": "No file path found for \"{{name}}\""
     },
     "file": "File"
   },

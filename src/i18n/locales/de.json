@@ -98,7 +98,9 @@
       "needGalleryPermission": "Erlauben Sie den Zugriff auf Ihre Fotos zum Hochladen",
       "needCameraPermission": "Erlauben Sie den Kamerazugriff zum Fotografieren",
       "noConnection": "Keine Verbindung zum Server ({{detail}})",
-      "statusCode": "Fehlercode {{status}}"
+      "statusCode": "Fehlercode {{status}}",
+      "sessionExpired": "Ihre Sitzung ist abgelaufen — bitte erneut anmelden",
+      "noFilePath": "Kein Dateipfad für „{{name}}\" gefunden"
     },
     "file": "Datei"
   },

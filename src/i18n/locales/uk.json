@@ -98,7 +98,9 @@
       "needGalleryPermission": "Дозвольте доступ до фото для завантаження",
       "needCameraPermission": "Дозвольте доступ до камери для зйомки",
       "noConnection": "Немає зв'язку із сервером ({{detail}})",
-      "statusCode": "Код помилки {{status}}"
+      "statusCode": "Код помилки {{status}}",
+      "sessionExpired": "Сесія завершилася — увійдіть знову",
+      "noFilePath": "Не знайдено шлях до файлу «{{name}}»"
     },
     "file": "Файл"
   },

@@ -98,7 +98,9 @@
       "needGalleryPermission": "Permita o acesso às suas fotos para enviar",
       "needCameraPermission": "Permita o acesso à câmera para tirar fotos",
       "noConnection": "Sem ligação ao servidor ({{detail}})",
-      "statusCode": "Código de erro {{status}}"
+      "statusCode": "Código de erro {{status}}",
+      "sessionExpired": "A sua sessão expirou — inicie sessão de novo",
+      "noFilePath": "Não foi encontrado o caminho do ficheiro \"{{name}}\""
     },
     "file": "Arquivo"
   },

@@ -98,7 +98,9 @@
       "needGalleryPermission": "Yüklemek için fotoğraflara erişime izin verin",
       "needCameraPermission": "Fotoğraf çekmek için kameraya erişime izin verin",
       "noConnection": "Sunucuya bağlantı yok ({{detail}})",
-      "statusCode": "Hata kodu {{status}}"
+      "statusCode": "Hata kodu {{status}}",
+      "sessionExpired": "Oturumunuz sona erdi — tekrar giriş yapın",
+      "noFilePath": "\"{{name}}\" dosyasının yolu bulunamadı"
     },
     "file": "Dosya"
   },

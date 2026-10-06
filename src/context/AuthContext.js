@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { auth } from '../services/api';
+import { auth, onSessionExpired } from '../services/api';
 
 const AuthContext = createContext({});
 
@@ -25,6 +25,15 @@ export function AuthProvider({ children }) {
       }
     }
     loadStoredAuth();
+  }, []);
+
+  // the api layer clears the stored session on a 401; drop it from state too,
+  // which puts the login screen back on screen
+  useEffect(() => {
+    onSessionExpired(() => {
+      setToken(null);
+      setUser(null);
+    });
   }, []);
 
   async function login(email, password) {

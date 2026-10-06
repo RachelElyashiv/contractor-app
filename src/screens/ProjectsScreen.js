@@ -19,7 +19,7 @@ import {
   View
 } from 'react-native';
 import PdfViewer from '../components/PdfViewer';
-import { BASE_URL, apartments as apartmentsApi, materials as materialsApi, projects as projectsApi, workers as workersApi } from '../services/api';
+import { BASE_URL, apartments as apartmentsApi, materials as materialsApi, projects as projectsApi, reportUnauthorized, workers as workersApi } from '../services/api';
 import { toUploadFile, uploadFiles } from '../services/uploadFiles';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTopInset } from '../hooks/useTopInset';
@@ -86,6 +86,9 @@ async function apiFetch(path, opts = {}) {
     ...opts,
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', ...(opts.headers || {}) },
   });
+  // this screen talks to the API directly, so it has to report a dead session
+  // itself for the app to notice
+  if (res.status === 401) await reportUnauthorized();
   return res;
 }
 

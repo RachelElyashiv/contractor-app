@@ -98,7 +98,9 @@
       "needGalleryPermission": "يرجى السماح بالوصول إلى الصور للرفع",
       "needCameraPermission": "يرجى السماح بالوصول إلى الكاميرا للتصوير",
       "noConnection": "لا يوجد اتصال بالخادم ({{detail}})",
-      "statusCode": "رمز الخطأ {{status}}"
+      "statusCode": "رمز الخطأ {{status}}",
+      "sessionExpired": "انتهت الجلسة — سجّل الدخول من جديد",
+      "noFilePath": "لم يُعثر على مسار الملف \"{{name}}\""
     },
     "file": "ملف"
   },

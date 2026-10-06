@@ -98,7 +98,9 @@
       "needGalleryPermission": "Permite el acceso a tus fotos para subirlas",
       "needCameraPermission": "Permite el acceso a la cámara para hacer fotos",
       "noConnection": "Sin conexión con el servidor ({{detail}})",
-      "statusCode": "Código de error {{status}}"
+      "statusCode": "Código de error {{status}}",
+      "sessionExpired": "Tu sesión ha caducado: vuelve a iniciar sesión",
+      "noFilePath": "No se ha encontrado la ruta del archivo \"{{name}}\""
     },
     "file": "Archivo"
   },

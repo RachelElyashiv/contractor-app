@@ -98,7 +98,9 @@
       "needGalleryPermission": "Autorisez l'accès à vos photos pour les importer",
       "needCameraPermission": "Autorisez l'accès à l'appareil photo pour prendre des photos",
       "noConnection": "Pas de connexion au serveur ({{detail}})",
-      "statusCode": "Code d’erreur {{status}}"
+      "statusCode": "Code d’erreur {{status}}",
+      "sessionExpired": "Votre session a expiré — reconnectez-vous",
+      "noFilePath": "Chemin introuvable pour le fichier « {{name}} »"
     },
     "file": "Fichier"
   },

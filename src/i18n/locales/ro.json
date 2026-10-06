@@ -98,7 +98,9 @@
       "needGalleryPermission": "Permite accesul la fotografii pentru încărcare",
       "needCameraPermission": "Permite accesul la cameră pentru a fotografia",
       "noConnection": "Fără legătură cu serverul ({{detail}})",
-      "statusCode": "Cod de eroare {{status}}"
+      "statusCode": "Cod de eroare {{status}}",
+      "sessionExpired": "Sesiunea a expirat — autentifică-te din nou",
+      "noFilePath": "Nu s-a găsit calea fișierului „{{name}}\""
     },
     "file": "Fișier"
   },

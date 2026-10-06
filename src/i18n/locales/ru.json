@@ -98,7 +98,9 @@
       "needGalleryPermission": "Разрешите доступ к фото для загрузки",
       "needCameraPermission": "Разрешите доступ к камере для съёмки",
       "noConnection": "Нет связи с сервером ({{detail}})",
-      "statusCode": "Код ошибки {{status}}"
+      "statusCode": "Код ошибки {{status}}",
+      "sessionExpired": "Сессия истекла — войдите снова",
+      "noFilePath": "Не найден путь к файлу «{{name}}»"
     },
     "file": "Файл"
   },

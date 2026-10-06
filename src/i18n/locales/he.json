@@ -98,7 +98,9 @@
       "needGalleryPermission": "יש לאשר גישה לתמונות כדי להעלות",
       "needCameraPermission": "יש לאשר גישה למצלמה כדי לצלם",
       "noConnection": "אין חיבור לשרת ({{detail}})",
-      "statusCode": "קוד שגיאה {{status}}"
+      "statusCode": "קוד שגיאה {{status}}",
+      "sessionExpired": "ההתחברות פגה — התחברי מחדש",
+      "noFilePath": "לא נמצא נתיב לקובץ \"{{name}}\""
     },
     "file": "קובץ"
   },
