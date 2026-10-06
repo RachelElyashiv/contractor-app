@@ -74,7 +74,8 @@
     "wages": "Зарплата ({{days}} робочих днів)",
     "invoiceIncome": "Дохід від рахунків",
     "profit": "Прибуток (дохід − витрати)",
-    "recentProjects": "Останні проєкти"
+    "recentProjects": "Останні проєкти",
+    "version": "Версія {{version}} · збірка {{build}}"
   },
   "photos": {
     "title": "Файли та фото",

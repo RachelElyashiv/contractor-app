@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import * as Application from 'expo-application';
 import { useAuth } from '../context/AuthContext';
 import { expenses, invoices, materials, projects, workers } from '../services/api';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -75,6 +76,15 @@ export default function DashboardScreen({ onNavigate }) {
           <Text style={styles.logoutText}>{t('dashboard.logout')}</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Which build is actually installed. Without this on screen there is no
+          way to tell a fix that did not work from a build that never arrived. */}
+      <Text style={styles.buildStamp}>
+        {t('dashboard.version', {
+          version: Application.nativeApplicationVersion || '—',
+          build: Application.nativeBuildVersion || '—',
+        })}
+      </Text>
 
       {/* Quick Actions */}
       <View style={styles.quickRow}>
@@ -201,6 +211,7 @@ const styles = StyleSheet.create({
   headerSub: { fontSize: 13, color: '#a8d5be', marginTop: 2 },
   logoutBtn: { backgroundColor: 'rgba(255,255,255,0.2)', padding: 8, borderRadius: 8 },
   logoutText: { color: '#fff', fontSize: 13 },
+  buildStamp: { fontSize: 11, color: '#9aa39e', textAlign: 'center', marginTop: 8 },
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', padding: 12, gap: 10 },
   statCard: { width: '47%', borderRadius: 12, padding: 16, alignItems: 'center' },
   statVal: { fontSize: 24, fontWeight: 'bold', color: '#1a1a1a' },

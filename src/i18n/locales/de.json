@@ -74,7 +74,8 @@
     "wages": "Löhne ({{days}} Arbeitstage)",
     "invoiceIncome": "Einnahmen aus Rechnungen",
     "profit": "Gewinn (Einnahmen − Ausgaben)",
-    "recentProjects": "Letzte Projekte"
+    "recentProjects": "Letzte Projekte",
+    "version": "Version {{version}} · Build {{build}}"
   },
   "photos": {
     "title": "Dateien und Fotos",

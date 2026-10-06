@@ -74,7 +74,8 @@
     "wages": "الأجور ({{days}} أيام عمل)",
     "invoiceIncome": "إيرادات الفواتير",
     "profit": "الربح (الإيرادات − المصروفات)",
-    "recentProjects": "أحدث المشاريع"
+    "recentProjects": "أحدث المشاريع",
+    "version": "الإصدار {{version}} · البناء {{build}}"
   },
   "photos": {
     "title": "الملفات والصور",

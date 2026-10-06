@@ -74,7 +74,8 @@
     "wages": "Wages ({{days}} work days)",
     "invoiceIncome": "Invoice income",
     "profit": "Profit (income − expenses)",
-    "recentProjects": "Recent projects"
+    "recentProjects": "Recent projects",
+    "version": "Version {{version}} · build {{build}}"
   },
   "photos": {
     "title": "Files and photos",

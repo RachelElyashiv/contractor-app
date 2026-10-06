@@ -74,7 +74,8 @@
     "wages": "שכר עובדים ({{days}} ימי עבודה)",
     "invoiceIncome": "הכנסות מחשבוניות",
     "profit": "רווח (הכנסות − הוצאות)",
-    "recentProjects": "פרויקטים אחרונים"
+    "recentProjects": "פרויקטים אחרונים",
+    "version": "גרסה {{version}} · בנייה {{build}}"
   },
   "photos": {
     "title": "קבצים ותמונות",

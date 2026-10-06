@@ -74,7 +74,8 @@
     "wages": "Salaires ({{days}} jours travaillés)",
     "invoiceIncome": "Revenus des factures",
     "profit": "Bénéfice (revenus − dépenses)",
-    "recentProjects": "Projets récents"
+    "recentProjects": "Projets récents",
+    "version": "Version {{version}} · build {{build}}"
   },
   "photos": {
     "title": "Fichiers et photos",

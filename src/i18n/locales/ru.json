@@ -74,7 +74,8 @@
     "wages": "Зарплата ({{days}} рабочих дней)",
     "invoiceIncome": "Доход от счетов",
     "profit": "Прибыль (доход − расходы)",
-    "recentProjects": "Последние проекты"
+    "recentProjects": "Последние проекты",
+    "version": "Версия {{version}} · сборка {{build}}"
   },
   "photos": {
     "title": "Файлы и фото",

@@ -74,7 +74,8 @@
     "wages": "Salarios ({{days}} días trabajados)",
     "invoiceIncome": "Ingresos por facturas",
     "profit": "Beneficio (ingresos − gastos)",
-    "recentProjects": "Proyectos recientes"
+    "recentProjects": "Proyectos recientes",
+    "version": "Versión {{version}} · compilación {{build}}"
   },
   "photos": {
     "title": "Archivos y fotos",

@@ -74,7 +74,8 @@
     "wages": "Ücretler ({{days}} iş günü)",
     "invoiceIncome": "Fatura geliri",
     "profit": "Kâr (gelir − gider)",
-    "recentProjects": "Son projeler"
+    "recentProjects": "Son projeler",
+    "version": "Sürüm {{version}} · yapı {{build}}"
   },
   "photos": {
     "title": "Dosyalar ve fotoğraflar",

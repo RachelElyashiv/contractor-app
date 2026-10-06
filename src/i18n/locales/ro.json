@@ -74,7 +74,8 @@
     "wages": "Salarii ({{days}} zile lucrate)",
     "invoiceIncome": "Venituri din facturi",
     "profit": "Profit (venituri − cheltuieli)",
-    "recentProjects": "Proiecte recente"
+    "recentProjects": "Proiecte recente",
+    "version": "Versiunea {{version}} · build {{build}}"
   },
   "photos": {
     "title": "Fișiere și fotografii",
