@@ -58,7 +58,14 @@
           "cameraPermission": "האפליקציה צריכה גישה למצלמה כדי לצלם תמונות שטח."
         }
       ],
-      "expo-document-picker"
+      "expo-document-picker",
+      [
+        "expo-navigation-bar",
+        {
+          "style": "dark",
+          "enforceContrast": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

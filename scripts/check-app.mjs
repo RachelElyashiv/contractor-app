@@ -142,6 +142,22 @@ check('the tab bar leaves a gap in the middle for it',
 
 // --- the app ships its own icon, not the Expo template one ---
 const appJson = JSON.parse(fs.readFileSync('app.json', 'utf8')).expo;
+
+// --- the phone's own back and home buttons stay visible ---
+// Expo 56 forces the navigation bar transparent and ignores the old
+// androidNavigationBar setting, so the app draws behind it. Without
+// windowLightNavigationBar the system keeps white buttons, which vanish
+// against the white tab bar. The plugin is what sets it.
+const navPlugin = (appJson.plugins || []).find(
+  (p) => p === 'expo-navigation-bar' || (Array.isArray(p) && p[0] === 'expo-navigation-bar'),
+);
+check('the navigation bar is told to use dark buttons',
+  Array.isArray(navPlugin) && navPlugin[1]?.style === 'dark',
+  navPlugin ? JSON.stringify(navPlugin[1]) : 'expo-navigation-bar is not configured');
+check('expo-navigation-bar is a declared dependency',
+  !!JSON.parse(fs.readFileSync('package.json', 'utf8')).dependencies['expo-navigation-bar'],
+  'a config plugin without its package does nothing');
+
 const iconBytes = fs.statSync(appJson.icon).size;
 check('the app has a name people will recognise', appJson.name !== 'contractor-app' && appJson.name.length > 1,
   `name = ${appJson.name}`);
