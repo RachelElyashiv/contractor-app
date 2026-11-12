@@ -19,9 +19,8 @@ import {
   View
 } from 'react-native';
 import PdfViewer from '../components/PdfViewer';
-import { apartments as apartmentsApi, materials as materialsApi, projects as projectsApi, workers as workersApi } from '../services/api';
+import { BASE_URL, apartments as apartmentsApi, materials as materialsApi, projects as projectsApi, workers as workersApi } from '../services/api';
 
-const BASE_URL = 'https://contractor-backend-production.up.railway.app/api/v1';
 const isWeb = Platform.OS === 'web';
 
 // Open a URL (web opens a new tab, native uses the OS handler)
